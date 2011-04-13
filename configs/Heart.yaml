@@ -1,0 +1,62 @@
+--- # HEART (600, 1000, 2, 2, 0.75, 5, 1, 2, "images/20110213/heart.jpg", null, null, null, null, 10, null),
+title:          Heart
+
+width:          600
+height:         1000
+
+widthSpacing:   2
+heightSpacing:  2
+
+drawSpeedMultiplier:   10
+
+
+images:
+    - name:     heart
+      file:     /Users/boxysean/Desktop/projects/fortyfive/20110213/heart.jpg
+      
+
+lineA: &id001
+    straightProb:  0.75
+    threshold:     heart
+        
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+lineB: &id002
+    straightProb: 0.75
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        red:           127
+        green:         127
+        blue:          127
+
+lineC: &id003
+    straightProb:  1.0
+    direction:     "00200020"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        red:           255
+        green:         127
+        blue:          127
+
+    startArea:
+        name:          RectangleArea
+        x:             0
+        y:             0
+        width:         3
+        height:        1000
+        
+lines:          [*id001, *id001, *id001, *id001, *id001, *id003, *id003, *id003, *id003, *id003]
+...
+
