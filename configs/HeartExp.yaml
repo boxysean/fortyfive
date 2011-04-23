@@ -1,11 +1,13 @@
 --- # HEART (600, 1000, 2, 2, 0.75, 5, 1, 2, "images/20110213/heart.jpg", null, null, null, null, 10, null),
 title:          Heart
 
-width:          600
-height:         1000
+bgcolour:       black
 
-widthSpacing:   2
-heightSpacing:  2
+width:          1024
+height:         768
+
+widthSpacing:   5
+heightSpacing:  5
 
 drawSpeedMultiplier:   10
 
@@ -13,19 +15,30 @@ drawSpeedMultiplier:   10
 images:
     - name:     heart
       file:     /Users/boxysean/Desktop/projects/fortyfive/20110213/heart.jpg
-      scale:    0.5
       
 
 lineA: &id001
     straightProb:  0.75
-    drawSpeed:     3
+    drawSpeed:     1
+
+    draw:
+        red:           255
+        blue:          255
+        green:         255
         
     threshold:
         - name:        heart
-          scale:       0.75
-          invert:      true
-          xOffset:     50
-          yOffset:     50
+#          scale:       0.5
+#          invert:      true
+#          xOffset:     50
+#          yOffset:     50
+
+        - name:        heart
+#          scale:       0.5
+#          invert:      true
+          xOffset:     450
+#          yOffset:     350
+
 
     movement:
         name:          IntelligentMovement
@@ -54,8 +67,9 @@ lineC: &id003
         name:          RectangleArea
         x:             0
         y:             0
-        width:         5
+        width:         8
         height:        1000
+        coordinateBag: forward
 
 lineD: &id004
     <<: *id003
@@ -67,7 +81,7 @@ lineD: &id004
         width:         200
         height:        1000
         
-#lines:          [*id001, *id001, *id001, *id001, *id001, *id003, *id003, *id003, *id003, *id003]
-lines:          [*id001, *id001, *id001, *id001, *id001]
+lines:          [*id001, *id001, *id001, *id001, *id001, *id003, *id003, *id003, *id003, *id003]
+#lines:          [*id001, *id001, *id001, *id001, *id001]
 ...
 
