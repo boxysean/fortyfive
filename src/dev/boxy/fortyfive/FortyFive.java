@@ -1,24 +1,28 @@
 package dev.boxy.fortyfive;
+import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 
 import org.yaml.snakeyaml.*;
 
 import processing.core.*;
+import dev.boxy.fortyfive.coordinatebag.*;
 import dev.boxy.fortyfive.draw.*;
 import dev.boxy.fortyfive.movement.*;
 
 public class FortyFive extends PApplet {
 	
-	public static final Settings	DEFAULT_SETTING		= Settings.START_FROM_SIDES;
-	
-	public static final int			MIN_THRESHOLD_VALUE		= 50;
-	
-	public static final boolean		DEBUG	= Boolean.getBoolean("DEBUG");
+	public static final String		DEFAULT_SETTING		= "HeartExp.yaml";
+	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
 	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 	public static final int[]	dc		= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
+	
+	LinearPresentation presentation;
+	ImageGridCache imageGridCache = new ImageGridCache();
+	String currentConfigFile;
+	int userDrawSpeedMultiplier = 1;
 	
 	public enum Settings {
 		
@@ -36,6 +40,7 @@ public class FortyFive extends PApplet {
 //		HELICOPTER (600, 800, 10, 10, 0.75, 5, 2, 2, null, "images/20110114/helicopter.jpg", "20002000", null, null, 1, null),
 		DALAI ("Dalai.yaml"),
 		HEART ("Heart.yaml"),
+		HEART_EXP ("HeartExp.yaml"),
 //		HEART_SMALL (450, 750, 2, 2, 1.00, 1, 1, 2, "images/20110213/heart-small.jpg", null, "20002000", null, null, 100, null),
 //		MONKEY (800, 600, 2, 2, 0.925, 5, 1, IntelligenceMovement.INTELLIGENCE_NONE, "images/20110220/monkey.jpg", "images/20110220/monkey.jpg", "12121212", null, null, 20, null),
 //		MONKEY_BIG (1200, 900, 2, 2, 1.0, 5, 1, 2, "images/20110220/monkey-big.jpg", "images/20110220/monkey-big.jpg", "22222222", null, null, 20, null),
@@ -58,19 +63,58 @@ public class FortyFive extends PApplet {
 		public ConfigParser(File yamlFile, FortyFive ff) throws Exception {
 			Yaml yaml = new Yaml();
 			
+			TimingUtils.mark("config start");
+			
 			Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader(yamlFile));
 			
 			ff.width = getInt(map, "width");
 			ff.height = getInt(map, "height");
 			
+			// Parse background colour TODO make better
+			
+			TimingUtils.mark("background colour");
+			
+			String bgColour = getString(map, "bgcolour", "white");
+			
+			if (bgColour.equalsIgnoreCase("black")) {
+				ff.background(0);
+				ff.color(0);
+				ff.fill(0);
+				ff.rect(0, 0, ff.width, ff.height);
+			} else if (bgColour.equalsIgnoreCase("white")) {
+				ff.background(255);
+				ff.color(255);
+				ff.fill(255);
+				ff.rect(0, 0, ff.width, ff.height);
+			}
+			
+			TimingUtils.mark("background colour");
+			
+			TimingUtils.mark("resize");
+
+			ff.size(width, height);
+
+			TimingUtils.mark("resize");
+
 			ff.widthSpacing = getInt(map, "widthSpacing");
 			ff.heightSpacing = getInt(map, "heightSpacing");
 			
-			ff.masterStartArea = new RectangleArea(ff, 0, 0, ff.width, ff.height);
+			int frameRate = getInt(map, "frameRate", 30);
+			ff.frameRate(frameRate);
+			
+			TimingUtils.mark("master start area");
+			
+			ff.masterStartArea = new RectangleArea(ff, new RandomBag(), 0, 0, ff.width, ff.height);
+			
+			TimingUtils.mark("master start area");
 			
 			ff.drawSpeedMultiplier = getInt(map, "drawSpeedMultiplier", 1);
 			
+			TimingUtils.mark("config start");
+			
 			// Parse image grids
+			
+			TimingUtils.mark("parse image grids");
 			
 			List<Map<String, Object>> imageDefList = (List<Map<String, Object>>) map.get("images");
 			
@@ -79,11 +123,15 @@ public class FortyFive extends PApplet {
 			if (imageDefList != null) {
 				for (Map<String, Object> imageDef : imageDefList) {
 					String name = (String) imageDef.get("name");
-					String file = (String) imageDef.get("file");
+					String imageFile = (String) imageDef.get("file");
 					
-					ff.imageGridMap.put(name, new ImageGrid(ff, file));
+					ff.imageGridMap.put(name, imageGridCache.get(ff, imageFile, yamlFile.getAbsolutePath()));
 				}
 			}
+			
+			TimingUtils.mark("parse image grids");
+			TimingUtils.print("load image");
+			TimingUtils.print("populate colour grid");
 			
 			// Parse line templates
 			
@@ -94,6 +142,8 @@ public class FortyFive extends PApplet {
 			ff.lines = new Line[ff.nLines];
 			
 			int index = 0;
+			
+			TimingUtils.mark("parse line template total");
 			
 			for (Map<String, Object> lineTemplateDef : lineTemplateList) {
 				double straightProb = getDouble(lineTemplateDef, "straightProb", LineTemplate.DEF_STRAIGHT_PROB);
@@ -137,26 +187,31 @@ public class FortyFive extends PApplet {
 				
 				// Parse draw method
 				
+				TimingUtils.markAdd("parse draw");
+				
 				Map<String, Object> drawDef = (Map<String, Object>) lineTemplateDef.get("draw");
 				
 				LineDraw draw = null;
 				
 				if (drawDef != null) {
-					String drawName = (String) drawDef.get("name");
+					String drawName = getString(drawDef, "name", "SolidDraw");
 					
-					if (drawName != null) {
-						if (drawName.equals("SolidDraw")) {
-							int red = getInt(drawDef, "red", 0);
-							int green = getInt(drawDef, "green", 0);
-							int blue = getInt(drawDef, "blue", 0);
-							int strokeWidth = getInt(drawDef, "strokeWidth", 0);
-							draw = new SolidDraw(red, green, blue, strokeWidth);
-						} else if (drawName.equals("ImageDraw")) {
-							int strokeWidth = getInt(drawDef, "strokeWidth", 0);
-							String image = (String) drawDef.get("image");
-							ImageGrid imageGrid = ff.imageGridMap.get(image);
-							draw = new ImageDraw(imageGrid, strokeWidth);
-						}
+					if (drawName.equals("SolidDraw")) {
+						int red = getInt(drawDef, "red", 0);
+						int green = getInt(drawDef, "green", 0);
+						int blue = getInt(drawDef, "blue", 0);
+						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
+						draw = new SolidDraw(red, green, blue, strokeWidth);
+					} else if (drawName.equals("ImageDraw")) {
+						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
+						String image = (String) drawDef.get("image");
+						
+						int xOffset = getInt(drawDef, "xOffset", 0);
+						int yOffset = getInt(drawDef, "yOffset", 0);
+						double scale = getDouble(drawDef, "scale", 1.0);
+						
+						ImageGrid imageGrid = ff.imageGridMap.get(image);
+						draw = new ImageDraw(imageGrid, strokeWidth, xOffset, yOffset, scale);
 					}
 				}
 				
@@ -164,7 +219,11 @@ public class FortyFive extends PApplet {
 					draw = new SolidDraw(0, 0, 0, 1);
 				}
 				
+				TimingUtils.markAdd("parse draw");
+
 				// Parse start area
+				
+				TimingUtils.markAdd("start area");
 				
 				Map<String, Object> startAreaDef = (Map<String, Object>) lineTemplateDef.get("startArea");
 				
@@ -179,7 +238,24 @@ public class FortyFive extends PApplet {
 							int y = getInt(startAreaDef, "y", 0);
 							int width = getInt(startAreaDef, "width", ff.width);
 							int height = getInt(startAreaDef, "height", ff.height);
-							startArea = new RectangleArea(ff, x, y, width, height);
+							
+							String coordBagName = getString(startAreaDef, "coordinateBag", "random");
+							
+							CoordinateBag coordBag = null;
+							
+							if (coordBagName != null) {
+								if (coordBagName.equalsIgnoreCase("ordered") || coordBagName.equalsIgnoreCase("forward")) {
+									coordBag = new OrderedBag();
+								} else if (coordBagName.equalsIgnoreCase("backward")) {
+									coordBag = new OrderedBag(false);
+								}
+							}
+							
+							if (coordBag == null) {
+								coordBag = new RandomBag();
+							}
+							
+							startArea = new RectangleArea(ff, coordBag, x, y, width, height);
 							
 //							drawBox(x, y, width, height);						
 						}
@@ -190,17 +266,39 @@ public class FortyFive extends PApplet {
 					startArea = masterStartArea;
 				}
 				
+				TimingUtils.markAdd("start area");
+
 				// Parse threshold images
 				
-				ImageGrid thresholdImage = null;
+				TimingUtils.markAdd("threshold images");
 				
-				if (lineTemplateDef.containsKey("threshold")) {
-					String image = (String) lineTemplateDef.get("threshold");
-					thresholdImage = ff.imageGridMap.get(image);
+				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineTemplateDef.get("threshold");
+				
+				List<ImageThreshold> thresholds = new LinkedList<ImageThreshold>();
+				
+				for (Map<String, Object> thresholdDef : thresholdDefs) {
+					String thresholdName = (String) thresholdDef.get("name");
+					boolean thresholdInvert = getBoolean(thresholdDef, "invert", false);
+					int thresholdXOffset = getInt(thresholdDef, "xOffset", 0);
+					int thresholdYOffset = getInt(thresholdDef, "yOffset", 0);
+					double thresholdScale = getDouble(thresholdDef, "scale", 1.0);
+					
+					ImageGrid thresholdImage = ff.imageGridMap.get(thresholdName);
+					
+					thresholds.add(new ImageThreshold(thresholdName, thresholdImage, thresholdInvert, thresholdXOffset, thresholdYOffset, thresholdScale));
 				}
 				
-				ff.lineTemplates[index++] = new LineTemplate(straightProb, stepSpeed, drawSpeed, movement, direction, draw, startArea, thresholdImage);
+				TimingUtils.markAdd("threshold images");
+				
+				// Done!
+
+				ff.lineTemplates[index++] = new LineTemplate(straightProb, stepSpeed, drawSpeed, movement, direction, draw, startArea, thresholds);
 			}
+			
+			TimingUtils.mark("parse line template total");
+			TimingUtils.print("parse draw");
+			TimingUtils.print("start area");
+			TimingUtils.print("threshold images");
 		}
 		
 		public int getInt(Map<String, Object> map, String key) {
@@ -228,6 +326,31 @@ public class FortyFive extends PApplet {
 				return def;
 			}
 		}
+		
+		public boolean getBoolean(Map<String, Object> map, String key) {
+			Boolean b = (Boolean) map.get(key);
+			return b.booleanValue();
+		}
+		
+		public boolean getBoolean(Map<String, Object> map, String key, boolean def) {
+			if (map.containsKey(key)) {
+				return getBoolean(map, key);
+			} else {
+				return def;
+			}
+		}
+		
+		public String getString(Map<String, Object> map, String key, String def) {
+			if (map.containsKey(key)) {
+				return getString(map, key);
+			} else {
+				return def;
+			}
+		}
+		
+		public String getString(Map<String, Object> map, String key) {
+			return (String) map.get(key);
+		}
 	}
 	
 	int				width				= 0;
@@ -254,21 +377,48 @@ public class FortyFive extends PApplet {
 	
 	boolean	pause	= false;
 	
-	public void loadSettings(Settings s) {
+	public void loadSettings(String configFile) {
 		try {
-			ConfigParser cp = new ConfigParser(new File("../configs/" + s.configFile), this);
+			ConfigParser cp = new ConfigParser(new File("../configs/" + configFile), this);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
+	@Override
 	public void setup() {
-		frameRate(30);
+		noCursor();
 		
-		loadSettings(DEFAULT_SETTING);
+		presentation = new LinearPresentation(this);
 		
-		size(width, height);
-		background(255);
+		addKeyListener(presentation);
+		
+		setup(DEFAULT_SETTING);
+	}
+	
+	String queuedConfig = null;
+	
+	public void queueConfig(String configFile) {
+		queuedConfig = configFile;
+	}
+	
+	/**
+	 * Should only be called by this class, otherwise exception thrown.
+	 * @param configFile
+	 */
+	private void setup(String configFile) {
+		TimingUtils.reset();
+		
+		System.out.println("--- " + configFile + " ---");
+		
+		TimingUtils.mark("setup");
+		
+		TimingUtils.mark("load settings");
+		
+		loadSettings(configFile);
+		currentConfigFile = configFile;
+		
+		TimingUtils.mark("load settings");
 		
 		// Create a list of coordinates that have not yet been visited
 		
@@ -286,68 +436,41 @@ public class FortyFive extends PApplet {
 		
 		// Create the lines
 		
+		TimingUtils.mark("new lines");
+		
 		for (int i = 0; i < nLines; i++) {
 			lines[i] = newLine(lineTemplates[i]);
 		}
 		
-		// Block off areas that are black according to a threshold pic
+		TimingUtils.mark("new lines");
 		
-//		if (thresholdImage != null) {
-//			if (DEBUG) {
-//				File f = new File(thresholdImage);
-//				System.err.println("threshold image path: " + f.getAbsolutePath());
-//			}
-//			
-//			thresholdPic = loadImage(thresholdImage);
-//			size(thresholdPic.width, thresholdPic.height);
-//			filter(BLUR);
-//			filter(THRESHOLD);
-//			
-//			thresholdPic.loadPixels();
-//			
-//			for (int r = 0; r < rows(); r++) {
-//				for (int c = 0; c < columns(); c++) {
-//					int count = 0;
-//					int black = 0;
-//					
-//					for (int x = (int) Math.round(widthSpacing * c); x < Math.round(widthSpacing * (c+1)); x++) {
-//						for (int y = (int) Math.round(heightSpacing * r); y < Math.round(heightSpacing * (r+1)); y++) {
-//							count++;
-//							
-//							// Take a CMY version of colour. If a colour is perceptibly non-white then treat it as an area to fill in.
-//							
-//							int colour = thresholdPic.pixels[y * thresholdPic.width + x];
-//							float thresholdValue = (255 - red(colour)) + (255 - green(colour)) + (255 - blue(colour));
-//							
-//							black += thresholdValue > MIN_THRESHOLD_VALUE ? 1 : 0;
-//						}
-//					}
-//					
-//					grid[r][c] |= black < count / 2;
-//
-//					if (DEBUG && grid[r][c]) {
-//						fill(255, 0, 0, 128);
-//						noStroke();
-//						rect(c * widthSpacing, r * heightSpacing, widthSpacing, heightSpacing);
-//					}
-//				}
-//			}
-//		}
+		TimingUtils.mark("setup");
 	}
 	
-	boolean isDone = false;
-	
+	@Override
 	public void draw() {
-		if (keyPressed) {
-			if (key == ' ') {
-				pause = !pause;
-			}
+//		if (keyPressed || keyCode != 0) {
+//			if (key == ' ') {
+//				pause = !pause;
+//			} else if (key == 'c') {
+//				queueConfig(currentConfigFile);
+//			}
+//			
+//			keyPressed = false;
+//			keyCode = 0;
+//		}
+		
+		// New screen has been requested
+		
+		if (queuedConfig != null) {
+			setup(queuedConfig);
+			queuedConfig = null;
 		}
 		
 		if (!pause) {
 			stroke(0);
 			
-			boolean done = true;
+			boolean finished = true;
 			
 			for (int i = 0; i < nLines; i++) {
 				if (lines[i] != null) {
@@ -355,17 +478,55 @@ public class FortyFive extends PApplet {
 						lines[i] = newLine(lineTemplates[i]);
 					}
 					
-					done = false;
+					finished = false;
 				}
 			}
 			
-			if (done) {
-				if (!isDone) {
-					System.out.println("done");
-					isDone = true;
-				}
+			if (finished) {
+				presentation.onFinished();
 			}
 		}
+	}
+	
+	public void keyTyped(KeyEvent e) {
+		char key = e.getKeyChar();
+		
+		if ('0' <= key && key <= '9') {
+			userDrawSpeedMultiplier = key - '0';
+		}
+		
+		switch (key) {
+		case ' ':
+			pause = !pause;
+			break;
+			
+		case 'c':
+			reset();
+			break;
+		}
+	}
+	
+	public void keyPressed(KeyEvent e) {
+	    int keyCode = e.getKeyCode();
+	    
+		switch (keyCode) {
+		case KeyEvent.VK_UP:
+			userDrawSpeedMultiplier++;
+			
+			break;
+			
+		case KeyEvent.VK_DOWN:
+			userDrawSpeedMultiplier--;
+			if (/*drawSpeedMultiplier + */userDrawSpeedMultiplier < 1) {
+				userDrawSpeedMultiplier = 1;
+			}
+			
+			break;
+		}
+	}
+	
+	public void reset() {
+		queueConfig(currentConfigFile);
 	}
 	
 	public void drawLine(int gr, int gc, int grr, int gcc, LineDraw draw) {
@@ -428,6 +589,42 @@ public class FortyFive extends PApplet {
 		return (int) (pp * gmax / pmax);
 	}
 	
+	/**
+	 * Given the grid column, return the x pixel space coordinate
+	 * @param c grid column
+	 * @return x pixel space coordinate
+	 */
+	public float columnToX(int c) {
+		return gridToPixel(c, columns(), width);
+	}
+	
+	/**
+	 * Given the x pixel space coordinate, return the grid column
+	 * @param x x pixel space coordinate 
+	 * @return grid column
+	 */
+	public int xToColumn(float x) {
+		return pixelToGrid(x, width, columns());
+	}
+	
+	/**
+	 * Given the grid row, return the y pixel space coordinate
+	 * @param r grid row
+	 * @return y pixel space coordinate
+	 */
+	public float rowToY(int r) {
+		return gridToPixel(r, rows(), height);
+	}
+	
+	/**
+	 * Given the y pixel space coordinate, return the grid row
+	 * @param y y pixel space coordinate
+	 * @return grid row
+	 */
+	public int yToRow(float y) {
+		return pixelToGrid(y, height, rows());
+	}
+	
 	public Line newLine(LineTemplate lineTemplate) {
 		int gr = 0;
 		int gc = 0;
@@ -474,10 +671,6 @@ public class FortyFive extends PApplet {
 		return new Line(gr, gc, gd, this, lineTemplate);
 	}
 	
-	int red[] = new int[] { 200, 215, 215 };
-	int blue[] = new int[] { 200, 111, 0 };
-	int green[] = new int[] { 200, 0, 0 };
-
 	/**
 	 * Check if the proposed move runs into or crosses existing lines
 	 * @param cr current row
@@ -512,11 +705,41 @@ public class FortyFive extends PApplet {
 		return invalid;
 	}
 	
+	/**
+	 * Give the number of rows in the main workspace
+	 * @return rows in the main workspace
+	 */
 	public int rows() {
+		return rows(height);
+	}
+	
+	/**
+	 * Give the number of rows in the workspace given the height
+	 * @param height height of the workspace
+	 * @return number of rows in the workspace given the height
+	 */
+	public int rows(int height) {
 		return height / heightSpacing;
 	}
 	
+	/**
+	 * Give the number of columns in the main workspace
+	 * @return columns in the main workspace
+	 */
 	public int columns() {
+		return columns(width);
+	}
+	
+	/**
+	 * Give the number of columns in the workspace given the width
+	 * @param width width of the workspace
+	 * @return number of columns in the workspace given the width
+	 */
+	public int columns(int width) {
 		return width / widthSpacing;
+	}
+	
+	public static void main(String args[]) {
+		PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
 	}
 }

@@ -23,7 +23,6 @@ public class ClingMovement extends LineMovement {
 
 	@Override
 	public boolean forwardOnce() {
-		
 		Collections.shuffle(dlist);
 
 		int highScore = -1;
@@ -47,7 +46,7 @@ public class ClingMovement extends LineMovement {
 				continue;
 			}
 
-			if (ff.invalidMove(line.cr, line.cc, nr, nc)) {
+			if (ff.invalidMove(line.cr, line.cc, nr, nc, line.blocked)) {
 				continue;
 			}
 			

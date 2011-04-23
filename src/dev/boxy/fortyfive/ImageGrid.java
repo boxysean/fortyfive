@@ -1,36 +1,57 @@
 package dev.boxy.fortyfive;
 import java.io.*;
+import java.util.*;
 
 import processing.core.*;
 
 public class ImageGrid {
 	
+	public static final int			MIN_THRESHOLD_VALUE		= 50;
+
 	FortyFive	ff;
 	
 	String		colourImage 		= null;
 	PImage		colourPic;
 	int[][]		colourGrid;
 	
-	boolean[][]	threshold;
+	/**
+	 * Store the threshold versions of this image per scale
+	 */
+	Map<Record, boolean[][]> thresholdCache = new HashMap<Record, boolean[][]>();
 	
 	public ImageGrid(FortyFive ff, String colourImage) {
 		this.ff = ff;
 		this.colourImage = colourImage;
 		
-		populateColourGrid(colourImage);
-	}
-	
-	public int at(int r, int c) {
-		return colourGrid[r][c];
-	}
-	
-	public void populateColourGrid(String colourImage) {
+		TimingUtils.markAdd("load image");
 		colourPic = ff.loadImage(colourImage);
-		
+		TimingUtils.markAdd("load image");
+
 		if (colourPic == null) {
 			throw new RuntimeException("File not found: " + colourImage + " " + new File(colourImage).getAbsolutePath());
 		}
 		
+		TimingUtils.markAdd("populate colour grid");
+		populateColourGrid();
+		TimingUtils.markAdd("populate colour grid");
+	}
+	
+	/**
+	 * Returns the colour of the image grid at the particular row and column coordinate
+	 * @param r
+	 * @param c
+	 * @return
+	 */
+	public int colourAt(int r, int c) {
+		if (0 <= r && r < colourGrid.length && 0 <= c && c < colourGrid[0].length) {
+			return colourGrid[r][c];
+		} else {
+			return ff.color(0);
+		}
+	}
+	
+	public void populateColourGrid() {
+		colourPic = ff.loadImage(colourImage);
 		colourPic.loadPixels();
 		
 		colourGrid = new int[ff.rows()][ff.columns()];
@@ -41,8 +62,11 @@ public class ImageGrid {
 		int widthSpacing = ff.widthSpacing;
 		int heightSpacing = ff.heightSpacing;
 		
-		for (int r = 0; r < ff.rows(); r++) {
-			for (int c = 0; c < ff.columns(); c++) {
+		int rows = ff.rows();
+		int columns = ff.columns();
+		
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
 				float red = 0;
 				float g = 0;
 				float b = 0;
@@ -60,24 +84,28 @@ public class ImageGrid {
 				
 				colourGrid[r][c] = ff.color(red / count, g / count, b / count);
 				
-//				drawBox(r, c, colourGrid[r][c]);
+//				ff.drawBox(r, c, colourGrid[r][c]);
 			}
 		}
 	}
 	
-	public void precomputeThreshold() {
-		threshold = new boolean[ff.rows()][ff.columns()];
+	public boolean[][] precomputeThreshold(double scale/*, boolean invert*/) {
+		PImage thresholdPic = ff.loadImage(colourImage);
 		
-		PImage thresholdPic = colourPic;
+		int width = (int) (thresholdPic.width * scale);
+		int height = (int) (thresholdPic.height * scale);
 		
-		ff.size(thresholdPic.width, thresholdPic.height);
-		ff.filter(ff.BLUR);
-		ff.filter(ff.THRESHOLD);
+		int rows = ff.rows(height);
+		int columns = ff.columns(width);
 		
-		thresholdPic.loadPixels();
+		thresholdPic.resize(width, height);
+		thresholdPic.filter(ff.BLUR);
+		thresholdPic.filter(ff.THRESHOLD);
 		
-		for (int r = 0; r < ff.rows(); r++) {
-			for (int c = 0; c < ff.columns(); c++) {
+		boolean[][] threshold = new boolean[rows][columns];
+		
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < columns; c++) {
 				int count = 0;
 				int black = 0;
 				
@@ -90,7 +118,7 @@ public class ImageGrid {
 						int colour = thresholdPic.pixels[y * thresholdPic.width + x];
 						float thresholdValue = (255 - ff.red(colour)) + (255 - ff.green(colour)) + (255 - ff.blue(colour));
 						
-						black += thresholdValue > ff.MIN_THRESHOLD_VALUE ? 1 : 0;
+						black += thresholdValue > MIN_THRESHOLD_VALUE ? 1 : 0;
 					}
 				}
 				
@@ -103,21 +131,88 @@ public class ImageGrid {
 				}
 			}
 		}
+		
+		return threshold;
 	}
-	
-	public void applyThreshold(boolean[][] grid) {
+
+	/**
+	 * Finds or computes threshold boolean map for the image at the particular scale.
+	 * @param scale the scale of the image
+	 * @return threshold boolean map
+	 */
+	public boolean[][] getThreshold(double scale) {
+		Record r = new Record(scale);
+		
+		boolean[][] threshold = thresholdCache.get(r);
+
 		if (threshold == null) {
-			precomputeThreshold();
+			threshold = precomputeThreshold(scale);
+			thresholdCache.put(r, threshold);
 		}
 		
-		int rows = Math.min(threshold.length, grid.length);
-		int columns = Math.min(threshold[0].length, grid[0].length);
+		return threshold;
+	}
+	
+	public void applyThreshold(boolean[][] blocked, boolean invert, int xOffset, int yOffset, double scale) {
+		boolean[][] threshold = getThreshold(scale);
 		
-		for (int r = 0; r < rows; r++) {
-			for (int c = 0; c < columns; c++) {
-				grid[r][c] |= threshold[r][c];
+		int trows = threshold.length;
+		int tcolumns = threshold[0].length;
+		
+		int brows = blocked.length;
+		int bcolumns = blocked[0].length;
+		
+		for (int r = 0; r < trows; r++) {
+			int tr = ff.yToRow(ff.rowToY(r) + yOffset);
+			
+			if (tr < 0) {
+				continue;
+			} else if (tr >= brows) {
+				break;
+			}
+			
+			for (int c = 0; c < tcolumns; c++) {
+				int tc = ff.xToColumn(ff.columnToX(c) + xOffset);
+				
+				if (tc < 0) {
+					continue;
+				} else if (tc >= bcolumns) {
+					break;
+				}
+				
+				blocked[tr][tc] |= (threshold[r][c] ^ invert);
 			}
 		}
 	}
-
+	
+	class Record {
+		
+		double scale;
+		
+		public Record(double scale) {
+			this.scale = scale;
+		}
+		
+		@Override
+		public int hashCode() {
+			return new Double(scale).hashCode() * 2;
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			try {
+				Record r = (Record) o;
+				
+				if (Math.abs(r.scale - scale) > 1e-7) {
+					return false;
+				}
+				
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		
+	}
+	
 }

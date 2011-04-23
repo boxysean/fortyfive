@@ -1,6 +1,5 @@
 package dev.boxy.fortyfive;
 
-import processing.core.*;
 import dev.boxy.fortyfive.draw.*;
 import dev.boxy.fortyfive.movement.*;
 
@@ -48,8 +47,12 @@ public class Line {
 		
 		// Apply threshold image
 		
-		if (template.thresholdImage != null) {
-			applyThresholdImage(template.thresholdImage);
+		for (ImageThreshold threshold : template.thresholds) {
+			if (blocked == null) {
+				blocked = new boolean[ff.rows()][ff.columns()];
+			}
+
+			threshold.apply(blocked);
 		}
 	}
 	
@@ -72,7 +75,9 @@ public class Line {
 	}
 	
 	public boolean forwardDraw() {
-		for (int i = 0; i < drawSpeed * ff.drawSpeedMultiplier; i++) {
+		int multiplier = /*ff.drawSpeedMultiplier +*/ ff.userDrawSpeedMultiplier;
+		
+		for (int i = 0; i < drawSpeed * multiplier; i++) {
 			int r = cr;
 			int c = cc;
 			
@@ -84,18 +89,6 @@ public class Line {
 		}
 		
 		return true;
-	}
-	
-	/**
-	 * Use image grid's threshold as blocked area for this line
-	 * @param grid
-	 */
-	public void applyThresholdImage(ImageGrid grid) {
-		if (blocked == null) {
-			blocked = new boolean[ff.rows()][ff.columns()];
-		}
-		
-		grid.applyThreshold(blocked);
 	}
 	
 }

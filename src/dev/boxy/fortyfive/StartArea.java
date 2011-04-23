@@ -2,20 +2,27 @@ package dev.boxy.fortyfive;
 
 import java.util.*;
 
+import dev.boxy.fortyfive.coordinatebag.*;
+
+
 public abstract class StartArea {
 	
 	protected FortyFive ff;
 	
 	// Lists of remaining places available.
 	
-	LinkedList<Integer>		rrem	= new LinkedList<Integer>();
-	LinkedList<Integer>		crem	= new LinkedList<Integer>();
+	List<Coordinate>	coords 		= new ArrayList<Coordinate>();
+	
+	CoordinateBag		coordBag	= null;
 	
 	int gr;
 	int gc;
 	
-	public StartArea(FortyFive ff) {
+	int idx;
+	
+	public StartArea(FortyFive ff, CoordinateBag coordBag) {
 		this.ff = ff;
+		this.coordBag = coordBag;
 	}
 	
 	/**
@@ -24,15 +31,16 @@ public abstract class StartArea {
 	 */
 	public boolean getNextStartPoint() {
 		do {
-			if (crem.size() == 0) {
+			if (idx >= coords.size()) {
 				gr = -1;
 				gc = -1;
 				return false;
 			}
 			
-			int idx = (int) ff.random(crem.size()-1 - 1e-7f);
-			gr = rrem.remove(idx);
-			gc = crem.remove(idx);
+			Coordinate coord = coords.get(idx++);
+			
+			gr = coord.r;
+			gc = coord.c;
 		} while (ff.grid[gr][gc]);
 		
 		return true;
@@ -44,6 +52,39 @@ public abstract class StartArea {
 	
 	public int getStartColumn() {
 		return gc;
+	}
+	
+	public class Coordinate implements Comparable<Coordinate> {
+		int r;
+		int c;
+		
+		public Coordinate(int r, int c) {
+			this.r = r;
+			this.c = c;
+		}
+
+		public int compareTo(Coordinate o) {
+			if (o.r < r) {
+				return -1;
+			} else if (o.r > r) {
+				return 1;
+			} else if (o.c < c) {
+				return -1;
+			} else if (o.c > c) {
+				return 1;
+			} else {
+				return 0;
+			}
+		}
+		
+		public boolean equals(Object o) {
+			try {
+				Coordinate coord = (Coordinate) o;
+				return coord.r == r && coord.c == c;
+			} catch (Exception e) {
+				return false;
+			}
+		}
 	}
 	
 }
