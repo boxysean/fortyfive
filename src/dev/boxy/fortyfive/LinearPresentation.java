@@ -4,14 +4,32 @@ import java.awt.event.*;
 
 public class LinearPresentation implements KeyListener {
 	
+	public static final int MODE_REPEAT = 0;
+	public static final int MODE_LINEAR = 1;
+	public static final int MODE_RANDOM = 2;
+	
+	int mode;
+	
 	FortyFive ff;
 	
 	String[] configFiles = {
-			"HeartExp.yaml",
-			"Heart.yaml"
+			"GrowthTop.yaml",
+			"GrowthSides.yaml",
+			"RedGreen.yaml",
+			"RedGreenDiag.yaml",
+			"BlueGreenTop.yaml",
+			"BlueGreenBottom.yaml",
+			"BlueGreenLeft.yaml",
+			"BlueGreenRight.yaml",
+			"SpaceJam04.yaml",
+			"SpaceJam03.yaml",
+			"SpaceJam02.yaml",
+			"SpaceJam01.yaml",
+			"Eric.yaml",
 	};
 	
 	int idx = 0;
+	int loadFails = 0;
 	
 	public LinearPresentation(FortyFive ff) {
 		this.ff = ff;
@@ -41,6 +59,10 @@ public class LinearPresentation implements KeyListener {
 		apply();
 	}
 	
+	public String getCurrentFile() {
+		return configFiles[idx];
+	}
+	
 	public void onKey(char key) {
 		if (key == 'n') {
 			next();
@@ -54,7 +76,29 @@ public class LinearPresentation implements KeyListener {
 	}
 	
 	public void onFinished() {
-		apply();
+		switch (mode) {
+		case MODE_REPEAT:
+			apply();
+			break;
+			
+		case MODE_LINEAR:
+			next();
+			break;
+			
+		case MODE_RANDOM:
+			idx = (int) ff.random(configFiles.length);
+			apply();
+			break;
+		}
+	}
+	
+	public void onLoadFail() {
+		if (loadFails++ >= configFiles.length) {
+			System.err.println("Nothing's loading mcfly");
+			System.exit(1);
+		}
+		
+		next();
 	}
 	
 	public void keyPressed(KeyEvent e) {
@@ -77,6 +121,19 @@ public class LinearPresentation implements KeyListener {
 	}
 
 	public void keyTyped(KeyEvent e) {
+		switch (e.getKeyChar()) {
+		case 'q':
+			mode = MODE_REPEAT;
+			break;
+			
+		case 'w':
+			mode = MODE_LINEAR;
+			break;
+			
+		case 'e':
+			mode = MODE_RANDOM;
+			break;
+		}
 	}
 	
 }

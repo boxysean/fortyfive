@@ -32,12 +32,10 @@ public class ImageDraw implements LineDraw {
 		int cgrr = ff.yToRow(ff.rowToY(gr) - yOffset);
 		int cgcc = ff.xToColumn(ff.columnToX(gc) - xOffset);
 		
-		ff.stroke(grid.colourAt(cgr, cgc));
+		ff.stroke(grid.colourAt(cgr, cgc, scale));
 		ff.line(px, py, pxm, pym);
-		ff.stroke(grid.colourAt(cgrr, cgcc));
+		ff.stroke(grid.colourAt(cgrr, cgcc, scale));
 		ff.line(pxm, pym, pxx, pyy);
-		
-		// TODO need to compute colour with coordinates independent of screen coordinates
 	}
 	
 }

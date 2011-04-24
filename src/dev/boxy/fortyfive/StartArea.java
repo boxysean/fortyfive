@@ -29,7 +29,7 @@ public abstract class StartArea {
 	 * Finds the next start point
 	 * @return true if there is a point at which lines can start, false otherwise 
 	 */
-	public boolean getNextStartPoint() {
+	public boolean getNextStartPoint(List<ImageThreshold> thresholds) {
 		do {
 			if (idx >= coords.size()) {
 				gr = -1;

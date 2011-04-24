@@ -12,8 +12,10 @@ import dev.boxy.fortyfive.movement.*;
 
 public class FortyFive extends PApplet {
 	
-	public static final String		DEFAULT_SETTING		= "HeartExp.yaml";
+//	public static final String		DEFAULT_SETTING		= "HeartExp.yaml";
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
+	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("THRESHOLD");
+	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("STARTAREA");
 	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
@@ -72,8 +74,6 @@ public class FortyFive extends PApplet {
 			
 			// Parse background colour TODO make better
 			
-			TimingUtils.mark("background colour");
-			
 			String bgColour = getString(map, "bgcolour", "white");
 			
 			if (bgColour.equalsIgnoreCase("black")) {
@@ -87,8 +87,6 @@ public class FortyFive extends PApplet {
 				ff.fill(255);
 				ff.rect(0, 0, ff.width, ff.height);
 			}
-			
-			TimingUtils.mark("background colour");
 			
 			TimingUtils.mark("resize");
 
@@ -104,7 +102,7 @@ public class FortyFive extends PApplet {
 			
 			TimingUtils.mark("master start area");
 			
-			ff.masterStartArea = new RectangleArea(ff, new RandomBag(), 0, 0, ff.width, ff.height);
+			ff.masterStartArea = new RectangleArea(ff, null, new RandomBag(), 0, 0, ff.width, ff.height);
 			
 			TimingUtils.mark("master start area");
 			
@@ -200,7 +198,7 @@ public class FortyFive extends PApplet {
 						int red = getInt(drawDef, "red", 0);
 						int green = getInt(drawDef, "green", 0);
 						int blue = getInt(drawDef, "blue", 0);
-						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
+						int strokeWidth = getInt(drawDef, "strokeWidth", 1);
 						draw = new SolidDraw(red, green, blue, strokeWidth);
 					} else if (drawName.equals("ImageDraw")) {
 						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
@@ -211,6 +209,31 @@ public class FortyFive extends PApplet {
 						double scale = getDouble(drawDef, "scale", 1.0);
 						
 						ImageGrid imageGrid = ff.imageGridMap.get(image);
+						
+						if (scale < 0) {
+							int imageWidth = imageGrid.colourPic.width;
+							int imageHeight = imageGrid.colourPic.height;
+							
+							double widthResizeRatio = (double) width / imageWidth;
+							double heightResizeRatio = (double) height / imageHeight;
+							
+							if (scale < -5) {
+								scale = Math.max(widthResizeRatio, heightResizeRatio);
+							} else {
+								scale = Math.min(widthResizeRatio, heightResizeRatio);
+							}
+						}
+						
+						if (xOffset < 0) {
+							// Center the image along x
+							xOffset = (int) (width - (imageGrid.colourPic.width * scale)) / 2;
+						}
+						
+						if (yOffset < 0) {
+							// Center the image along y
+							yOffset = (int) (height - (imageGrid.colourPic.height * scale)) / 2;
+						}
+						
 						draw = new ImageDraw(imageGrid, strokeWidth, xOffset, yOffset, scale);
 					}
 				}
@@ -221,6 +244,57 @@ public class FortyFive extends PApplet {
 				
 				TimingUtils.markAdd("parse draw");
 
+				// Parse threshold images
+				
+				TimingUtils.markAdd("threshold images");
+				
+				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineTemplateDef.get("threshold");
+				
+				List<ImageThreshold> thresholds = new LinkedList<ImageThreshold>();
+				
+				if (thresholdDefs != null) {
+					for (Map<String, Object> thresholdDef : thresholdDefs) {
+						String thresholdName = (String) thresholdDef.get("name");
+						boolean thresholdInvert = getBoolean(thresholdDef, "invert", false);
+						int thresholdXOffset = getInt(thresholdDef, "xOffset", 0);
+						int thresholdYOffset = getInt(thresholdDef, "yOffset", 0);
+						double thresholdScale = getDouble(thresholdDef, "scale", 1.0);
+						
+						ImageGrid thresholdImage = ff.imageGridMap.get(thresholdName);
+						
+						if (thresholdScale < 0) {
+							// Auto scale to size of screen
+							int imageWidth = thresholdImage.colourPic.width;
+							int imageHeight = thresholdImage.colourPic.height;
+							
+							double widthResizeRatio = (double)  width / imageWidth;
+							double heightResizeRatio = (double) height / imageHeight;
+							
+							if (thresholdScale < -5) {
+								// Scale clips off bigger edges
+								thresholdScale = Math.max(widthResizeRatio, heightResizeRatio);
+							} else {
+								// Scale does not clip
+								thresholdScale = Math.min(widthResizeRatio, heightResizeRatio);
+							}
+						}
+						
+						if (thresholdXOffset < 0) {
+							// Center the image along x
+							thresholdXOffset = (int) (width - (thresholdImage.colourPic.width * thresholdScale)) / 2;
+						}
+						
+						if (thresholdYOffset < 0) {
+							// Center the image along x
+							thresholdYOffset = (int) (height - (thresholdImage.colourPic.height * thresholdScale)) / 2;
+						}
+						
+						thresholds.add(new ImageThreshold(thresholdName, thresholdImage, thresholdInvert, thresholdXOffset, thresholdYOffset, thresholdScale));
+					}
+				}
+				
+				TimingUtils.markAdd("threshold images");
+				
 				// Parse start area
 				
 				TimingUtils.markAdd("start area");
@@ -255,7 +329,7 @@ public class FortyFive extends PApplet {
 								coordBag = new RandomBag();
 							}
 							
-							startArea = new RectangleArea(ff, coordBag, x, y, width, height);
+							startArea = new RectangleArea(ff, thresholds, coordBag, x, y, width, height);
 							
 //							drawBox(x, y, width, height);						
 						}
@@ -268,28 +342,6 @@ public class FortyFive extends PApplet {
 				
 				TimingUtils.markAdd("start area");
 
-				// Parse threshold images
-				
-				TimingUtils.markAdd("threshold images");
-				
-				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineTemplateDef.get("threshold");
-				
-				List<ImageThreshold> thresholds = new LinkedList<ImageThreshold>();
-				
-				for (Map<String, Object> thresholdDef : thresholdDefs) {
-					String thresholdName = (String) thresholdDef.get("name");
-					boolean thresholdInvert = getBoolean(thresholdDef, "invert", false);
-					int thresholdXOffset = getInt(thresholdDef, "xOffset", 0);
-					int thresholdYOffset = getInt(thresholdDef, "yOffset", 0);
-					double thresholdScale = getDouble(thresholdDef, "scale", 1.0);
-					
-					ImageGrid thresholdImage = ff.imageGridMap.get(thresholdName);
-					
-					thresholds.add(new ImageThreshold(thresholdName, thresholdImage, thresholdInvert, thresholdXOffset, thresholdYOffset, thresholdScale));
-				}
-				
-				TimingUtils.markAdd("threshold images");
-				
 				// Done!
 
 				ff.lineTemplates[index++] = new LineTemplate(straightProb, stepSpeed, drawSpeed, movement, direction, draw, startArea, thresholds);
@@ -315,8 +367,15 @@ public class FortyFive extends PApplet {
 		}
 		
 		public double getDouble(Map<String, Object> map, String key) {
-			Double d = (Double) map.get(key);
-			return d.doubleValue();
+			Object o = map.get(key);
+			
+			if (o instanceof Integer) {
+				Integer d = (Integer) o;
+				return d.intValue();
+			} else {
+				Double d = (Double) map.get(key);
+				return d.doubleValue();
+			}
 		}
 		
 		public double getDouble(Map<String, Object> map, String key, double def) {
@@ -356,8 +415,8 @@ public class FortyFive extends PApplet {
 	int				width				= 0;
 	int				height				= 0;
 	
-	public int				widthSpacing		= 0;
-	public int				heightSpacing		= 0;
+	public int		widthSpacing		= 0;
+	public int		heightSpacing		= 0;
 	
 	int				nLines 				= 1;
 	LineTemplate[]	lineTemplates		= null;
@@ -377,12 +436,8 @@ public class FortyFive extends PApplet {
 	
 	boolean	pause	= false;
 	
-	public void loadSettings(String configFile) {
-		try {
-			ConfigParser cp = new ConfigParser(new File("../configs/" + configFile), this);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+	public void loadSettings(String configFile) throws Exception {
+		ConfigParser cp = new ConfigParser(new File("../configs/" + configFile), this);
 	}
 	
 	@Override
@@ -393,7 +448,7 @@ public class FortyFive extends PApplet {
 		
 		addKeyListener(presentation);
 		
-		setup(DEFAULT_SETTING);
+		setup(presentation.getCurrentFile());
 	}
 	
 	String queuedConfig = null;
@@ -415,7 +470,19 @@ public class FortyFive extends PApplet {
 		
 		TimingUtils.mark("load settings");
 		
-		loadSettings(configFile);
+		
+		try {
+			loadSettings(configFile);
+		} catch (Exception e) {
+			// The presentation object takes care of the exception and we should try setting up again
+			e.printStackTrace();
+			
+			presentation.onLoadFail();
+			return;
+		}
+		
+		presentation.loadFails = 0;
+			
 		currentConfigFile = configFile;
 		
 		TimingUtils.mark("load settings");
@@ -449,20 +516,8 @@ public class FortyFive extends PApplet {
 	
 	@Override
 	public void draw() {
-//		if (keyPressed || keyCode != 0) {
-//			if (key == ' ') {
-//				pause = !pause;
-//			} else if (key == 'c') {
-//				queueConfig(currentConfigFile);
-//			}
-//			
-//			keyPressed = false;
-//			keyCode = 0;
-//		}
-		
-		// New screen has been requested
-		
 		if (queuedConfig != null) {
+			// New config has been requested
 			setup(queuedConfig);
 			queuedConfig = null;
 		}
@@ -473,12 +528,23 @@ public class FortyFive extends PApplet {
 			boolean finished = true;
 			
 			for (int i = 0; i < nLines; i++) {
-				if (lines[i] != null) {
-					if (!lines[i].forwardDraw()) {
-						lines[i] = newLine(lineTemplates[i]);
+				Line line = lines[i];
+				
+				int multiplier = userDrawSpeedMultiplier;
+				
+				if (line != null) {
+					for (int j = 0; j < line.drawSpeed * multiplier; j++) {
+						if (!line.forwardDraw()) {
+							line = newLine(lineTemplates[i]);
+							lines[i] = line;
+						}
+						
+						if (line == null) {
+							break;
+						}
+						
+						finished = false;
 					}
-					
-					finished = false;
 				}
 			}
 			
@@ -637,7 +703,7 @@ public class FortyFive extends PApplet {
 			
 			// If there is no start point, we cannot create this line.
 			
-			if (!startArea.getNextStartPoint()) {
+			if (!startArea.getNextStartPoint(lineTemplate.thresholds)) {
 				return null;
 			}
 			
@@ -741,5 +807,6 @@ public class FortyFive extends PApplet {
 	
 	public static void main(String args[]) {
 		PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
+//		PApplet.main(new String[] { "dev.boxy.fortyfive.FortyFive" });
 	}
 }

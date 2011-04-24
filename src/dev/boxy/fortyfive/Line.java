@@ -75,18 +75,14 @@ public class Line {
 	}
 	
 	public boolean forwardDraw() {
-		int multiplier = /*ff.drawSpeedMultiplier +*/ ff.userDrawSpeedMultiplier;
+		int r = cr;
+		int c = cc;
 		
-		for (int i = 0; i < drawSpeed * multiplier; i++) {
-			int r = cr;
-			int c = cc;
-			
-			if (!forward()) {
-				return false;
-			}
-			
-			ff.drawLine(r, c, cr, cc, draw);
+		if (!forward()) {
+			return false;
 		}
+		
+		ff.drawLine(r, c, cr, cc, draw);
 		
 		return true;
 	}
