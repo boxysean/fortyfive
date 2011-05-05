@@ -41,6 +41,19 @@ public class OrderedBag implements CoordinateBag {
 		});
 	}
 	
+	@Override
+	public int hashCode() {
+		return getClass().hashCode() * 2 + (forward ? 1 : 0);
+	}
 	
-
+	@Override
+	public boolean equals(Object o) {
+		try {
+			OrderedBag ob = (OrderedBag) o;
+			return forward == ob.forward;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 }

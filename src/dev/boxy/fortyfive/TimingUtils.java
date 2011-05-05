@@ -43,6 +43,7 @@ public class TimingUtils {
 			mark += markAdd;
 			
 			marks.put(tag, mark);
+			markAddMap.remove(tag);
 		} else {
 			markAddMap.put(tag, current);
 		}

@@ -1,7 +1,6 @@
 package dev.boxy.fortyfive;
 
 
-
 public class ImageThreshold {
 
 	String name;

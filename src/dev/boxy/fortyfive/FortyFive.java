@@ -12,14 +12,11 @@ import dev.boxy.fortyfive.movement.*;
 
 public class FortyFive extends PApplet {
 	
-//	public static final String		DEFAULT_SETTING		= "HeartExp.yaml";
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
 	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("THRESHOLD");
 	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("STARTAREA");
 	
-	
 	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
-	
 	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
@@ -30,44 +27,12 @@ public class FortyFive extends PApplet {
 	String currentConfigFile;
 	int userDrawSpeedMultiplier = 1;
 	
-	public enum Settings {
-		
-		DANSE_MID ("DanseMid.yaml"),
-		DANSE_BLACK ("DanseBlack.yaml"),
-		DANSE_BLACK_DIAG ("DanseBlackDiag.yaml"),
-		DANSE_WHITE ("DanseWhite.yaml"),
-//		SUNSET (600, 399, 1, 1, 1, 10, 1, 0, null, "images/P1010475.JPG", "02000200", null, new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3, 4 }, 3, null),
-//		SMALL (200, 200, 20, 20, 1, 1, 1, 2, null, null, null, null, null, 1, null),
-		EYE ("Eye.yaml"),
-//		VANCOUVER (480, 640, 2, 2, 0.98, 10, 2, 1, null, "images/vancouver.jpg", null, null, new int[] { 2, 2, 2, 2, 2, 2, 2, 2, 8, 8 }, 1, null),
-		BRIDGE ("Bridge.yaml"),
-//		KETTLE (600, 800, 2, 2, 1, 5, 1, 0, null, "images/20110114/kettle.jpg", null, null, null, 1, null),
-//		RAVEN (600, 800, 6, 6, 0.75, 5, 2, 1, null, "images/20110114/raven.jpg", null, new int[] { 2, 2, 2, 2, 2 }, new int[] { 1, 2, 3, 4, 5 }, 1, null),
-//		HELICOPTER (600, 800, 10, 10, 0.75, 5, 2, 2, null, "images/20110114/helicopter.jpg", "20002000", null, null, 1, null),
-		DALAI ("Dalai.yaml"),
-		HEART ("Heart.yaml"),
-		HEART_EXP ("HeartExp.yaml"),
-//		HEART_SMALL (450, 750, 2, 2, 1.00, 1, 1, 2, "images/20110213/heart-small.jpg", null, "20002000", null, null, 100, null),
-//		MONKEY (800, 600, 2, 2, 0.925, 5, 1, IntelligenceMovement.INTELLIGENCE_NONE, "images/20110220/monkey.jpg", "images/20110220/monkey.jpg", "12121212", null, null, 20, null),
-//		MONKEY_BIG (1200, 900, 2, 2, 1.0, 5, 1, 2, "images/20110220/monkey-big.jpg", "images/20110220/monkey-big.jpg", "22222222", null, null, 20, null),
-//		RODRIGO_Y_JULIA (1024, 576, 2, 2, 1.0, 5, 1, IntelligenceMovement.INTELLIGENCE_AVOID_ADV, null, "images/20110227/rodrigoyjulia.jpg", "12100121", null, null, 20, null),
-		MONO ("Mono.yaml"),
-		START_FROM_SIDES ("StartFromSides.yaml"),
-		LEFT_FLOW ("LeftFlow.yaml"),
-		RAINBOW_FLOW ("RainbowFlow.yaml"),
-		;
-		
-		String	configFile;
-		
-		private Settings(String configFile) {
-			this.configFile = configFile;
-		}		
-	}
-	
 	class ConfigParser {
 		
 		public ConfigParser(File yamlFile, FortyFive ff) throws Exception {
 			Yaml yaml = new Yaml();
+			
+			TimingUtils.reset();
 			
 			TimingUtils.mark("config start");
 			
@@ -330,6 +295,8 @@ public class FortyFive extends PApplet {
 				if (startAreaDefs != null) {
 					startArea = new StartArea(ff, coordBag);
 					
+					TimingUtils.markAdd("start area -- adding rects");
+					
 					for (Map<String, Object> startAreaDef : startAreaDefs) {
 						if (startAreaDef.containsKey("addRect")) {
 							List<Object> coords = (List<Object>) startAreaDef.get("addRect");
@@ -403,8 +370,12 @@ public class FortyFive extends PApplet {
 							}
 						}
 					}
+					
+					TimingUtils.markAdd("start area -- adding rects");
 				}
 				
+				TimingUtils.markAdd("start area -- master rect");
+
 				if (startArea == null) {
 					if (coordBag == null) {
 						startArea = masterStartArea;
@@ -414,7 +385,13 @@ public class FortyFive extends PApplet {
 					}
 				}
 				
+				TimingUtils.markAdd("start area -- master rect");
+				
+				TimingUtils.markAdd("start area -- commit");
+				
 				startArea.commitCoords(thresholds);
+				
+				TimingUtils.markAdd("start area -- commit");
 				
 				TimingUtils.markAdd("start area");
 
@@ -426,6 +403,16 @@ public class FortyFive extends PApplet {
 			TimingUtils.mark("parse line template total");
 			TimingUtils.print("parse draw");
 			TimingUtils.print("start area");
+			TimingUtils.print("start area -- master rect");
+			TimingUtils.print("start area -- adding rects");
+			TimingUtils.print("start area -- commit");
+			
+			TimingUtils.print("commit coords -- all");
+			TimingUtils.print("commit coords -- populate set");
+			TimingUtils.print("commit coords -- transfer set to list");
+			TimingUtils.print("commit coords -- init list");
+
+			
 			TimingUtils.print("threshold images");
 		}
 		
