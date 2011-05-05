@@ -11,13 +11,13 @@ public class ImageGridCache {
 	
 	Map<Record, ImageGrid> cache = new HashMap<Record, ImageGrid>();
 	
-	public ImageGrid get(FortyFive ff, String imageFile, String configFile) {
+	public ImageGrid get(FortyFive ff, String name, String imageFile, String configFile) {
 		Record rec = new Record(imageFile, configFile);
 		
 		ImageGrid res = cache.get(rec);
 		
 		if (res == null) {
-			res = new ImageGrid(ff, imageFile);
+			res = new ImageGrid(ff, name, imageFile);
 			cache.put(rec, res);
 		}
 		

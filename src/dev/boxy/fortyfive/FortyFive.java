@@ -17,6 +17,10 @@ public class FortyFive extends PApplet {
 	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("THRESHOLD");
 	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("STARTAREA");
 	
+	
+	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
+	
+	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 	public static final int[]	dc		= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
@@ -102,7 +106,8 @@ public class FortyFive extends PApplet {
 			
 			TimingUtils.mark("master start area");
 			
-			ff.masterStartArea = new RectangleArea(ff, null, new RandomBag(), 0, 0, ff.width, ff.height);
+			ff.masterStartArea = new StartArea(ff, new RandomBag());
+			ff.masterStartArea.addRectangle(0, 0, width, height);
 			
 			TimingUtils.mark("master start area");
 			
@@ -123,7 +128,7 @@ public class FortyFive extends PApplet {
 					String name = (String) imageDef.get("name");
 					String imageFile = (String) imageDef.get("file");
 					
-					ff.imageGridMap.put(name, imageGridCache.get(ff, imageFile, yamlFile.getAbsolutePath()));
+					ff.imageGridMap.put(name, imageGridCache.get(ff, name, imageFile, yamlFile.getAbsolutePath()));
 				}
 			}
 			
@@ -251,6 +256,7 @@ public class FortyFive extends PApplet {
 				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineTemplateDef.get("threshold");
 				
 				List<ImageThreshold> thresholds = new LinkedList<ImageThreshold>();
+				StartArea startArea = null;
 				
 				if (thresholdDefs != null) {
 					for (Map<String, Object> thresholdDef : thresholdDefs) {
@@ -299,46 +305,116 @@ public class FortyFive extends PApplet {
 				
 				TimingUtils.markAdd("start area");
 				
-				Map<String, Object> startAreaDef = (Map<String, Object>) lineTemplateDef.get("startArea");
+				// First see if a coordinate bag is defined
 				
-				StartArea startArea = null;
+				CoordinateBag coordBag = null;
 				
-				if (startAreaDef != null) {
-					String startAreaName = (String) startAreaDef.get("name");
+				String coordBagName = getString(lineTemplateDef, "coordBag");
+				
+				if (coordBagName != null) {
+					if (coordBagName.equalsIgnoreCase("ordered") || coordBagName.equalsIgnoreCase("forward")) {
+						coordBag = new OrderedBag();
+					} else if (coordBagName.equalsIgnoreCase("backward")) {
+						coordBag = new OrderedBag(false);
+					}
+				}
+				
+				if (coordBag == null) {
+					coordBag = new RandomBag();
+				}
+				
+				// Okay, now start initializing the start area
+				
+				List<Map<String, Object>> startAreaDefs = (List<Map<String, Object>>) lineTemplateDef.get("startArea");
+				
+				if (startAreaDefs != null) {
+					startArea = new StartArea(ff, coordBag);
 					
-					if (startAreaName != null) {
-						if (startAreaName.equals("RectangleArea")) {
-							int x = getInt(startAreaDef, "x", 0);
-							int y = getInt(startAreaDef, "y", 0);
-							int width = getInt(startAreaDef, "width", ff.width);
-							int height = getInt(startAreaDef, "height", ff.height);
+					for (Map<String, Object> startAreaDef : startAreaDefs) {
+						if (startAreaDef.containsKey("addRect")) {
+							List<Object> coords = (List<Object>) startAreaDef.get("addRect");
 							
-							String coordBagName = getString(startAreaDef, "coordinateBag", "random");
+							int x = parseInt(coords, 0, ff.width, 0);
+							int y = parseInt(coords, 1, ff.height, 0);
+							int width = parseInt(coords, 2, ff.width, ff.width);
+							int height = parseInt(coords, 3, ff.height, ff.height);
 							
-							CoordinateBag coordBag = null;
+							startArea.addRectangle(x, y, width, height);
+						}
+						
+						if (startAreaDef.containsKey("addImage")) {
+							List<Object> image = (List<Object>) startAreaDef.get("addImage");
 							
-							if (coordBagName != null) {
-								if (coordBagName.equalsIgnoreCase("ordered") || coordBagName.equalsIgnoreCase("forward")) {
-									coordBag = new OrderedBag();
-								} else if (coordBagName.equalsIgnoreCase("backward")) {
-									coordBag = new OrderedBag(false);
+							// Allow some fudge factor in the config for extra flexibility. Positive offsets shrink the side.
+							
+							String imageName = (String) image.get(0);
+							int topOffset = getInt(image, 1, 0);
+							int rightOffset = getInt(image, 2, 0);
+							int bottomOffset = getInt(image, 3, 0);
+							int leftOffset = getInt(image, 4, 0);
+							
+							// Go through each existing threshold and add this images' area
+							
+							for (ImageThreshold imageThreshold : thresholds) {
+								if (imageThreshold.image.name.equals(imageName)) {
+									int x = imageThreshold.xOffset + leftOffset;
+									int y = imageThreshold.yOffset + topOffset;
+									double scale = imageThreshold.scale;
+									int width = (int) (imageThreshold.image.colourPic.width * scale) - leftOffset - rightOffset;
+									int height = (int) (imageThreshold.image.colourPic.height * scale) - topOffset - bottomOffset;
+									
+									startArea.addRectangle(x + IMAGE_THRESHOLD_FUDGE_FACTOR, y + IMAGE_THRESHOLD_FUDGE_FACTOR, width - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, height - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR);
 								}
 							}
+						}
+						
+						if (startAreaDef.containsKey("removeRect")) {
+							List<Object> coords = (List<Object>) startAreaDef.get("removeRect");
 							
-							if (coordBag == null) {
-								coordBag = new RandomBag();
+							int x = parseInt(coords, 0, ff.width, 0);
+							int y = parseInt(coords, 1, ff.height, 0);
+							int width = parseInt(coords, 2, ff.width, ff.width);
+							int height = parseInt(coords, 3, ff.height, ff.height);
+							
+							startArea.removeRectangle(x, y, width, height);
+						}
+						
+						if (startAreaDef.containsKey("removeImage")) {
+							List<Object> image = (List<Object>) startAreaDef.get("removeImage");
+							
+							String imageName = (String) image.get(0);
+							int topOffset = getInt(image, 1, 0);
+							int rightOffset = getInt(image, 2, 0);
+							int bottomOffset = getInt(image, 3, 0);
+							int leftOffset = getInt(image, 4, 0);
+							
+							// Go through each existing threshold and remove the images' area
+							
+							for (ImageThreshold imageThreshold : thresholds) {
+								if (imageThreshold.image.name.equals(imageName)) {
+									int x = imageThreshold.xOffset + leftOffset;
+									int y = imageThreshold.yOffset + topOffset;
+									double scale = imageThreshold.scale;
+									int width = (int) (imageThreshold.image.colourPic.width * scale) - leftOffset - rightOffset;
+									int height = (int) (imageThreshold.image.colourPic.height * scale) - topOffset - bottomOffset;
+									
+									startArea.removeRectangle(x - IMAGE_THRESHOLD_FUDGE_FACTOR, y - IMAGE_THRESHOLD_FUDGE_FACTOR, width + IMAGE_THRESHOLD_FUDGE_FACTOR + IMAGE_THRESHOLD_FUDGE_FACTOR, height + IMAGE_THRESHOLD_FUDGE_FACTOR + IMAGE_THRESHOLD_FUDGE_FACTOR);
+								}
 							}
-							
-							startArea = new RectangleArea(ff, thresholds, coordBag, x, y, width, height);
-							
-//							drawBox(x, y, width, height);						
 						}
 					}
 				}
 				
 				if (startArea == null) {
-					startArea = masterStartArea;
+					if (coordBag == null) {
+						startArea = masterStartArea;
+					} else {
+						startArea = new StartArea(ff, coordBag);
+						startArea.addRectangle(0, 0, width, height);
+					}
 				}
+				
+				startArea.commitCoords(thresholds);
 				
 				TimingUtils.markAdd("start area");
 
@@ -363,6 +439,14 @@ public class FortyFive extends PApplet {
 				return getInt(map, key);
 			} else {
 				return def;
+			}
+		}
+		
+		public int getInt(List<Object> list, int idx, int def) {
+			if (list.size() <= idx) {
+				return def;
+			} else {
+				return ((Integer) list.get(idx)).intValue();
 			}
 		}
 		
@@ -409,6 +493,49 @@ public class FortyFive extends PApplet {
 		
 		public String getString(Map<String, Object> map, String key) {
 			return (String) map.get(key);
+		}
+		
+		public int parseInt(List<Object> list, int idx, int n, int def) {
+			try {
+				Object xObj = list.get(idx);
+				
+				int x = 0;
+				
+				if (xObj instanceof Integer) {
+					x = ((Integer) xObj).intValue();
+				} else if (xObj instanceof String) {
+					String xStr = (String) xObj;
+					
+					if (xStr.matches("^-?[0-9]*\\/\\s*-?[0-9]\\+$")) {
+						// If it's any ratio form, then multiply the ratio by the length / width / etc
+						
+						String tokens[] = xStr.split("/");
+						
+						int numerator;
+						int denominator;
+						
+						if (tokens.length == 1) {
+							numerator = 1;
+							denominator = Integer.parseInt(tokens[0]);
+						} else {
+							numerator = Integer.parseInt(tokens[0]);
+							denominator = Integer.parseInt(tokens[1]);
+						}
+						
+						x = (int) ((double) numerator / denominator * n);
+					} else {
+						x = Integer.parseInt(xStr);
+					}
+				}
+				
+				if (x < 0) {
+					x += n;
+				}
+				
+				return x;
+			} catch (Exception e) {
+				return def;
+			}
 		}
 	}
 	
@@ -807,6 +934,5 @@ public class FortyFive extends PApplet {
 	
 	public static void main(String args[]) {
 		PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
-//		PApplet.main(new String[] { "dev.boxy.fortyfive.FortyFive" });
 	}
 }

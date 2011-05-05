@@ -13,18 +13,18 @@ public class LinearPresentation implements KeyListener {
 	FortyFive ff;
 	
 	String[] configFiles = {
-			"GrowthTop.yaml",
-			"GrowthSides.yaml",
-			"RedGreen.yaml",
-			"RedGreenDiag.yaml",
 			"BlueGreenTop.yaml",
 			"BlueGreenBottom.yaml",
 			"BlueGreenLeft.yaml",
 			"BlueGreenRight.yaml",
-			"SpaceJam04.yaml",
-			"SpaceJam03.yaml",
-			"SpaceJam02.yaml",
 			"SpaceJam01.yaml",
+			"SpaceJam02.yaml",
+			"SpaceJam03.yaml",
+			"SpaceJam04.yaml",
+			"GrowthTop.yaml",
+			"GrowthSides.yaml",
+			"RedGreen.yaml",
+			"RedGreenDiag.yaml",
 			"Eric.yaml",
 	};
 	

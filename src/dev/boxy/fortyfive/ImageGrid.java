@@ -10,9 +10,10 @@ public class ImageGrid {
 
 	FortyFive	ff;
 	
+	String		name;
+	
 	String		colourImage 		= null;
 	PImage		colourPic;
-//	int[][]		colourGrid;
 	
 	/**
 	 * Store the threshold versions of this image per scale
@@ -24,8 +25,9 @@ public class ImageGrid {
 	 */
 	Map<Record, int[][]> colourGridCache = new HashMap<Record, int[][]>();
 	
-	public ImageGrid(FortyFive ff, String colourImage) {
+	public ImageGrid(FortyFive ff, String name, String colourImage) {
 		this.ff = ff;
+		this.name = name;
 		this.colourImage = colourImage;
 		
 		TimingUtils.markAdd("load image");
