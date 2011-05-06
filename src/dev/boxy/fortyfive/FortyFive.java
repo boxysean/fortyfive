@@ -6,6 +6,7 @@ import java.util.*;
 import org.yaml.snakeyaml.*;
 
 import processing.core.*;
+import dev.boxy.fortyfive.colour.*;
 import dev.boxy.fortyfive.coordinatebag.*;
 import dev.boxy.fortyfive.draw.*;
 import dev.boxy.fortyfive.movement.*;
@@ -18,6 +19,8 @@ public class FortyFive extends PApplet {
 	
 	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
 	
+	public static int               ITERATIONS          = 0;
+	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 	public static final int[]	dc		= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
@@ -28,6 +31,8 @@ public class FortyFive extends PApplet {
 	int userDrawSpeedMultiplier = 1;
 	
 	class ConfigParser {
+		
+		Set<String> loadedFiles = new HashSet<String>();
 		
 		public ConfigParser(File yamlFile, FortyFive ff) throws Exception {
 			Yaml yaml = new Yaml();
@@ -74,9 +79,15 @@ public class FortyFive extends PApplet {
 			
 			TimingUtils.mark("master start area");
 			
+			// Create default palette
+			
 			ff.drawSpeedMultiplier = getInt(map, "drawSpeedMultiplier", 1);
 			
 			TimingUtils.mark("config start");
+			
+			// Eventually innocentLoad should load everything in a non-intrusive fashion TODO
+			
+			innocentLoad(map);
 			
 			// Parse image grids
 			
@@ -163,11 +174,29 @@ public class FortyFive extends PApplet {
 					String drawName = getString(drawDef, "name", "SolidDraw");
 					
 					if (drawName.equals("SolidDraw")) {
-						int red = getInt(drawDef, "red", 0);
-						int green = getInt(drawDef, "green", 0);
-						int blue = getInt(drawDef, "blue", 0);
+						ColourPalette palette = null;
+						
+						if (drawDef.containsKey("palette")) {
+							String paletteName = (String) drawDef.get("palette");
+							palette = ColourPalette.get(paletteName);
+							
+							if (palette == null) {
+								System.err.printf("draw init warning: no such palette %s, skipping\n", paletteName);
+							}
+						} else if (drawDef.containsKey("red") || drawDef.containsKey("green") || drawDef.containsKey("blue")) {
+							int red = getInt(drawDef, "red", 0);
+							int green = getInt(drawDef, "green", 0);
+							int blue = getInt(drawDef, "blue", 0);
+							String colourName = Colour.getDefaultName();
+							palette = new Colour(colourName, red, green, blue);
+						}
+						
+						if (palette == null) {
+							palette = ColourPalette.getDefault();
+						}
+						
 						int strokeWidth = getInt(drawDef, "strokeWidth", 1);
-						draw = new SolidDraw(red, green, blue, strokeWidth);
+						draw = new SolidDraw(palette, strokeWidth);
 					} else if (drawName.equals("ImageDraw")) {
 						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
 						String image = (String) drawDef.get("image");
@@ -207,7 +236,7 @@ public class FortyFive extends PApplet {
 				}
 				
 				if (draw == null) {
-					draw = new SolidDraw(0, 0, 0, 1);
+					draw = new SolidDraw(ColourPalette.getDefault(), 1);
 				}
 				
 				TimingUtils.markAdd("parse draw");
@@ -431,6 +460,39 @@ public class FortyFive extends PApplet {
 
 			
 			TimingUtils.print("threshold images");
+		}
+		
+		public void innocentLoad(Map<String, Object> map) {
+			// Load include files
+			
+			List<String> includes = (List<String>) map.get("includes");
+			
+			if (includes != null) {
+				for (String include : includes) {
+					if (!loadedFiles.contains(include)) {
+						try {
+							Yaml yaml = new Yaml();
+							Map<String, Object> includeMap = (Map<String, Object>) yaml.load(new FileReader(include));
+							loadedFiles.add(include);
+							innocentLoad(includeMap);
+						} catch (FileNotFoundException e) {
+							System.err.printf("innocentLoad warning: could not load %s because not found, full path %s", include, new File(include).getAbsolutePath());
+						} catch (Exception e) {
+							System.err.printf("innocentLoad warning: could not load %s due to %s", include, e.getMessage());
+						}
+					}
+				}
+			}
+			
+			// Parse colours
+			
+			Colour.init(map);
+			
+			// Parse colour palettes
+			
+			ColourPalette.init(map);
+			
+			ColourPalette.map.putAll(Colour.map);
 		}
 		
 		public int getInt(Map<String, Object> map, String key) {
@@ -681,6 +743,7 @@ public class FortyFive extends PApplet {
 			
 			if (finished) {
 				presentation.onFinished();
+				ITERATIONS++;
 			}
 		}
 	}
@@ -723,6 +786,7 @@ public class FortyFive extends PApplet {
 	}
 	
 	public void reset() {
+		ITERATIONS++;
 		queueConfig(currentConfigFile);
 	}
 	

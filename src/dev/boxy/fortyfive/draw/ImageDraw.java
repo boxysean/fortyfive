@@ -37,5 +37,9 @@ public class ImageDraw implements LineDraw {
 		ff.stroke(grid.colourAt(cgrr, cgcc, scale));
 		ff.line(pxm, pym, pxx, pyy);
 	}
+
+	public void onComplete() {
+		
+	}
 	
 }

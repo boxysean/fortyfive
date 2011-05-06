@@ -16,9 +16,9 @@ public class LinearPresentation implements KeyListener {
 	FortyFive ff;
 	
 	String[] configFiles = {
-			"NYEAF.yaml",
 			"RedGreen.yaml",
 			"RedGreenDiag.yaml",
+			"NYEAF.yaml",
 			"BlueGreenLeft.yaml",
 			"BlueGreenLeftCling.yaml",
 			"GrowthSides.yaml",
