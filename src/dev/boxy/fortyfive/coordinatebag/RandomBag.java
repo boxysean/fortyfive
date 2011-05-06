@@ -6,7 +6,7 @@ import dev.boxy.fortyfive.StartArea.*;
 
 public class RandomBag implements CoordinateBag {
 
-	public void initList(List<Coordinate> coords) {
+	public void initList(List<Coordinate> coords, boolean cached) {
 		Collections.shuffle(coords);
 	}
 	

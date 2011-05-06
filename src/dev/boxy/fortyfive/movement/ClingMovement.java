@@ -63,7 +63,19 @@ public class ClingMovement extends LineMovement {
 				}
 			}
 			
-			if (score > highScore) {
+			boolean newHigh = false;
+			
+			switch (line.direction[nd]) {
+			case LineMovement.DIR_AVOID:
+				newHigh = highScoreDir < 0;
+				break;
+				
+			case LineMovement.DIR_PREFERRED:
+				newHigh = score > highScore;
+				break;
+			}
+			
+			if (newHigh) {
 				highScore = score;
 				highScoreDir = nd;
 			}

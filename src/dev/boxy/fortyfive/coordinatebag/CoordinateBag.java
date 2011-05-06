@@ -6,6 +6,6 @@ import dev.boxy.fortyfive.*;
 
 public interface CoordinateBag {
 	
-	public void initList(List<StartArea.Coordinate> coords);
+	public void initList(List<StartArea.Coordinate> coords, boolean cached);
 	
 }

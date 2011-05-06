@@ -2,6 +2,7 @@ package dev.boxy.fortyfive.coordinatebag;
 
 import java.util.*;
 
+import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.StartArea.*;
 
 /**
@@ -11,46 +12,86 @@ import dev.boxy.fortyfive.StartArea.*;
  */
 public class OrderedBag implements CoordinateBag {
 	
-	boolean forward;
+	int leftFirst;
+	int topFirst;
 	
-	public OrderedBag() {
-		this(true);
+	FortyFive ff;
+	
+	public OrderedBag(FortyFive ff, int leftFirst, int topFirst) {
+		this.ff = ff;
+		this.topFirst = topFirst;
+		this.leftFirst = leftFirst;
 	}
 	
-	public OrderedBag(boolean forward) {
-		this.forward = forward;
+	public OrderedBag(FortyFive ff, boolean forward) {
+		this(ff, forward ? 2 : -1, forward ? 1 : -2);
 	}
 	
-	public void initList(List<Coordinate> coords) {
-		Collections.sort(coords, new Comparator<Coordinate>() {
-			
+	public void initList(List<Coordinate> coords, boolean cached) {
+		if (cached) {
+			return;
+		}
+		
+		if (topFirst == 0 || leftFirst == 0) {
+			Collections.shuffle(coords);
+		}
+		
+		Comparator<Coordinate> comparator = new Comparator<Coordinate>() {
 			public int compare(Coordinate o1, Coordinate o2) {
-				int comp = o1.compareTo(o2);
-				
-				comp *= forward ? -1 : 1;
-				
-				if (comp > 0) {
-					return 1;
-				} else if (comp < 0) {
-					return -1;
-				} else { 
-					return 0;
+				if ((leftFirst >= topFirst || topFirst == 0) && leftFirst != 0) {
+					if (o1.c == o2.c && topFirst == 0) {
+						// If the columns are the same and topFirst is 0, shuffle the column
+						return 2 * ((int) ff.random(2)) - 1;
+					} else if (o1.c < o2.c) {
+						return (leftFirst > 0) ? -1 : 1;
+					} else if (o1.c > o2.c) {
+						return (leftFirst > 0) ? 1 : -1;
+					} else if (o1.r == o2.r && topFirst == 0) {
+						return 2 * ((int) ff.random(2)) - 1;
+					} else if (o1.r < o2.r) {
+						return (topFirst > 0) ? -1 : 1;
+					} else if (o1.r > o2.r) {
+						return (topFirst > 0) ? 1 : -1;
+					} else {
+						return 0;
+					}
+				} else {
+					if (o1.r == o2.r && leftFirst == 0) {
+						// If the rows are the same and leftFirst is 0, shuffle the row
+						return 2 * ((int) ff.random(2)) - 1;
+					} else if (o1.r < o2.r) {
+						return (topFirst >= 0) ? -1 : 1;
+					} else if (o1.r > o2.r) {
+						return (topFirst >= 0) ? 1 : -1;
+					} else if (o1.c == o2.c && leftFirst == 0) {
+						return 2 * ((int) ff.random(2)) - 1;
+					} else if (o1.c < o2.c) {
+						return (leftFirst >= 0) ? -1 : 1;
+					} else if (o1.c > o2.c) {
+						return (leftFirst >= 0) ? 1 : -1;
+					} else {
+						return 0;
+					}
 				}
 			}
-			
-		});
+		};
+		
+		Collections.sort(coords, comparator);
 	}
 	
 	@Override
 	public int hashCode() {
-		return getClass().hashCode() * 2 + (forward ? 1 : 0);
+		int res = getClass().hashCode();
+		res = (res * 31) + leftFirst;
+		res = (res * 31) + topFirst;
+		return res;
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		try {
 			OrderedBag ob = (OrderedBag) o;
-			return forward == ob.forward;
+			return leftFirst == ob.leftFirst && topFirst == ob.topFirst;
 		} catch (Exception e) {
 			return false;
 		}

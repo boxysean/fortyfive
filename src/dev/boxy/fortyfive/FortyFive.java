@@ -38,8 +38,8 @@ public class FortyFive extends PApplet {
 			
 			Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader(yamlFile));
 			
-			ff.width = getInt(map, "width");
-			ff.height = getInt(map, "height");
+			ff.width = getInt(map, "width", screen.width);
+			ff.height = getInt(map, "height", screen.height);
 			
 			// Parse background colour TODO make better
 			
@@ -49,19 +49,17 @@ public class FortyFive extends PApplet {
 				ff.background(0);
 				ff.color(0);
 				ff.fill(0);
+				ff.noStroke();
 				ff.rect(0, 0, ff.width, ff.height);
 			} else if (bgColour.equalsIgnoreCase("white")) {
 				ff.background(255);
 				ff.color(255);
 				ff.fill(255);
+				ff.noStroke();
 				ff.rect(0, 0, ff.width, ff.height);
 			}
 			
-			TimingUtils.mark("resize");
-
 			ff.size(width, height);
-
-			TimingUtils.mark("resize");
 
 			ff.widthSpacing = getInt(map, "widthSpacing");
 			ff.heightSpacing = getInt(map, "heightSpacing");
@@ -274,14 +272,33 @@ public class FortyFive extends PApplet {
 				
 				CoordinateBag coordBag = null;
 				
-				String coordBagName = getString(lineTemplateDef, "coordBag");
+				try {
+					// Maybe the coord bag is a list of integers
+					
+					List<Integer> coordBagValues = (List<Integer>) lineTemplateDef.get("coordBag");
+					
+					int leftFirst = coordBagValues.get(0);
+					int topFirst = coordBagValues.get(1);
+					
+					coordBag = new OrderedBag(ff, leftFirst, topFirst);
+				} catch (Exception e) {
+					
+				}
 				
-				if (coordBagName != null) {
-					if (coordBagName.equalsIgnoreCase("ordered") || coordBagName.equalsIgnoreCase("forward")) {
-						coordBag = new OrderedBag();
-					} else if (coordBagName.equalsIgnoreCase("backward")) {
-						coordBag = new OrderedBag(false);
+				try {
+					// Maybe the coord bag is a string
+					
+					String coordBagName = getString(lineTemplateDef, "coordBag");
+					
+					if (coordBagName != null) {
+						if (coordBagName.equalsIgnoreCase("ordered") || coordBagName.equalsIgnoreCase("forward")) {
+							coordBag = new OrderedBag(ff, true);
+						} else if (coordBagName.equalsIgnoreCase("backward")) {
+							coordBag = new OrderedBag(ff, false);
+						}
 					}
+				} catch (Exception e) {
+					
 				}
 				
 				if (coordBag == null) {

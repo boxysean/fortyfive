@@ -8,23 +8,28 @@ public class LinearPresentation implements KeyListener {
 	public static final int MODE_LINEAR = 1;
 	public static final int MODE_RANDOM = 2;
 	
+	public static final boolean SNAPSHOT = true;
+	public static int SNAPSHOT_ID = 0;
+	
 	int mode;
 	
 	FortyFive ff;
 	
 	String[] configFiles = {
+			"NYEAF.yaml",
+			"RedGreen.yaml",
+			"RedGreenDiag.yaml",
+			"BlueGreenLeft.yaml",
+			"BlueGreenLeftCling.yaml",
 			"GrowthSides.yaml",
 			"GrowthTop.yaml",
 			"BlueGreenTop.yaml",
 			"BlueGreenBottom.yaml",
-			"BlueGreenLeft.yaml",
 			"BlueGreenRight.yaml",
 			"SpaceJam01.yaml",
 			"SpaceJam02.yaml",
 			"SpaceJam03.yaml",
 			"SpaceJam04.yaml",
-			"RedGreen.yaml",
-			"RedGreenDiag.yaml",
 			"Eric.yaml",
 	};
 	
@@ -76,6 +81,10 @@ public class LinearPresentation implements KeyListener {
 	}
 	
 	public void onFinished() {
+		if (SNAPSHOT) {
+			snapshot();
+		}
+		
 		switch (mode) {
 		case MODE_REPEAT:
 			apply();
@@ -133,7 +142,15 @@ public class LinearPresentation implements KeyListener {
 		case 'e':
 			mode = MODE_RANDOM;
 			break;
+			
+		case 's':
+			snapshot();
+			break;
 		}
+	}
+	
+	public void snapshot() {
+		ff.save(String.format("%05d.png", SNAPSHOT_ID++));
 	}
 	
 }

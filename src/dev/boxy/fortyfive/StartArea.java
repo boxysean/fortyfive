@@ -72,8 +72,8 @@ public class StartArea {
 	}
 	
 	public class Coordinate implements Comparable<Coordinate> {
-		int r;
-		int c;
+		public int r;
+		public int c;
 		
 		public Coordinate(int r, int c) {
 			this.r = r;
@@ -147,7 +147,6 @@ public class StartArea {
 	 * @param height height of rectangle
 	 */
 	public void addRectangle(int x, int y, int width, int height) {
-//		rectangleAction(x, y, width, height, true);
 		shapeList.add(new Rectangle(x, y, width, height, true));
 	}
 	
@@ -159,7 +158,6 @@ public class StartArea {
 	 * @param height height of rectangle
 	 */
 	public void removeRectangle(int x, int y, int width, int height) {
-//		rectangleAction(x, y, width, height, false);
 		shapeList.add(new Rectangle(x, y, width, height, false));
 	}
 	
@@ -191,6 +189,7 @@ public class StartArea {
 			
 			coords.addAll(coordsCache.get(ce));
 			coordsCommitted = true;
+			coordBag.initList(coords, true);
 		} else {
 			// It has not been cached, compute the area and commit it to the cache
 			
@@ -236,7 +235,7 @@ public class StartArea {
 			
 			// Order the coordinates in a pre-defined way
 			
-			coordBag.initList(cachedCoordinates);
+			coordBag.initList(cachedCoordinates, false);
 			
 			// Commit to cache
 			
@@ -298,7 +297,7 @@ public class StartArea {
 		@Override
 		public int hashCode() {
 			int res = threshold.name.hashCode();
-			res = (res * 2) + (add ? 0 : 1);
+			res = res * 2 + (add ? 0 : 1);
 			return res;
 		}
 
