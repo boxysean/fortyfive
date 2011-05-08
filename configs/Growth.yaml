@@ -1,0 +1,52 @@
+---
+
+completePause:  750
+
+strokeJoin:     round
+strokeCap:      round
+
+includes:
+    - ../configs/Colours.yaml
+
+
+
+
+bgcolour:       black
+
+widthSpacing:   15
+heightSpacing:  15
+
+
+clingRight: &id001
+    straightProb:  0.90
+    drawSpeed:     1
+    coordBag:      backward
+
+    movement:
+        name:          ClingMovement
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   8
+        palette:       primaryLinear1
+
+
+intRight: &id002
+    <<: *id001
+    drawSpeed:     1
+    coordBag:      backward
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  2
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   8
+        palette:       primaryLinear2
+
+
+
+lines:          [*id001, *id001, *id002]
+
+...

@@ -1,0 +1,70 @@
+---
+
+completePause:  750
+
+strokeCap:      project
+
+includes:
+    - ../configs/Colours.yaml
+
+
+images:
+    - name:     spire
+      file:     ../images/BrooklynBridgeSpire.png
+
+    - name:     wires
+      file:     ../images/BrooklynBridgeWires.png
+
+
+
+bgcolour:       black
+
+widthSpacing:   10
+heightSpacing:  10
+
+
+spire: &id001
+    straightProb:  0.95
+    drawSpeed:     1
+    coordBag:      [0, 1]
+    direction:     "00200020"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  1
+
+    threshold:
+        - name:        spire
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   20
+        strokeCap:     round
+        palette:       primaryLinear1
+
+    startArea:
+        - addImage:    [spire]
+
+wires: &id002
+
+    threshold:
+        - name:        wires
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   5
+        strokeCap:     round
+        strokeJoin:    miter
+        palette:       primaryLinear2
+
+    startArea:
+        - addImage:    [wires]
+
+
+lines:          [*id001, *id002]
+
+...

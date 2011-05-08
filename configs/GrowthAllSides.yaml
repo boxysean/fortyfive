@@ -1,0 +1,40 @@
+---
+title:          GrowthTop
+
+bgcolour:       black
+
+widthSpacing:   2
+heightSpacing:  2
+
+
+left: &id001
+    straightProb:  0.90
+    drawSpeed:     1
+    coordBag:      backward
+    
+    movement:
+        name:          ClingMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        green:         255
+    
+
+right: &id002
+    <<: *id001
+    drawSpeed:     2
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  2
+
+    draw:
+        name:          SolidDraw
+        blue:          255
+    
+
+
+lines:          [*id001, *id001, *id001, *id001, *id002, *id002]
+
+...

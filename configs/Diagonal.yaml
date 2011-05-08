@@ -1,0 +1,78 @@
+---
+
+completePause:  750
+
+strokeCap:      project
+
+includes:
+    - ../configs/Colours.yaml
+
+
+images:
+    - name:     diagonal
+      file:     ../images/ProjectorDiagonalUp.png
+
+
+
+bgcolour:       black
+
+widthSpacing:   10
+heightSpacing:  10
+
+
+left: &id001
+    straightProb:  0.95
+    drawSpeed:     1
+    coordBag:      centre
+    direction:     "12100000"
+
+    movement:
+        name:          ClingMovement
+
+    threshold:
+        - name:        diagonal
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   5
+        strokeCap:     square
+        strokeJoin:    bevel
+        palette:       primaryLinear1
+
+    startArea:
+        - addImage:    [diagonal]
+
+
+right: &id002
+    straightProb:  0.95
+    drawSpeed:     1
+    coordBag:      centre
+    direction:     "00001210"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    threshold:
+        - name:        diagonal
+          invert:      true
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   5
+        strokeCap:     square
+        strokeJoin:    bevel
+        palette:       primaryLinear2
+
+    startArea:
+        - addImage:    [diagonal]
+
+
+
+lines:          [*id001, *id002]
+
+...

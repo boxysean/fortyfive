@@ -1,0 +1,66 @@
+---
+bgcolour:       white
+
+width: 4000
+
+widthSpacing:   2
+heightSpacing:  2
+
+
+includes:
+    - ../configs/Colours.yaml
+
+colours:
+    - name:        blue
+      red:         40
+      green:       94
+      blue:        194
+
+    - name:        red
+      red:         194
+      green:       94
+      blue:        40
+
+
+colourPalettes:
+    - name:        NYEAF
+      mode:        linear
+      colours:     [blue, red]
+
+
+topLine: &id001
+    straightProb:  0.99
+    drawSpeed:     2
+    direction:     "22000002"
+    coordBag:      [0, 1]
+    
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        palette:       NYEAF
+
+lineLeftBlue2: &id002
+    <<: *id001
+    drawSpeed:     2
+    direction:     "00022200"
+    coordBag:      [0, -1]
+    
+    movement:
+        name:          ClingMovement
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        red:           255
+        green:         255
+        blue:          255
+ 
+
+#lines:          [*id001]
+lines:          [*id001, *id002]
+
+...
