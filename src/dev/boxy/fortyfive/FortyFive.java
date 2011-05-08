@@ -29,6 +29,7 @@ public class FortyFive extends PApplet {
 	ImageGridCache imageGridCache = new ImageGridCache();
 	String currentConfigFile;
 	int userDrawSpeedMultiplier = 1;
+	int completePause = 0;
 	
 	class ConfigParser {
 		
@@ -45,6 +46,8 @@ public class FortyFive extends PApplet {
 			
 			ff.width = getInt(map, "width", screen.width);
 			ff.height = getInt(map, "height", screen.height);
+			
+			ff.completePause = getInt(map, "completePause", 0);
 			
 			// Parse background colour TODO make better
 			
@@ -101,6 +104,10 @@ public class FortyFive extends PApplet {
 				for (Map<String, Object> imageDef : imageDefList) {
 					String name = (String) imageDef.get("name");
 					String imageFile = (String) imageDef.get("file");
+					
+					if (!new File(imageFile).exists()) {
+						System.err.printf("image load warning: could not file for image %s\n", name);
+					}
 					
 					ff.imageGridMap.put(name, imageGridCache.get(ff, name, imageFile, yamlFile.getAbsolutePath()));
 				}
@@ -196,9 +203,13 @@ public class FortyFive extends PApplet {
 						}
 						
 						int strokeWidth = getInt(drawDef, "strokeWidth", 1);
-						draw = new SolidDraw(palette, strokeWidth);
+						String strokeJoinStr = getString(drawDef, "strokeJoin", "miter").toLowerCase();
+						String strokeCapStr = getString(drawDef, "strokeCap", "round").toLowerCase();
+						draw = new SolidDraw(palette, strokeWidth, strokeJoinStr, strokeCapStr);
 					} else if (drawName.equals("ImageDraw")) {
 						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
+						String strokeJoinStr = getString(drawDef, "strokeJoin", "miter").toLowerCase();
+						String strokeCapStr = getString(drawDef, "strokeCap", "round").toLowerCase();
 						String image = (String) drawDef.get("image");
 						
 						int xOffset = getInt(drawDef, "xOffset", 0);
@@ -231,12 +242,12 @@ public class FortyFive extends PApplet {
 							yOffset = (int) (height - (imageGrid.colourPic.height * scale)) / 2;
 						}
 						
-						draw = new ImageDraw(imageGrid, strokeWidth, xOffset, yOffset, scale);
+						draw = new ImageDraw(imageGrid, strokeWidth, xOffset, yOffset, scale, strokeJoinStr, strokeCapStr);
 					}
 				}
 				
 				if (draw == null) {
-					draw = new SolidDraw(ColourPalette.getDefault(), 1);
+					draw = new SolidDraw(ColourPalette.getDefault(), 1, "miter", "round");
 				}
 				
 				TimingUtils.markAdd("parse draw");
@@ -259,6 +270,10 @@ public class FortyFive extends PApplet {
 						double thresholdScale = getDouble(thresholdDef, "scale", 1.0);
 						
 						ImageGrid thresholdImage = ff.imageGridMap.get(thresholdName);
+						
+						if (thresholdImage == null) {
+							System.err.printf("threshold image warning: no such threshold name as %s\n", thresholdName);
+						}
 						
 						if (thresholdScale < 0) {
 							// Auto scale to size of screen
@@ -324,6 +339,10 @@ public class FortyFive extends PApplet {
 							coordBag = new OrderedBag(ff, true);
 						} else if (coordBagName.equalsIgnoreCase("backward")) {
 							coordBag = new OrderedBag(ff, false);
+						} else if (coordBagName.equalsIgnoreCase("random")) {
+							coordBag = new RandomBag();
+						} else if (coordBagName.equalsIgnoreCase("centre")) {
+							coordBag = new CentreBag(ff);
 						}
 					}
 				} catch (Exception e) {
@@ -414,6 +433,10 @@ public class FortyFive extends PApplet {
 									startArea.removeRectangle(x - IMAGE_THRESHOLD_FUDGE_FACTOR, y - IMAGE_THRESHOLD_FUDGE_FACTOR, width + IMAGE_THRESHOLD_FUDGE_FACTOR + IMAGE_THRESHOLD_FUDGE_FACTOR, height + IMAGE_THRESHOLD_FUDGE_FACTOR + IMAGE_THRESHOLD_FUDGE_FACTOR);
 								}
 							}
+						}
+						
+						if (startAreaDef.containsKey("debug")) {
+							startArea.setDebug(true);
 						}
 					}
 					
@@ -742,6 +765,12 @@ public class FortyFive extends PApplet {
 			}
 			
 			if (finished) {
+				try {
+					Thread.sleep(completePause);
+				} catch (Exception e) {
+					
+				}
+				
 				presentation.onFinished();
 				ITERATIONS++;
 			}

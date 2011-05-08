@@ -7,6 +7,8 @@ import dev.boxy.fortyfive.coordinatebag.*;
 
 public class StartArea {
 	
+	boolean DEBUG = false;
+	
 	protected FortyFive ff;
 	
 	// Lists of remaining places available.
@@ -220,19 +222,6 @@ public class StartArea {
 			cachedCoordinates.addAll(coordsInit);
 			coordsInit.clear();
 			
-			// DEBUG
-			
-			if (FortyFive.SHOW_STARTAREA && coords.size() != rows * columns) {
-				for (Coordinate coord : coords) {
-					int x = (int) ff.columnToX(coord.c);
-					int y = (int) ff.rowToY(coord.r);
-					
-		            ff.fill(0, 255, 255, 30);
-		            ff.noStroke();
-		            ff.rect(x, y, ff.widthSpacing, ff.heightSpacing);
-		        }
-			}
-			
 			// Order the coordinates in a pre-defined way
 			
 			coordBag.initList(cachedCoordinates, false);
@@ -245,6 +234,19 @@ public class StartArea {
 			
 			coords.addAll(cachedCoordinates);
 			coordsCommitted = true;
+			
+			// DEBUG
+			
+			if (DEBUG) {
+				for (Coordinate coord : coords) {
+					int x = (int) ff.columnToX(coord.c);
+					int y = (int) ff.rowToY(coord.r);
+					
+		            ff.fill(0, 255, 255, 30);
+		            ff.noStroke();
+		            ff.rect(x, y, ff.widthSpacing, ff.heightSpacing);
+		        }
+			}
 		}
 	}
 	
@@ -388,4 +390,9 @@ public class StartArea {
 			}
 		}
 	}
+	
+	public void setDebug(boolean flag) {
+		DEBUG = flag;
+	}
+	
 }

@@ -12,7 +12,7 @@ public class LineTemplate {
 	public final static int 			DEF_STEP_SPEED 		= 1;
 	public final static int 			DEF_DRAW_SPEED 		= 1;
 	public final static int[]			DEF_DIRECTION		= new int[] { 2, 2, 2, 2, 2, 2, 2, 2 };
-	public final static LineDraw		DEF_DRAW			= new SolidDraw(ColourPalette.getDefault(), 1);
+	public final static LineDraw		DEF_DRAW			= new SolidDraw(ColourPalette.getDefault(), 1, "miter", "round");
 	
 	double					straightProb 		= DEF_STRAIGHT_PROB;
 	int						stepSpeed			= DEF_STEP_SPEED;

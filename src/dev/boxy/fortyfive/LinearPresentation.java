@@ -16,22 +16,41 @@ public class LinearPresentation implements KeyListener {
 	FortyFive ff;
 	
 	String[] configFiles = {
-			"RedGreen.yaml",
-			"RedGreenDiag.yaml",
-			"NYEAF.yaml",
-			"BlueGreenLeft.yaml",
-			"BlueGreenLeftCling.yaml",
-			"GrowthSides.yaml",
-			"GrowthTop.yaml",
-			"BlueGreenTop.yaml",
-			"BlueGreenBottom.yaml",
-			"BlueGreenRight.yaml",
-			"SpaceJam01.yaml",
-			"SpaceJam02.yaml",
-			"SpaceJam03.yaml",
-			"SpaceJam04.yaml",
-			"Eric.yaml",
+			"Cityscape.yaml",
+			"Mountainscape.yaml",
+			"GrowthIntoCentre.yaml",
+			"GrowthDiagonals.yaml",
+			"GrowthCentre.yaml",
+			"DiagonalOutside.yaml",
+			"Diagonal.yaml",
+			"LightningBolt.yaml",
+			"LionsGate.yaml",
+			"BrooklynBridge.yaml",
+			"Lightbulb.yaml",
+			"ProgressBar.yaml",
+			"CrossHatch.yaml",
+			"FancyPatches.yaml",
+			"Growth.yaml",
 	};
+	
+	// Eric's birthday
+//	String[] configFiles = {
+//			"RedGreen.yaml",
+//			"RedGreenDiag.yaml",
+//			"NYEAF.yaml",
+//			"BlueGreenLeft.yaml",
+//			"BlueGreenLeftCling.yaml",
+//			"GrowthSides.yaml",
+//			"GrowthTop.yaml",
+//			"BlueGreenTop.yaml",
+//			"BlueGreenBottom.yaml",
+//			"BlueGreenRight.yaml",
+//			"SpaceJam01.yaml",
+//			"SpaceJam02.yaml",
+//			"SpaceJam03.yaml",
+//			"SpaceJam04.yaml",
+//			"Eric.yaml",
+//	};
 	
 	int idx = 0;
 	int loadFails = 0;
