@@ -24,6 +24,7 @@ public class IntelligentMovement extends LineMovement {
 
 	@Override
 	public boolean forwardOnce() {
+		TimingUtils.markAdd("intelligent forwardOnce()");
 		int nAttempts = 3;
 		
 		// Don't bother trying any collision avoidance
@@ -110,9 +111,11 @@ public class IntelligentMovement extends LineMovement {
 			line.cc = nc;
 			line.cd = nd;
 			
+			TimingUtils.markAdd("intelligent forwardOnce()");
 			return true;
 		}
 		
+		TimingUtils.markAdd("intelligent forwardOnce()");
 		return false;
 	}
 }

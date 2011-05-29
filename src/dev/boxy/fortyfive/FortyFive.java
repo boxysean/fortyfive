@@ -10,6 +10,7 @@ import dev.boxy.fortyfive.colour.*;
 import dev.boxy.fortyfive.coordinatebag.*;
 import dev.boxy.fortyfive.draw.*;
 import dev.boxy.fortyfive.movement.*;
+import dev.boxy.fortyfive.presentation.*;
 
 public class FortyFive extends PApplet {
 	
@@ -20,16 +21,17 @@ public class FortyFive extends PApplet {
 	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
 	
 	public static int               ITERATIONS          = 0;
+	public static int				FRAMES				= 0;
 	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 	public static final int[]	dc		= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
 	
-	LinearPresentation presentation;
+	static String[] args;
+	
 	ImageGridCache imageGridCache = new ImageGridCache();
 	String currentConfigFile;
-	int userDrawSpeedMultiplier = 1;
-	int completePause = 0;
+	public int userDrawSpeedMultiplier = 1;
 	
 	class ConfigParser {
 		
@@ -40,14 +42,12 @@ public class FortyFive extends PApplet {
 			
 			TimingUtils.reset();
 			
-			TimingUtils.mark("config start");
+//			TimingUtils.mark("config start");
 			
 			Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader(yamlFile));
 			
 			ff.width = getInt(map, "width", screen.width);
 			ff.height = getInt(map, "height", screen.height);
-			
-			ff.completePause = getInt(map, "completePause", 0);
 			
 			// Parse background colour TODO make better
 			
@@ -75,18 +75,18 @@ public class FortyFive extends PApplet {
 			int frameRate = getInt(map, "frameRate", 30);
 			ff.frameRate(frameRate);
 			
-			TimingUtils.mark("master start area");
+//			TimingUtils.mark("master start area");
 			
 			ff.masterStartArea = new StartArea(ff, new RandomBag());
 			ff.masterStartArea.addRectangle(0, 0, width, height);
 			
-			TimingUtils.mark("master start area");
+//			TimingUtils.mark("master start area");
 			
 			// Create default palette
 			
 			ff.drawSpeedMultiplier = getInt(map, "drawSpeedMultiplier", 1);
 			
-			TimingUtils.mark("config start");
+//			TimingUtils.mark("config start");
 			
 			// Eventually innocentLoad should load everything in a non-intrusive fashion TODO
 			
@@ -94,7 +94,7 @@ public class FortyFive extends PApplet {
 			
 			// Parse image grids
 			
-			TimingUtils.mark("parse image grids");
+//			TimingUtils.mark("parse image grids");
 			
 			List<Map<String, Object>> imageDefList = (List<Map<String, Object>>) map.get("images");
 			
@@ -113,9 +113,9 @@ public class FortyFive extends PApplet {
 				}
 			}
 			
-			TimingUtils.mark("parse image grids");
-			TimingUtils.print("load image");
-			TimingUtils.print("populate colour grid");
+//			TimingUtils.mark("parse image grids");
+//			TimingUtils.print("load image");
+//			TimingUtils.print("populate colour grid");
 			
 			// Parse line templates
 			
@@ -127,7 +127,7 @@ public class FortyFive extends PApplet {
 			
 			int index = 0;
 			
-			TimingUtils.mark("parse line template total");
+//			TimingUtils.mark("parse line template total");
 			
 			for (Map<String, Object> lineTemplateDef : lineTemplateList) {
 				double straightProb = getDouble(lineTemplateDef, "straightProb", LineTemplate.DEF_STRAIGHT_PROB);
@@ -259,7 +259,6 @@ public class FortyFive extends PApplet {
 				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineTemplateDef.get("threshold");
 				
 				List<ImageThreshold> thresholds = new LinkedList<ImageThreshold>();
-				StartArea startArea = null;
 				
 				if (thresholdDefs != null) {
 					for (Map<String, Object> thresholdDef : thresholdDefs) {
@@ -356,6 +355,7 @@ public class FortyFive extends PApplet {
 				// Okay, now start initializing the start area
 				
 				List<Map<String, Object>> startAreaDefs = (List<Map<String, Object>>) lineTemplateDef.get("startArea");
+				StartArea startArea = null;
 				
 				if (startAreaDefs != null) {
 					startArea = new StartArea(ff, coordBag);
@@ -384,6 +384,8 @@ public class FortyFive extends PApplet {
 							int rightOffset = getInt(image, 2, 0);
 							int bottomOffset = getInt(image, 3, 0);
 							int leftOffset = getInt(image, 4, 0);
+							
+							// TODO this implies that a start area cannot be made without defining it as a threshold, fail
 							
 							// Go through each existing threshold and add this images' area
 							
@@ -469,20 +471,20 @@ public class FortyFive extends PApplet {
 				ff.lineTemplates[index++] = new LineTemplate(straightProb, stepSpeed, drawSpeed, movement, direction, draw, startArea, thresholds);
 			}
 			
-			TimingUtils.mark("parse line template total");
-			TimingUtils.print("parse draw");
-			TimingUtils.print("start area");
-			TimingUtils.print("start area -- master rect");
-			TimingUtils.print("start area -- adding rects");
-			TimingUtils.print("start area -- commit");
-			
-			TimingUtils.print("commit coords -- all");
-			TimingUtils.print("commit coords -- populate set");
-			TimingUtils.print("commit coords -- transfer set to list");
-			TimingUtils.print("commit coords -- init list");
-
-			
-			TimingUtils.print("threshold images");
+//			TimingUtils.mark("parse line template total");
+//			TimingUtils.print("parse draw");
+//			TimingUtils.print("start area");
+//			TimingUtils.print("start area -- master rect");
+//			TimingUtils.print("start area -- adding rects");
+//			TimingUtils.print("start area -- commit");
+//			
+//			TimingUtils.print("commit coords -- all");
+//			TimingUtils.print("commit coords -- populate set");
+//			TimingUtils.print("commit coords -- transfer set to list");
+//			TimingUtils.print("commit coords -- init list");
+//
+//			
+//			TimingUtils.print("threshold images");
 		}
 		
 		public void innocentLoad(Map<String, Object> map) {
@@ -660,8 +662,8 @@ public class FortyFive extends PApplet {
 	public void setup() {
 		noCursor();
 		
-		presentation = new LinearPresentation(this);
-		
+		Presentation.setMode(new LinearPresentation(this, args[0]));
+		Presentation presentation = Presentation.getInstance();
 		addKeyListener(presentation);
 		
 		setup(presentation.getCurrentFile());
@@ -671,6 +673,14 @@ public class FortyFive extends PApplet {
 	
 	public void queueConfig(String configFile) {
 		queuedConfig = configFile;
+		
+		TimingUtils.print("forwardDraw()");
+		TimingUtils.print("forwardDraw() draw line");
+		TimingUtils.print("forward()");
+		TimingUtils.print("cling forwardOnce()");
+		TimingUtils.print("intelligent forwardOnce()");
+		TimingUtils.reset();
+
 	}
 	
 	/**
@@ -682,10 +692,11 @@ public class FortyFive extends PApplet {
 		
 		System.out.println("--- " + configFile + " ---");
 		
-		TimingUtils.mark("setup");
+//		TimingUtils.mark("setup");
 		
-		TimingUtils.mark("load settings");
+//		TimingUtils.mark("load settings");
 		
+		Presentation presentation = Presentation.getInstance();
 		
 		try {
 			loadSettings(configFile);
@@ -697,11 +708,11 @@ public class FortyFive extends PApplet {
 			return;
 		}
 		
-		presentation.loadFails = 0;
+		presentation.resetLoadFails();
 			
 		currentConfigFile = configFile;
 		
-		TimingUtils.mark("load settings");
+//		TimingUtils.mark("load settings");
 		
 		// Create a list of coordinates that have not yet been visited
 		
@@ -719,15 +730,15 @@ public class FortyFive extends PApplet {
 		
 		// Create the lines
 		
-		TimingUtils.mark("new lines");
+//		TimingUtils.mark("new lines");
 		
 		for (int i = 0; i < nLines; i++) {
 			lines[i] = newLine(lineTemplates[i]);
 		}
 		
-		TimingUtils.mark("new lines");
+//		TimingUtils.mark("new lines");
 		
-		TimingUtils.mark("setup");
+//		TimingUtils.mark("setup");
 	}
 	
 	@Override
@@ -736,7 +747,10 @@ public class FortyFive extends PApplet {
 			// New config has been requested
 			setup(queuedConfig);
 			queuedConfig = null;
+			FRAMES = 0;
 		}
+		
+		Presentation presentation = Presentation.getInstance();
 		
 		if (!pause) {
 			stroke(0);
@@ -755,6 +769,8 @@ public class FortyFive extends PApplet {
 							lines[i] = line;
 						}
 						
+						TimingUtils.markAdd("draw");
+						
 						if (line == null) {
 							break;
 						}
@@ -765,14 +781,10 @@ public class FortyFive extends PApplet {
 			}
 			
 			if (finished) {
-				try {
-					Thread.sleep(completePause);
-				} catch (Exception e) {
-					
-				}
-				
 				presentation.onFinished();
 				ITERATIONS++;
+			} else {
+				presentation.nextFrame();
 			}
 		}
 	}
@@ -1030,6 +1042,8 @@ public class FortyFive extends PApplet {
 	}
 	
 	public static void main(String args[]) {
+		FortyFive.args = args;
+		
 		PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
 	}
 }

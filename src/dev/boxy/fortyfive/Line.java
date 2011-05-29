@@ -57,12 +57,15 @@ public class Line {
 	}
 	
 	public boolean forward() {
+		TimingUtils.markAdd("forward()");
 		for (int i = 0; i < stepSpeed; i++) {
 			if (!forwardOnce()) {
+				TimingUtils.markAdd("forward()");
 				return false;
 			}
 		}
 		
+		TimingUtils.markAdd("forward()");
 		return true;
 	}
 	
@@ -75,14 +78,22 @@ public class Line {
 	}
 	
 	public boolean forwardDraw() {
+		TimingUtils.markAdd("forwardDraw()");
+
 		int r = cr;
 		int c = cc;
 		
 		if (!forward()) {
+			TimingUtils.markAdd("forwardDraw()");
 			return false;
 		}
 		
+		
+		TimingUtils.markAdd("forwardDraw() draw line");
 		ff.drawLine(r, c, cr, cc, draw);
+		TimingUtils.markAdd("forwardDraw() draw line");
+		
+		TimingUtils.markAdd("forwardDraw()");
 		
 		return true;
 	}

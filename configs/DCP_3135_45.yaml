@@ -1,0 +1,52 @@
+---
+width:          3300
+height:         2550
+
+widthSpacing:   6
+heightSpacing:  6
+
+drawSpeedMultiplier:   10
+
+
+images:
+    - name:     dcp3135
+      file:     ../images/DCP_3135-cropped.jpg
+
+    - name:     dcp3028
+      file:     ../images/DCP_3028-cropped.jpg
+
+lineA: &id001
+    straightProb:  0.95
+    drawSpeed:     1
+    coordBag:      forward
+        
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          ImageDraw
+        image:         dcp3135
+        strokeWidth:   2
+        strokeJoin:    miter
+        strokeCap:     round
+
+lineB: &id002
+    <<: *id001
+    coordBag:      forward
+
+    movement:
+        name:          ClingMovement
+        intelligence:  3
+ 
+    draw:
+        name:          ImageDraw
+        image:         dcp3028
+        strokeWidth:   2
+        strokeJoin:    miter
+        strokeCap:     round
+
+
+lines:          [*id001, *id002]
+...
+

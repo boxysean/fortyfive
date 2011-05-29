@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>LSUIPresentationMode</key>
+	<integer>4</integer>
+	<key>CFBundleName</key>
+	<string>PROJECT_NAME</string>
+	<key>CFBundleVersion</key>
+	<string>PROJECT_VERSION</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<string>true</string>
+	<key>CFBundleExecutable</key>
+	<string>JavaApplicationStub</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>APPLEDEV_ID</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleIconFile</key>
+	<string>application.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>PROJECT_PACKAGE</string>
+	<key>Java</key>
+	<dict>
+		<key>VMOptions</key>
+		<string>-XmsJVM_XMSM -XmxJVM_XMXM</string>
+		<key>MainClass</key>
+		<string>PROJECT_MAIN</string>
+		<key>JVMVersion</key>
+		<string>JVM_VERSION</string>
+		<key>ClassPath</key>
+		<string>CLASS_PATH</string>
+		<key>Properties</key>
+		<dict>
+			<key>apple.awt.brushMetalLook</key>
+			<string>OSX_BMLOOK</string>
+			<key>apple.laf.useScreenMenuBar</key>
+			<string>true</string>
+			<key>apple.awt.showGrowBox</key>
+			<string>true</string>
+			<key>com.apple.smallTabs</key>
+			<string>true</string>
+			<key>apple.awt.Antialiasing</key>
+			<string>false</string>
+			<key>apple.awt.TextAntialiasing</key>
+			<string>true</string>
+			<key>com.apple.hwaccel</key>
+			<string>true</string>
+			<key>apple.awt.use-file-dialog-packages</key>
+			<string>false</string>
+			<key>apple.awt.window.position.forceSafeCreation</key>
+			<string>OSX_SAFEPOS</string>
+			<key>apple.awt.window.position.forceSafeUserPositioning</key>
+			<string>OSX_SAFEPOS</string>
+			<key>apple.awt.graphics.UseQuartz</key>
+			<string>true</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

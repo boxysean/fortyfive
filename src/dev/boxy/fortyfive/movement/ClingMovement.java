@@ -23,6 +23,8 @@ public class ClingMovement extends LineMovement {
 
 	@Override
 	public boolean forwardOnce() {
+		TimingUtils.markAdd("cling forwardOnce()");
+		
 		Collections.shuffle(dlist);
 
 		int highScore = -1;
@@ -82,6 +84,7 @@ public class ClingMovement extends LineMovement {
 		}
 		
 		if (highScoreDir < 0) {
+			TimingUtils.markAdd("cling forwardOnce()");
 			return false;
 		}
 		
@@ -95,6 +98,8 @@ public class ClingMovement extends LineMovement {
 		line.cc = nc;
 		line.cd = highScoreDir;
 		
+		TimingUtils.markAdd("cling forwardOnce()");
+
 		return true;
 	}
 }

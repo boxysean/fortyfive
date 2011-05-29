@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./FortyFive.app > /tmp/launch.log 2>&1

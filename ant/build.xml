@@ -1,0 +1,488 @@
+<?xml version="1.0"?>
+<!--
+	topic:		PROCESSING(.ORG) EXPORT FROM ECLIPSE
+	date:		06-10-2008
+	author:		ste.fielder[near]gmail.com
+	
+	==================== Conditions that have to be provided =======================
+		
+	* Your project folder has to look like this:
+
+	Project folder
+	|
+	+.. ant
+	|	 |
+	| 	 +.. mac		Documents for OS X .app creation
+	| 	 +.. web		Documents for web applet creation
+	|	 - build.xml	ANT script
+	|
+	+.. src				Java source code
+	+.. data			Data files (fonts, images, etc.)
+	+.. lib				External Java libraries
+	+.. libNative		External Java native libraries	
+	
+	* Keep in mind that all the parts which normally the preprocessor of the processing 
+	IDE does, are now on your todo list. You have to write pure Java - with the use of 
+	the processing frame work.
+	
+	==================== Useage of the predefined targets ===========================
+	* Only run the from 1 to 5 indexed targets. All other targets in this script 
+	are invoked by one of the five.
+	
+	* All files in the ant/web directory will be copied to the applet folder when 
+	running the "4. deploy WEB" target. Extend or modifie the html templates and 
+	save them with the original name - don't touch the applet embed part.
+	
+	* OpenGL used/not used decision is made by looking up the processing.opengl 
+	package import in the head of the main.class document.
+	
+	* The XCode developer tools are not necessarily needed to create a Mac OS X 
+	application bundle. Just remove the comment if you have them installed to 
+	make sure that it really works - like Apple want's you to do.
+	
+	* Have a look at the Apple Java Runtime System Properties for an overview 
+	of all settings of .app documents:
+ 	http://beta.devworld.apple.com/documentation/Java/Reference/Java14SysProperties/
+ 	
+	==================== Properties to modify =======================================
+	•••• PROJECT SETTINGS
+	project.author				Name, email or both of the project author/
+								creator. Will be included in the jar-manifest, 
+								applet html-document and OS X app description.
+	
+	project.author.appleId		Apple developer identification number 
+								of the project author. Default value 
+								for "unknown" is "????".
+								
+	project.name				Displayed in the web html-document and as title 
+								of the OS X application in the menu bar.
+								
+	main.class					Name of the project main class which extends PApplet.
+								Without the .java file type ending.
+								
+	main.package.name			Name of the package where the main class is located. 
+								This string has to end with a dot (.). Leave it blank 
+								if the main class is in the default src folder.
+	
+	main.package.path			Same as "main.package.name" - just replace each . with 
+								a fraction / .
+								
+	•••• WEB APPLET SETTINGS
+	applet.width /				The catual size of your applet canvas.
+	applet.height
+	
+	•••• OS X APP SETTINGS
+	jvm.version					Required jre version.
+	jvm.xms						Initial Java heap size.
+	jvm.xmx						Maximum Java heap size.
+	
+	osx.brushmetal				Turns on/off Aqua look of the application 
+								window frame.
+	
+	osx.devtools				Location of the XCode Developer tools on your 
+								harddrive. Script is using SetFile to convert 
+								the folder into an .app bundle.
+	
+	osx.dmgcopy					If "true" ANT creates a disk image which contains 
+								a copy of the generated OS X project application. Leaf 
+								blank for no creation after running "deploy OSX".
+	
+	osx.presentmode				Initial user-interface mode for menu bar and dock of
+								Mac OS X. Values from 0 to 4 accepted. For more information 
+								look up: http://tinyurl.com/3rcoqo - or look up the web 
+								for "LSUIPresentationMode".
+	
+	osx.safeposition			Enforces the application window to get not out 
+								of the desktop canvas. For more information google 
+								"apple.awt.window.position.forceSafeUserPositioning".
+-->
+<project name="Processing export" default="osx" basedir="../">
+	
+	<!-- ###### START EDIT ###### 
+		Edit the following properties if necessary
+	-->
+	
+	<!-- Project settings -->
+	<property name="project.author" value="boxysean" />
+	<property name="project.author.appleId" value="????" />
+	<property name="project.name" value="FortyFive" />
+	<property name="project.version" value="0.1" />
+	
+	<property name="main.class" value="FortyFive" />
+	<property name="main.package.name" value="dev.boxy.fortyfive." />
+	<property name="main.package.path" value="dev/boxy/fortyfive/" />
+	
+	<!-- Web applet settings -->
+	<property name="applet.width" value="500" />
+	<property name="applet.height" value="500" />
+	
+	<!-- OS X app settings -->
+	<property name="jvm.version" value="1.4+" />
+	<property name="jvm.xms" value="1024" />
+	<property name="jvm.xmx" value="1024" />
+	
+	<property name="osx.brushmetal"	value="false" />
+	<property name="osx.devtools" value="/Developer" />
+	<property name="osx.dmgcopy" value="false" />
+	<property name="osx.presentmode" value="4" />
+	<property name="osx.safeposition" value="true" />
+	
+	<!-- ###### END EDIT ###### -->
+	
+	<!-- Project related folders -->
+	<property name="dir.data" value="data" />
+	<property name="dir.lib" value="lib" />
+	<property name="dir.libNat" value="libNative" />
+	<property name="dir.src" value="src" />
+	
+	<!-- ANT procedure folders -->
+	<property name="dir.build" value="build" />
+	<property name="dir.class" value="class" />
+	<property name="dir.applet" value="applet" />
+	
+	
+	<!-- CLEAN WORKSPACE -->
+	<target name="clean">
+		<delete dir="${dir.build}" />
+		<delete dir="${dir.class}" />
+		<delete dir="${dir.doc}" />
+		<delete dir="temp" />
+	</target>
+	
+	<!-- REMOVES DEPLOYED -->
+	<target name="clean-deploy">
+		<delete dir="${dir.applet}" />
+		<delete dir="${project.name}.app" />
+		<delete file="${project.name}.dmg" />
+		<delete>
+			<fileset dir=".">
+				<include name="${project.name}-*.zip" />
+			</fileset>
+		</delete>
+	</target>
+	
+	<!-- COMPILES PROJECT JAR-->
+	<target name="compile" depends="clean">
+		<fail unless="dir.class"			message="ERROR: Class dir not defined." />
+		<fail unless="dir.lib"				message="ERROR: Library dir not defined." />
+		<fail unless="dir.libNat"			message="ERROR: Library dir for native archives not defined." />
+		<fail unless="dir.src"				message="ERROR: Source dir not defined." />
+		<fail unless="main.class"			message="ERROR: Project man class is not defined." />
+		
+		<!-- Check for render mode, openGL or not -->
+		<loadfile property="main" srcfile="${dir.src}/${main.package.path}${main.class}.java" />
+		<condition property="is.OPENGL">
+			<contains string="${main}" substring="processing.opengl" casesensitive="true" />
+		</condition>
+		<!-- Check for OS X -->
+		<condition property="is.OSX">
+			<os family="mac" name="Mac OS X" />
+		</condition>
+		
+		<!-- Create folder for compiled .class documents -->
+		<mkdir dir="${dir.class}" />
+		
+		<!-- Make a temp copy of the main class to add the 
+		void main function into it without modifing the original 
+		java document in the source folder. -->
+		<mkdir dir="temp" />
+		<copy todir="temp">
+			<fileset dir="${dir.src}">
+				<include name="**/*.java" />
+			</fileset>
+		</copy>
+		
+		<!-- Add void main(String[] args) -->
+		<!-- <replaceregexp	file="temp/${main.package.path}${main.class}.java" 
+						match="\}([\s\n\t]*)$" 
+						replace='public static void main(String args[]) {${line.separator}PApplet.main(new String[] {"${main.package.name}${main.class}"});}${line.separator}}' 
+						flags="s" /> -->
+		
+		<javac srcdir="temp" destdir="${dir.class}" debug="true" deprecation="false" optimize="true" >
+			<classpath>
+				<fileset dir="${dir.lib}" includes="**/*.jar" />
+				<fileset dir="${dir.libNat}" includes="**/*.jar" />
+			</classpath>
+		</javac>
+		
+		<delete dir="temp" />
+	</target>
+	
+	<!-- APPLET WEB EXPORT -->
+	<target name="web" depends="compile">
+		
+		<mkdir dir="${dir.build}" />
+		<copy todir="${dir.class}/data">
+			<fileset dir="${dir.data}" />
+		</copy>
+		
+		<jar jarfile="${dir.build}/${main.class}.jar">
+			<fileset dir="${dir.class}" />
+			<manifest>
+				<attribute name="Main-Class" value="${main.package.name}${main.class}" />
+				<attribute name="Build-By" value="${project.author}" />
+				<attribute name="Specification-Title" value="${main.class}" />
+				<attribute name="Specification-Version" value="${project.version}" />
+			</manifest>
+		</jar>
+		
+		<delete dir="${dir.class}" />
+		
+		<mkdir dir="${dir.applet}" />
+		<copy file="${dir.build}/${main.class}.jar" todir="${dir.applet}" />
+		<copy todir="${dir.applet}/src">
+			<fileset dir="${dir.src}" includes="**/*.java" />
+		</copy>
+		
+		<pathconvert property="class.pathWeb" pathsep=",">
+			<fileset dir="${dir.build}" includes="**/*.jar" excludes="${main.class}.jar" />
+			<fileset dir="${dir.lib}">
+				<exclude name="*jogl*.*" unless="is.OPENGL" />
+				<exclude name="*opengl*.*" unless="is.OPENGL" />
+			</fileset>
+			<fileset dir="${dir.libNat}">
+				<exclude name="**/*jogl*.*" unless="is.OPENGL" />
+				<exclude name="**/*.dll" />
+				<exclude name="**/*.jnilib" />
+			</fileset>
+			<flattenmapper />
+		</pathconvert>
+		
+		<delete dir="${dir.build}" />
+		
+		<antcall target="web.2d" />
+		<antcall target="web.opengl" />
+	</target>
+	
+		<!-- WEB openGL TEMPLATE -->
+		<target name="web.opengl" if="is.OPENGL">
+			<fail unless="class.pathWeb" message="ERROR: Deploy failed, use '4. deploy WEB' instead." />
+			<copy todir="${dir.applet}">
+				<fileset dir="ant/web" />
+				<fileset dir="${dir.lib}">
+					<exclude name="**/*jogl*.*" />
+				</fileset>
+				<fileset dir="${dir.libNat}">
+					<exclude name="**/*jogl*.*" />
+				</fileset>
+			</copy>
+			
+			<!-- Replace index.html with opengl version -->
+			<move file="${dir.applet}/index-opengl.html" tofile="${dir.applet}/index.html" />
+			
+			<!-- Replace index document tokens -->
+			<antcall target="web.template" />
+		</target>
+		
+		<!-- WEB 2D TEMPLATE -->
+		<target name="web.2d" unless="is.OPENGL">
+			<fail unless="class.pathWeb" message="ERROR: Deploy failed, use '4. deploy WEB' instead." />
+			<copy todir="${dir.applet}">
+				<fileset dir="ant/web">
+					<exclude name="*.jar" />
+					<exclude name="*opengl*" />
+				</fileset>
+				<fileset dir="${dir.lib}" excludes="opengl.jar" />
+				<fileset dir="${dir.libNat}" excludes="*jogl*.*" />
+			</copy>
+			<!-- Replace index document tokens -->
+			<antcall target="web.template" />
+		</target>
+		
+		<!-- WEB TEMPLATE TOKEN REPLACE -->
+		<target name="web.template">
+			<fail message="ERROR: Deploy failed, index.html not reachable. Use '4. deploy WEB' instead.">
+				<condition>
+					<not>
+						<available file="${dir.applet}/index.html" />
+					</not>
+				</condition>
+			</fail>
+			<!-- Replace applet/project specific infos -->
+			<replace file="${dir.applet}/index.html">
+				<replacefilter token="APPLET_HEIGHT"	value="${applet.height}" />
+				<replacefilter token="APPLET_WIDTH"		value="${applet.width}" />
+				<replacefilter token="PROJECT_ARCHIVES"	value="${main.class}.jar,${class.pathWeb}" />
+				<replacefilter token="PROJECT_AUTHOR"	value="${project.author}" />
+				<replacefilter token="PROJECT_MAIN"		value="${main.package.name}${main.class}" />
+				<replacefilter token="PROJECT_NAME"		value="${project.name}" />
+			</replace>
+		</target>
+	
+	
+	<!-- EXPORT OSX APPLICATION -->
+	<target name="osx" depends="compile">
+		
+		<!-- Remove existing application -->
+		<delete dir="${main.class}.app" />
+		
+		<fail unless="is.OSX" message="Mac .app deploy works on Mac OS X only." />
+		
+		<!-- start#BUILD
+			Create the project jar document and include all files 
+			from the data folder in the root without sub folders.
+		-->
+		<fail unless="main.class" message="ERROR: ANT Project name not defined. Must be the name of your project man class." />
+		<fail unless="project.name" message="ERROR: Project name not defined. Needed for setting  application name." />
+		
+		<mkdir dir="${dir.build}" />
+		<jar jarfile="${dir.build}/${main.class}.jar">
+			<fileset dir="${dir.class}" />
+			<fileset dir="${dir.data}" />
+			<manifest>
+				<attribute name="Main-Class" value="${main.package.name}${main.class}" />
+				<attribute name="Build-By" value="${project.author}" />
+				<attribute name="Specification-Title" value="${main.class}" />
+				<attribute name="Specification-Version" value="${project.version}" />
+			</manifest>
+		</jar>
+		<delete dir="${dir.class}" />
+		<!-- end#BUILD -->
+
+		<!-- Create .app bundle folder structure -->
+		<mkdir dir="${project.name}.app" />
+		<mkdir dir="${project.name}.app/Contents" />
+		<mkdir dir="${project.name}.app/Contents/MacOS" />
+		<mkdir dir="${project.name}.app/Contents/Resources" />
+		<mkdir dir="${project.name}.app/Contents/Resources/Java" />
+
+		<echo file="${project.name}.app/Contents/PkgInfo" message="APPL${project.author.appleId}" />
+		<!-- Copy exec JavaApplicationStub without turning it into a txt -->
+		<exec executable="cp">
+			<arg value="-rp" />
+			<arg value="ant/mac/JavaApplicationStub"/>
+			<arg value="${project.name}.app/Contents/MacOS" />
+		</exec>
+		
+		<exec executable="chmod">
+			<arg value="+x"/>
+			<arg value="${project.name}.app/Contents/MacOS"/>
+		</exec>
+		
+		<pathconvert property="class.pathApp" pathsep=":$JAVAROOT/">
+			<fileset dir="${dir.build}" includes="**/*.jar" />
+			<fileset dir="${dir.lib}">
+				<exclude name="opengl.jar" unless="is.OPENGL" />
+				<exclude name="*jogl*.*" unless="is.OPENGL" />
+			</fileset>
+			<fileset dir="${dir.libNat}">
+				<exclude name="*jogl*.*" unless="is.OPENGL" />
+				<exclude name="**/*.jnilib" />
+			</fileset>
+			<flattenmapper />
+		</pathconvert>
+		
+		<!-- Copy and setup Info.plist-->
+		<copy file="ant/mac/Info.plist" todir="${project.name}.app/Contents" />
+		<replace file="${project.name}.app/Contents/Info.plist">
+			<replacefilter token="APPLEDEV_ID"		value="${project.author.appleId}" />
+			<replacefilter token="PROJECT_MAIN" 	value="${main.package.name}${main.class}" />
+			<replacefilter token="PROJECT_NAME" 	value="${project.name}" />
+			<replacefilter token="PROJECT_PACKAGE"	value="${main.package.name}${main.class}" />
+			<replacefilter token="PROJECT_VERSION"	value="${project.version}" />
+			<replacefilter token="CLASS_PATH"		value="$JAVAROOT/${class.pathApp}" />
+			<replacefilter token="JVM_VERSION"		value="${jvm.version}" />
+			<replacefilter token="JVM_XMS"			value="${jvm.xms}" />
+			<replacefilter token="JVM_XMX"			value="${jvm.xmx}" />
+			<replacefilter token="OSX_BMLOOK"		value="${osx.brushmetal}" />
+			<replacefilter token="OSX_PMODE"		value="${osx.presentmode}" />
+			<replacefilter token="OSX_SAFEPOS"		value="${osx.safeposition}" />
+		</replace>
+		
+		<!-- Copy application icon -->
+		<copy file="ant/mac/application.icns" todir="${project.name}.app/Contents/Resources/" />
+		
+		<!-- Copy jar archives -->
+		<copy todir="${project.name}.app/Contents/Resources/Java">
+			<fileset dir="${dir.build}" includes="**/*.jar" />
+			<fileset dir="${dir.lib}">
+				<exclude name="opengl.jar" unless="is.OPENGL" />
+				<exclude name="**/*jogl*.*" unless="is.OPENGL" />
+			</fileset>
+			<fileset dir="${dir.libNat}">
+				<exclude name="**/*jogl*.*" unless="is.OPENGL" />
+			</fileset>
+		</copy>
+		<!--
+		
+		REMOVE THIS COMMENT IF YOU HAVE THE XCODE TOOLS INSTALLED.
+		
+		<exec executable="${osx.devtools}/Tools/SetFile" os="Mac OS X" failifexecutionfails="false">
+			<arg value="-a B ${project.name}.app" />
+		</exec>
+		-->
+		<delete dir="${dir.build}" />
+		
+		<condition property="flg.osx.dmg">
+			<matches string="${osx.dmgcopy}" pattern="true" casesensitive="false" />			
+		</condition>
+		<antcall target="osx.dmg" />
+	</target>
+		
+		<target name="osx.dmg" if="flg.osx.dmg">
+			
+			<!-- Package working application -->
+			<mkdir dir="image/${project.name}.app" />
+			<copy todir="image/${project.name}.app">
+				<fileset dir="${project.name}.app">
+					<exclude name="**/JavaApplicationStub" />
+				</fileset>
+			</copy>
+			
+			<!-- Copy exec JavaApplicationStub without turning it into a txt -->
+			<exec executable="cp">
+				<arg value="-rp" />
+				<arg value="${project.name}.app/Contents/MacOS/JavaApplicationStub"/>
+				<arg value="image/${project.name}.app/Contents/MacOS" />
+			</exec>
+			
+			<!-- Create disk image -->
+			<exec executable="/usr/bin/hdiutil" os="Mac OS X">
+				<arg line="create -srcfolder image -volname '${project.name}' image.dmg" />
+			</exec>
+			<move file="image.dmg" tofile="${project.name}.dmg" />
+			
+			<delete dir="image" />
+		</target>
+	
+	<!-- EXPORT ZIP COPY OF THE PROJECT -->
+	<target name="5. deploy ZIP" description="Exports a zip document 
+		containing all important project folders (ant, data, lib, libNative and src). The file 
+		name of the document is formated as 'Deploy_yyMMdd.zip' containing the current date.">
+		
+		<!-- Modifie stamp format for use in info.txt -->
+		<tstamp>
+			<format property="TSTAMP" pattern="dd-MM-yyyy kk:mm:ss" />
+		</tstamp>
+
+		<!-- Create info document -->
+		<echo file="info.txt">Project: ${project.name}
+Date: ${TSTAMP}
+Author: ${project.author}${line.separator}
+Main-Class: ${main.package.name}${main.class}
+Version: ${project.version}${line.separator}
+JAVA-VM: ${java.vm.name} ${java.vm.version} ${java.vm.vendor}
+JAVA-VER: ${java.version}
+ANT: ${ant.version}</echo>
+
+		<!-- Modifie stamp format for use in file name -->
+		<tstamp>
+			<format property="TODAY_STAMP" pattern="yyMMdd" />
+		</tstamp>
+
+		<zip zipfile="${project.name}-${TODAY_STAMP}.zip">
+			<!-- Add project folders -->
+			<zipfileset dir="ant"			prefix="${project.name}/ant" />
+			<zipfileset dir="${dir.data}"	prefix="${project.name}/${dir.data}" />
+			<zipfileset dir="${dir.lib}"	prefix="${project.name}/${dir.lib}" />
+			<zipfileset dir="${dir.libNat}" prefix="${project.name}/${dir.libNat}" />
+			<zipfileset dir="${dir.src}"	prefix="${project.name}/${dir.src}" />
+			<!-- Add ANT build file -->
+			<zipfileset file="${ant.file}"	prefix="${project.name}" />
+			<!-- Add project info.txt -->
+			<zipfileset file="info.txt"		prefix="${project.name}" />
+		</zip>
+		<delete file="info.txt" />
+	</target>
+	
+</project>
