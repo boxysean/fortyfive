@@ -1,14 +1,22 @@
 package dev.boxy.fortyfive.presentation;
 
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.yaml.snakeyaml.*;
+import org.yaml.snakeyaml.Yaml;
 
-import oscP5.*;
-import sun.misc.*;
-import dev.boxy.fortyfive.*;
+import oscP5.OscMessage;
+import oscP5.OscP5;
+import dev.boxy.fortyfive.ConfigParser;
+import dev.boxy.fortyfive.FortyFive;
 
 public class LinearPresentation extends PresentationMode implements KeyListener {
 	
@@ -17,7 +25,7 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 	public static final int MODE_RANDOM = 2;
 	
 	public static int snapshotId = 0;
-	public static final boolean USE_OSC = true;
+	public static final boolean USE_OSC = Boolean.getBoolean("USEOSC");
 	
 	OscP5 oscP5;
 	
@@ -44,6 +52,9 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 		
 		try {
 			parseYaml(yamlFile);
+		} catch (FileNotFoundException e) {
+			System.err.printf("error: file not found, %s\n", new File(yamlFile).getAbsoluteFile());
+			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -52,9 +63,7 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 	public void parseYaml(String yamlFile) throws IOException {
 		Yaml yaml = new Yaml();
 		
-//		Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader(yamlFile));
-		Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader("../configs/IdeasForTheNewCity.yaml"));
-		// TODO REMOVE
+		Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader(yamlFile));
 		
 		baseDir = ConfigParser.getString(map, "baseDir", ".");
 		finishedPause = ConfigParser.getInt(map, "finishedPause", 0);

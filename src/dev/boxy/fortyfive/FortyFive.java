@@ -1,16 +1,35 @@
 package dev.boxy.fortyfive;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.yaml.snakeyaml.*;
+import org.yaml.snakeyaml.Yaml;
 
-import processing.core.*;
-import dev.boxy.fortyfive.colour.*;
-import dev.boxy.fortyfive.coordinatebag.*;
-import dev.boxy.fortyfive.draw.*;
-import dev.boxy.fortyfive.movement.*;
-import dev.boxy.fortyfive.presentation.*;
+import processing.core.PApplet;
+import processing.core.PImage;
+import dev.boxy.fortyfive.colour.Colour;
+import dev.boxy.fortyfive.colour.ColourPalette;
+import dev.boxy.fortyfive.coordinatebag.CentreBag;
+import dev.boxy.fortyfive.coordinatebag.CoordinateBag;
+import dev.boxy.fortyfive.coordinatebag.OrderedBag;
+import dev.boxy.fortyfive.coordinatebag.RandomBag;
+import dev.boxy.fortyfive.draw.ImageDraw;
+import dev.boxy.fortyfive.draw.LineDraw;
+import dev.boxy.fortyfive.draw.SolidDraw;
+import dev.boxy.fortyfive.movement.ClingMovement;
+import dev.boxy.fortyfive.movement.IntelligentMovement;
+import dev.boxy.fortyfive.movement.LineMovement;
+import dev.boxy.fortyfive.presentation.LinearPresentation;
+import dev.boxy.fortyfive.presentation.Presentation;
 
 public class FortyFive extends PApplet {
 	
@@ -44,7 +63,15 @@ public class FortyFive extends PApplet {
 			
 //			TimingUtils.mark("config start");
 			
-			Map<String, Object> map = (Map<String, Object>) yaml.load(new FileReader(yamlFile));
+			Map<String, Object> map = null;
+			
+			try {
+				FileReader fileReader = new FileReader(yamlFile);
+				map = (Map<String, Object>) yaml.load(fileReader);
+			} catch (FileNotFoundException e) {
+				System.err.printf("error: file not found, %s\n", yamlFile.getAbsoluteFile());
+				throw e;
+			}
 			
 			ff.width = getInt(map, "width", screen.width);
 			ff.height = getInt(map, "height", screen.height);
