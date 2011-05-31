@@ -231,7 +231,12 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 	
 	public void snapshot() {
 		System.out.println("Snapshot!");
-		ff.save(String.format("%05d.png", snapshotId++));
+		
+		if (FortyFive.USE_SVG) {
+			ff.saveFrame("#####.svg");
+		} else {
+			ff.save(String.format("%05d.png", snapshotId++));
+		}
 	}
 	
 	public void resetLoadFails() {

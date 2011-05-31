@@ -36,6 +36,7 @@ public class FortyFive extends PApplet {
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
 	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("THRESHOLD");
 	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("STARTAREA");
+	public static final boolean		USE_SVG				= Boolean.getBoolean("USE_SVG");
 	
 	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
 	
@@ -94,7 +95,11 @@ public class FortyFive extends PApplet {
 				ff.rect(0, 0, ff.width, ff.height);
 			}
 			
-			ff.size(width, height);
+			if (USE_SVG) {
+				ff.size(width, height, "prosvg.SVGOut");
+			} else {
+				ff.size(width, height);
+			}
 
 			ff.widthSpacing = getInt(map, "widthSpacing");
 			ff.heightSpacing = getInt(map, "heightSpacing");
