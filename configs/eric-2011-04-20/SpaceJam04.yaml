@@ -1,0 +1,75 @@
+---
+title:          Space Jam 03
+
+bgcolour:       black
+
+width:          1024
+height:         768
+
+widthSpacing:   2
+heightSpacing:  2
+
+
+images:
+    - name:     nebula
+      file:     /Users/boxysean/Documents/workspace/Processing/images/Nebula.png
+
+    - name:     spacejam
+      file:     /Users/boxysean/Documents/workspace/Processing/images/FutureSpaceJam.png
+
+    - name:     spacejamthresh
+      file:     /Users/boxysean/Documents/workspace/Processing/images/FutureSpaceJamThresh.png
+
+lineA: &id001
+    straightProb:  0.97
+    drawSpeed:     5
+    direction:     "21212121"
+
+    draw:
+        name:          ImageDraw
+        image:         nebula
+        strokeWidth:   1
+        scale:         -10
+        xOffset:       -1
+        yOffset:       -1
+        
+    threshold:
+        - name:        spacejamthresh
+          invert:      true
+          xOffset:     -1
+          yOffset:     -1
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  2
+
+
+lineB: &id002
+    straightProb:  1
+    drawSpeed:     1
+    direction:     "02000200"
+    coordBag:      forward
+
+    draw:
+        name:          ImageDraw
+        image:         spacejam
+        strokeWidth:   1
+        xOffset:       -1
+        yOffset:       -1
+
+    threshold:
+        - name:        spacejamthresh
+          xOffset:     -1
+          yOffset:     -1
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  1
+
+    startArea:
+        - addImage:    [spacejamthresh]
+
+
+lines:          [*id001, *id001, *id001, *id001, *id002]
+...
+

@@ -1,0 +1,84 @@
+---
+
+completePause:  750
+
+includes:
+    - ../configs/Colours.yaml
+
+
+bgcolour:       black
+
+widthSpacing:   15
+heightSpacing:  15
+
+
+southeast: &id005
+    straightProb:  1
+    drawSpeed:     5
+    coordBag:      [2, 1]
+    direction:     "20000000"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   5
+        palette:       primaryLinear1
+
+    startArea:
+        - addRect:     [0, 0, 100, 100]
+
+northeast: &id006
+    <<: *id005
+    direction:    "00000020"
+    coordBag:     [-1, 1]
+
+    startArea:
+        - addRect:     [-100, 0, 100, 100]
+
+northwest: &id007
+    <<: *id005
+    direction:    "00002000"
+    coordBag:     [-1, -2]
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   5
+        palette:       primaryLinear1
+ 
+    startArea:
+        - addRect:     [-100, -100, 100, 100]
+
+southwest: &id008
+    <<: *id007
+    direction:    "00200000"
+    coordBag:     [1, -1]
+
+    startArea:
+        - addRect:     [0, -100, 100, 100]
+
+
+squiggles: &id001
+    drawSpeed:     1
+    coordBag:      centre
+    direction:     "12221000"
+
+    movement:
+        name:          ClingMovement
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   5
+        palette:       primaryLinear2
+
+
+squiggles2: &id002
+    <<: *id001
+    direction:     "10002221"
+
+
+lines:          [*id001, *id002, *id005, *id006, *id007, *id008]
+
+...

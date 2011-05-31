@@ -1,0 +1,33 @@
+--- # DANSE_MID (540, 720, 3, 3, 1, 5, 1, 2, null, "images/danse-mid.jpg", "22202220", null, null, 10, null),
+
+title:          Danse Mid
+
+width:          540
+height:         720
+
+widthSpacing:   3
+heightSpacing:  3
+
+drawSpeedMultiplier:   10
+
+
+images:
+    - name:     danse-mid
+      file:     /Users/boxysean/Desktop/projects/fortyfive/danse-mid.jpg
+
+
+lineA: &id001
+    straightProb:  1.0
+    direction:     "22202220"
+        
+    movement:          
+        name:          IntelligentMovement
+        intelligence:  3
+        
+    draw:
+        name:          ImageDraw
+        image:         danse-mid
+
+lines:          [*id001, *id001, *id001, *id001, *id001]
+...
+

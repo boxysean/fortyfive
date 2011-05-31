@@ -1,0 +1,80 @@
+---
+width:          600
+height:         600
+
+widthSpacing:   2
+heightSpacing:  2
+
+drawSpeedMultiplier:   10
+
+
+images:
+    - name:     comm
+      file:     ../images/MonicaComm.png
+
+    - name:     unity
+      file:     ../images/MonicaUnity.png
+
+comm: &id001
+    straightProb:  0.95
+    drawSpeed:     1
+    direction:     "00122210"
+    coordBag:      centre
+
+    threshold:
+        - name:      comm
+          invert:    true
+          xOffset:     -1
+          yOffset:     -1
+
+        - name:      unity
+          invert:    true
+          xOffset:     -1
+          yOffset:     -1
+        
+        
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        strokeJoin:    miter
+        strokeCap:     round
+
+    startArea:
+        - addImage:    [comm]
+
+
+unity: &id002
+    <<: *id001
+    direction:     "22100012"
+
+    movement:
+        name:          ClingMovement
+ 
+    threshold:
+        - name:      comm
+          invert:    true
+          xOffset:     -1
+          yOffset:     -1
+
+        - name:        unity
+          invert:      true
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        strokeJoin:    miter
+        strokeCap:     round
+
+    startArea:
+        - addImage:    [unity]
+
+
+lines:          [*id001, *id002]
+...
+

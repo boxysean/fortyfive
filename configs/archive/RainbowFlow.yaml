@@ -1,0 +1,60 @@
+---
+title:          Rainbow Flow
+
+width:          800
+height:         600
+
+widthSpacing:   2
+heightSpacing:  2
+
+
+images:
+    - name:     rainbow
+      file:     /Users/boxysean/Desktop/projects/fortyfive/rainbow-gradient.png
+
+
+lineLeftBlack: &id001
+    straightProb:  0.99
+    drawSpeed:     1
+    direction:     "12221000"
+    
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+    
+    startArea:
+        name:          RectangleArea
+        x:             0
+        y:             0
+        width:         3
+        height:        600
+
+
+lineLeftRainbow: &id002
+    <<: *id001
+    direction:     "10001222"
+    
+    drawSpeed: 2
+
+    draw:
+        name:          ImageDraw 
+        image:         rainbow
+        strokeWidth:   1
+
+    startArea:
+        name:          RectangleArea
+        x:             797
+        y:             0
+        width:         3
+        height:        600
+
+
+lines:          [*id001, *id002, *id001, *id002]
+
+drawSpeedMultiplier: 20
+
+...

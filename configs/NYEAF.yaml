@@ -1,0 +1,55 @@
+---
+bgcolour:       white
+
+height: 800
+width: 4000
+
+widthSpacing:   6
+heightSpacing:  6
+
+
+colours:
+    - name:        blue
+      red:         40
+      green:       94
+      blue:        194
+
+
+topLine: &id001
+    straightProb:  0.99
+    drawSpeed:     4
+    direction:     "22000002"
+    coordBag:      [0, 1]
+    
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   2
+        strokeJoin:    bevel
+        strokeCap:     round
+        palette:       blue
+
+white: &id002
+    <<: *id001
+    drawSpeed:     1
+    direction:     "00022200"
+    coordBag:      [0, -1]
+    
+    movement:
+        name:          ClingMovement
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        red:           255
+        green:         255
+        blue:          255
+ 
+
+#lines:          [*id001]
+lines:          [*id001, *id002]
+
+...

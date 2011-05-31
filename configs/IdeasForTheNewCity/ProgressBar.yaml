@@ -1,0 +1,80 @@
+---
+
+completePause:  750
+
+strokeCap:      project
+
+includes:
+    - ../configs/Colours.yaml
+
+
+images:
+    - name:     box
+      file:     ../images/Box400-200.png
+
+
+
+bgcolour:       black
+
+widthSpacing:   10
+heightSpacing:  10
+
+
+left: &id001
+    straightProb:  1
+    drawSpeed:     1
+    coordBag:      [2, 1]
+    direction:     "00020000"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  1
+
+    threshold:
+        - name:        box
+          invert:      true
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   10
+        palette:       primaryLinear1
+
+    startArea:
+        - addImage:    [box]
+
+
+center: &id002
+    straightProb:  1
+    drawSpeed:     2
+    coordBag:      centre
+
+    movement:
+        name:          ClingMovement
+
+    threshold:
+        - name:        box
+          invert:      true
+          xOffset:     -1
+          yOffset:     -1
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   20
+        palette:       primaryLinear2
+
+    startArea:
+        - addRect:     [0, 0, width, height]
+        - removeImage: [box]
+
+outside: &id003
+    <<: *id002
+ 
+    coordBag:          forward
+
+
+
+lines:          [*id001, *id002, *id003]
+
+...

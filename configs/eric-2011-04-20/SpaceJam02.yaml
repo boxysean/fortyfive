@@ -1,0 +1,79 @@
+---
+title:          Space Jam 02
+
+bgcolour:       black
+
+width:          1024
+height:         768
+
+widthSpacing:   4
+heightSpacing:  4
+
+
+images:
+    - name:     looneytunes
+      file:     /Users/boxysean/Documents/workspace/Processing/images/LooneyTunes.png
+
+    - name:     spacejam
+      file:     /Users/boxysean/Documents/workspace/Processing/images/SpaceJamComicSans.png
+
+
+lineA: &id001
+    straightProb:  0.97
+    drawSpeed:     3
+    direction:     "20002000"
+
+    draw:
+        name:          ImageDraw
+        image:         looneytunes
+        strokeWidth:   1
+        scale:         -10
+        xOffset:       -1
+        yOffset:       -1
+        
+    threshold:
+        - name:        looneytunes
+          invert:      true
+          scale:       -10
+          xOffset:     -1
+          yOffset:     -1
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    startArea:
+        - addRect:       [0, 0, width, 5]
+
+
+
+lineWords: &id002
+    straightProb:  0.97
+    direction:     "21212121"
+    drawSpeed:     5
+    
+    threshold:
+        - name:        spacejam
+          scale:       1
+          invert:      true
+          xOffset:     210
+          yOffset:     210
+
+    movement:
+        name:          ClingMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        red:           255
+        green:         255
+        blue:          255
+
+    startArea:
+        - addImage:      [spacejam]
+
+
+lines:          [*id001, *id001, *id001, *id001, *id002]
+#lines:          [*id001]
+...
+

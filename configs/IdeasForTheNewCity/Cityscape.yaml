@@ -1,0 +1,64 @@
+---
+
+completePause:  750
+
+strokeCap:      project
+
+includes:
+    - ../configs/Colours.yaml
+
+
+images:
+    - name:     cityscape
+      file:     ../images/CityscapeOutline.png
+
+
+
+bgcolour:       black
+
+widthSpacing:   10
+heightSpacing:  10
+
+
+bottom: &id001
+    straightProb:  1
+    drawSpeed:     1
+    coordBag:      [0, -1]
+    direction:     "00002000"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  1
+
+    threshold:
+        - name:        cityscape
+          xOffset:     -1
+          yOffset:     -1
+          scale:       1.2
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   15
+        strokeCap:     project
+        palette:       primaryLinear1
+
+    startArea:
+        - addImage:    [cityscape]
+
+bottom2: &id002
+    <<: *id001
+
+    drawSpeed:     2
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   15
+        strokeCap:     project
+        palette:       primaryLinear2
+
+ 
+
+
+lines:          [*id001, *id002]
+
+...

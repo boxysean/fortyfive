@@ -1,0 +1,41 @@
+---
+width:          600
+height:         600
+
+widthSpacing:   2
+heightSpacing:  2
+
+drawSpeedMultiplier:   10
+
+
+images:
+    - name:     brain
+      file:     ../images/BrainOutline.png
+
+
+brain: &id001
+    straightProb:  0.9
+    drawSpeed:     1
+
+    threshold:
+        - name:      brain
+          xOffset:     -1
+          yOffset:     -1
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        strokeJoin:    miter
+        strokeCap:     round
+
+    startArea:
+        - addImage:    [brain]
+
+
+lines:          [*id001]
+...
+

@@ -1,0 +1,71 @@
+---
+title:          Space Jam 03
+
+bgcolour:       black
+
+width:          1024
+height:         768
+
+widthSpacing:   8
+heightSpacing:  8
+
+
+images:
+    - name:     airjordan
+      file:     /Users/boxysean/Documents/workspace/Processing/images/AirJordan.png
+
+    - name:     yellowpurple
+      file:    /Users/boxysean/Documents/workspace/Processing/images/YellowPurpleGradient.png
+
+
+lineA: &id001
+    straightProb:  0.99
+    drawSpeed:     3
+    direction:     "01210121"
+
+    draw:
+        name:          ImageDraw
+        image:         yellowpurple
+        strokeWidth:   2
+        scale:         -10
+        xOffset:       -1
+        yOffset:       -1
+        
+    threshold:
+        - name:        airjordan
+          invert:      false
+          scale:       -10
+          xOffset:     -1
+          yOffset:     -1
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    startArea:
+        - addRect:     [0, 0, 50, height]
+
+
+lineB: &id002
+    <<: *id001
+
+    startArea:
+        - addRect:     [-100, 0, 50, height]
+
+lineC: &id003
+    <<: *id001
+    direction:         "21012101"
+
+    startArea:
+         - addRect:    [50, 0, -100, 50]
+
+lineD: &id004
+    <<: *id003
+
+    startArea:
+         - addRect:    [50, -50, -100, 50]
+
+#lines:          [*id001, *id001, *id001, *id001, *id002]
+lines:          [*id001, *id001, *id002, *id002, *id003, *id004]
+...
+

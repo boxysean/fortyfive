@@ -1,0 +1,46 @@
+---
+title:          Mono
+
+width:          800
+height:         600
+
+widthSpacing:   4
+heightSpacing:  4
+
+
+lineLeftBlue: &id001
+    straightProb:  0.97
+    drawSpeed:     1
+    direction:     "02220000"
+    
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        green:         255
+    
+    startArea:
+        name:          RectangleArea
+        x:             0
+        y:             0
+        width:         80
+        height:        600
+
+
+lineLeftGreen: &id002
+    <<: *id001
+
+    draw:
+        name:          SolidDraw
+        strokeWidth:   1
+        blue:          255
+
+
+lines:          [*id001, *id002, *id001, *id002]
+
+drawSpeedMultiplier: 20
+
+...

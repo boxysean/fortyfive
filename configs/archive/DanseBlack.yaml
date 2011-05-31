@@ -1,0 +1,35 @@
+--- # DANSE_BLACK (540, 720, 2, 2, 2, 10, 1, 2, null, "images/danse-black.jpg", "21212121", null, null, 10, null),
+
+title:          Danse Black
+
+width:          540
+height:         720
+
+widthSpacing:   2
+heightSpacing:  2
+
+drawSpeedMultiplier:   10
+
+
+images:
+    - name:     danse-black
+      file:     /Users/boxysean/Desktop/projects/fortyfive/danse-black.jpg
+
+
+lineA: &id001
+    straightProb:  1.0
+    direction:     "21212121"
+
+    movement:
+        name:          IntelligentMovement
+        intelligence:  3
+
+    draw:
+        name:          ImageDraw
+        image:         danse-black
+
+
+lines:          [*id001, *id001, *id001, *id001, *id001, *id001, *id001, *id001, *id001, *id001]
+
+...
+
