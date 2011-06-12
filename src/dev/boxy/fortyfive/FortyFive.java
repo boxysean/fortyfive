@@ -33,10 +33,12 @@ import dev.boxy.fortyfive.presentation.Presentation;
 
 public class FortyFive extends PApplet {
 	
+	// Future additions to presentation files...
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
 	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("THRESHOLD");
 	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("STARTAREA");
 	public static final boolean		USE_SVG				= Boolean.getBoolean("USE_SVG");
+	public static final boolean		FULLSCREEN			= Boolean.getBoolean("FULLSCREEN");
 	
 	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
 	
@@ -77,6 +79,12 @@ public class FortyFive extends PApplet {
 			ff.width = getInt(map, "width", screen.width);
 			ff.height = getInt(map, "height", screen.height);
 			
+			if (USE_SVG) {
+				ff.size(ff.width, ff.height, "prosvg.SVGOut");
+			} else {
+				ff.size(ff.width, ff.height);
+			}
+			
 			// Parse background colour TODO make better
 			
 			String bgColour = getString(map, "bgcolour", "white");
@@ -95,12 +103,6 @@ public class FortyFive extends PApplet {
 				ff.rect(0, 0, ff.width, ff.height);
 			}
 			
-			if (USE_SVG) {
-				ff.size(width, height, "prosvg.SVGOut");
-			} else {
-				ff.size(width, height);
-			}
-
 			ff.widthSpacing = getInt(map, "widthSpacing");
 			ff.heightSpacing = getInt(map, "heightSpacing");
 			
@@ -1076,6 +1078,10 @@ public class FortyFive extends PApplet {
 	public static void main(String args[]) {
 		FortyFive.args = args;
 		
-		PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
+		if (FULLSCREEN) {
+			PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
+		} else {
+			PApplet.main(new String[] { "dev.boxy.fortyfive.FortyFive" });
+		}
 	}
 }
