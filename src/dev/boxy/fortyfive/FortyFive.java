@@ -33,6 +33,12 @@ public class FortyFive extends PApplet {
 	String currentConfigFile;
 	public int userDrawSpeedMultiplier = 1;
 	
+	protected static FortyFive INSTANCE = null;
+	
+	public static FortyFive getInstance() {
+		return INSTANCE;
+	}
+	
 	class ConfigParser {
 		
 		Set<String> loadedFiles = new HashSet<String>();
@@ -107,7 +113,7 @@ public class FortyFive extends PApplet {
 			
 			List<Map<String, Object>> imageDefList = (List<Map<String, Object>>) map.get("images");
 			
-			ff.imageGridMap = new HashMap<String, ImageGrid>();
+			ImageGridMap imageGridMap = ImageGridMap.getInstance();
 			
 			if (imageDefList != null) {
 				for (Map<String, Object> imageDef : imageDefList) {
@@ -118,7 +124,7 @@ public class FortyFive extends PApplet {
 						System.err.printf("image load warning: could not file for image %s\n", name);
 					}
 					
-					ff.imageGridMap.put(name, imageGridCache.get(ff, name, imageFile, yamlFile.getAbsolutePath()));
+					imageGridMap.add(imageGridCache.get(ff, name, imageFile, yamlFile.getAbsolutePath()));
 				}
 			}
 			
@@ -128,24 +134,24 @@ public class FortyFive extends PApplet {
 			
 			// Parse line templates
 			
-			List<Map<String, Object>> lineTemplateList = (List<Map<String, Object>>) map.get("lines");
+			List<Map<String, Object>> lineFactoryList = (List<Map<String, Object>>) map.get("lines");
 			
-			ff.nLines = lineTemplateList.size();
-			ff.lineTemplates = new LineTemplate[ff.nLines];
+			ff.nLines = lineFactoryList.size();
+			ff.lineTemplates = new LineFactory[ff.nLines];
 			ff.lines = new Line[ff.nLines];
 			
 			int index = 0;
 			
 //			TimingUtils.mark("parse line template total");
 			
-			for (Map<String, Object> lineTemplateDef : lineTemplateList) {
-				double straightProb = getDouble(lineTemplateDef, "straightProb", LineTemplate.DEF_STRAIGHT_PROB);
-				int stepSpeed = getInt(lineTemplateDef, "stepSpeed", LineTemplate.DEF_STEP_SPEED);
-				int drawSpeed = getInt(lineTemplateDef, "drawSpeed", LineTemplate.DEF_DRAW_SPEED);
+			for (Map<String, Object> lineFactoryDef : lineFactoryList) {
+				double straightProb = getDouble(lineFactoryDef, "straightProb", LineFactory.DEF_STRAIGHT_PROB);
+				int stepSpeed = getInt(lineFactoryDef, "stepSpeed", LineFactory.DEF_STEP_SPEED);
+				int drawSpeed = getInt(lineFactoryDef, "drawSpeed", LineFactory.DEF_DRAW_SPEED);
 				
 				// Parse movement parameters
 				
-				Map<String, Object> movementDef = (Map<String, Object>) lineTemplateDef.get("movement");
+				Map<String, Object> movementDef = (Map<String, Object>) lineFactoryDef.get("movement");
 				
 				LineMovement movement = null;
 				
@@ -168,7 +174,7 @@ public class FortyFive extends PApplet {
 				
 				// Parse direction string
 				
-				String directionStr = (String) lineTemplateDef.get("direction");
+				String directionStr = (String) lineFactoryDef.get("direction");
 				int direction[] = new int[8];
 				Arrays.fill(direction, 2);
 				
@@ -182,84 +188,23 @@ public class FortyFive extends PApplet {
 				
 				TimingUtils.markAdd("parse draw");
 				
-				Map<String, Object> drawDef = (Map<String, Object>) lineTemplateDef.get("draw");
+				Map<String, Object> drawDef = (Map<String, Object>) lineFactoryDef.get("draw");
 				
-				LineDraw draw = null;
+				LineDrawFactory lineDrawFactory = null;
 				
 				if (drawDef != null) {
 					String drawName = getString(drawDef, "name", "SolidDraw");
 					
 					if (drawName.equals("SolidDraw")) {
-						ColourPaletteFactory paletteFactory = null;
-						
-						if (drawDef.containsKey("palette")) {
-							ColourPaletteFactoryMap colourPaletteFactories = ColourPaletteFactoryMap.getInstance();
-							String paletteName = (String) drawDef.get("palette");
-							paletteFactory = colourPaletteFactories.get(paletteName);
-							
-							if (paletteFactory == null) {
-								logger.warning("draw init: no such palette %s, skipping", paletteName);
-							}
-						} else if (drawDef.containsKey("red") || drawDef.containsKey("green") || drawDef.containsKey("blue")) {
-							int red = getInt(drawDef, "red", 0);
-							int green = getInt(drawDef, "green", 0);
-							int blue = getInt(drawDef, "blue", 0);
-							ColourFactory colourFactory = new ColourFactory(red, green, blue);
-							paletteFactory = new ColourPaletteFactory(colourFactory);
-						}
-						
-						if (paletteFactory == null) {
-							logger.warning("draw init: no palette defined");
-							paletteFactory = ColourPaletteFactory.DEFAULT;
-						}
-						
-						int strokeWidth = getInt(drawDef, "strokeWidth", 1);
-						String strokeJoinStr = getString(drawDef, "strokeJoin", "miter").toLowerCase();
-						String strokeCapStr = getString(drawDef, "strokeCap", "round").toLowerCase();
-						draw = new SolidDraw(paletteFactory, strokeWidth, strokeJoinStr, strokeCapStr);
+						lineDrawFactory = new SolidDrawFactory(drawDef);
 					} else if (drawName.equals("ImageDraw")) {
-						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
-						String strokeJoinStr = getString(drawDef, "strokeJoin", "miter").toLowerCase();
-						String strokeCapStr = getString(drawDef, "strokeCap", "round").toLowerCase();
-						String image = (String) drawDef.get("image");
-						
-						int xOffset = getInt(drawDef, "xOffset", 0);
-						int yOffset = getInt(drawDef, "yOffset", 0);
-						double scale = getDouble(drawDef, "scale", 1.0);
-						
-						ImageGrid imageGrid = ff.imageGridMap.get(image);
-						
-						if (scale < 0) {
-							int imageWidth = imageGrid.colourPic.width;
-							int imageHeight = imageGrid.colourPic.height;
-							
-							double widthResizeRatio = (double) width / imageWidth;
-							double heightResizeRatio = (double) height / imageHeight;
-							
-							if (scale < -5) {
-								scale = Math.max(widthResizeRatio, heightResizeRatio);
-							} else {
-								scale = Math.min(widthResizeRatio, heightResizeRatio);
-							}
-						}
-						
-						if (xOffset < 0) {
-							// Center the image along x
-							xOffset = (int) (width - (imageGrid.colourPic.width * scale)) / 2;
-						}
-						
-						if (yOffset < 0) {
-							// Center the image along y
-							yOffset = (int) (height - (imageGrid.colourPic.height * scale)) / 2;
-						}
-						
-						draw = new ImageDraw(imageGrid, strokeWidth, xOffset, yOffset, scale, strokeJoinStr, strokeCapStr);
+						lineDrawFactory = new ImageDrawFactory(drawDef);
 					}
 				}
 				
-				if (draw == null) {
+				if (lineDrawFactory == null) {
 					logger.warning("draw init: no draw defined");
-					draw = new SolidDraw(ColourPaletteFactory.DEFAULT, 1, "miter", "round");
+					lineDrawFactory = LineDrawFactory.DEFAULT;
 				}
 				
 				TimingUtils.markAdd("parse draw");
@@ -268,7 +213,7 @@ public class FortyFive extends PApplet {
 				
 				TimingUtils.markAdd("threshold images");
 				
-				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineTemplateDef.get("threshold");
+				List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) lineFactoryDef.get("threshold");
 				
 				List<ImageThreshold> thresholds = new LinkedList<ImageThreshold>();
 				
@@ -280,7 +225,7 @@ public class FortyFive extends PApplet {
 						int thresholdYOffset = getInt(thresholdDef, "yOffset", 0);
 						double thresholdScale = getDouble(thresholdDef, "scale", 1.0);
 						
-						ImageGrid thresholdImage = ff.imageGridMap.get(thresholdName);
+						ImageGrid thresholdImage = imageGridMap.get(thresholdName);
 						
 						if (thresholdImage == null) {
 							System.err.printf("threshold image warning: no such threshold name as %s\n", thresholdName);
@@ -330,7 +275,7 @@ public class FortyFive extends PApplet {
 				try {
 					// Maybe the coord bag is a list of integers
 					
-					List<Integer> coordBagValues = (List<Integer>) lineTemplateDef.get("coordBag");
+					List<Integer> coordBagValues = (List<Integer>) lineFactoryDef.get("coordBag");
 					
 					int leftFirst = coordBagValues.get(0);
 					int topFirst = coordBagValues.get(1);
@@ -343,7 +288,7 @@ public class FortyFive extends PApplet {
 				try {
 					// Maybe the coord bag is a string
 					
-					String coordBagName = getString(lineTemplateDef, "coordBag");
+					String coordBagName = getString(lineFactoryDef, "coordBag");
 					
 					if (coordBagName != null) {
 						if (coordBagName.equalsIgnoreCase("ordered") || coordBagName.equalsIgnoreCase("forward")) {
@@ -366,7 +311,7 @@ public class FortyFive extends PApplet {
 				
 				// Okay, now start initializing the start area
 				
-				List<Map<String, Object>> startAreaDefs = (List<Map<String, Object>>) lineTemplateDef.get("startArea");
+				List<Map<String, Object>> startAreaDefs = (List<Map<String, Object>>) lineFactoryDef.get("startArea");
 				StartArea startArea = null;
 				
 				if (startAreaDefs != null) {
@@ -480,7 +425,7 @@ public class FortyFive extends PApplet {
 
 				// Done!
 
-				ff.lineTemplates[index++] = new LineTemplate(straightProb, stepSpeed, drawSpeed, movement, direction, draw, startArea, thresholds);
+				ff.lineTemplates[index++] = new LineFactory(straightProb, stepSpeed, drawSpeed, movement, direction, lineDrawFactory, startArea, thresholds);
 			}
 			
 //			TimingUtils.mark("parse line template total");
@@ -665,7 +610,7 @@ public class FortyFive extends PApplet {
 	public int		heightSpacing		= 0;
 	
 	int				nLines 				= 1;
-	LineTemplate[]	lineTemplates		= null;
+	LineFactory[]	lineTemplates		= null;
 	
 	int				drawSpeedMultiplier	= 1;
 	
@@ -676,7 +621,6 @@ public class FortyFive extends PApplet {
 	List<Integer>			dlist	= new LinkedList<Integer>();
 	
 	PImage						thresholdPic;
-	HashMap<String, ImageGrid>	imageGridMap;
 	
 	Line[]	lines	= new Line[nLines];
 	
@@ -690,6 +634,8 @@ public class FortyFive extends PApplet {
 	
 	@Override
 	public void setup() {
+		INSTANCE = this;
+		
 		noCursor();
 		
 		Presentation.setMode(new LinearPresentation(this, args[0]));
@@ -996,7 +942,7 @@ public class FortyFive extends PApplet {
 		return pixelToGrid(y, height, rows());
 	}
 	
-	public Line newLine(LineTemplate lineTemplate) {
+	public Line newLine(LineFactory lineTemplate) {
 		int gr = 0;
 		int gc = 0;
 		int gd = -1;

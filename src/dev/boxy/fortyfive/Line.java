@@ -22,11 +22,11 @@ public class Line {
 	
 	public int[] direction;
 	
-	LineTemplate template;
+	LineFactory template;
 	
 	public boolean[][] blocked;
 	
-	public Line(int br, int bc, int bd, FortyFive ff, LineTemplate template) {
+	public Line(int br, int bc, int bd, FortyFive ff, LineFactory template) {
 		cr = br;
 		cc = bc;
 		cd = bd;
@@ -43,7 +43,7 @@ public class Line {
 		
 		this.direction = template.direction;
 		
-		this.draw = template.draw;
+		this.draw = template.draw.get();
 		
 		// Apply threshold image
 		

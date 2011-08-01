@@ -5,7 +5,7 @@ import java.util.*;
 import dev.boxy.fortyfive.draw.*;
 import dev.boxy.fortyfive.movement.*;
 
-public class LineTemplate {
+public class LineFactory implements FortyFiveLoader {
 	
 	public final static double 			DEF_STRAIGHT_PROB 	= 0.80;
 	public final static int 			DEF_STEP_SPEED 		= 1;
@@ -18,11 +18,11 @@ public class LineTemplate {
 	int						drawSpeed			= DEF_DRAW_SPEED;
 	LineMovement			lineMovement		= null;
 	int[]					direction 			= new int[8];
-	LineDraw				draw				= null;
+	LineDrawFactory			draw				= null;
 	StartArea				startArea			= null;
 	List<ImageThreshold>	thresholds			= null;
 	
-	public LineTemplate(double straightProb, int stepSpeed, int drawSpeed, LineMovement lineMovement, int[] direction, LineDraw draw, StartArea startArea, List<ImageThreshold> thresholds) {
+	public LineFactory(double straightProb, int stepSpeed, int drawSpeed, LineMovement lineMovement, int[] direction, LineDrawFactory draw, StartArea startArea, List<ImageThreshold> thresholds) {
 		this.straightProb = straightProb;
 		this.stepSpeed = stepSpeed;
 		this.drawSpeed = drawSpeed;
@@ -35,6 +35,10 @@ public class LineTemplate {
 	
 	public Line newLine(int br, int bc, int bd, FortyFive ff) {
 		return new Line(br, bc, bd, ff, this);
+	}
+	
+	public void loadSettings(Map<String, Object> map) {
+		
 	}
 
 }

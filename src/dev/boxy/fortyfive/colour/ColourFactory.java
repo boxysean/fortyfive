@@ -4,7 +4,7 @@ import java.util.*;
 
 import dev.boxy.fortyfive.*;
 
-public class ColourFactory implements FortyFiveFactory {
+public class ColourFactory implements FortyFiveLoader {
 	
 	protected static int COLOUR_FACTORY_ID = 0;
 	

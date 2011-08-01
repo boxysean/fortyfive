@@ -4,13 +4,12 @@ import java.util.*;
 
 import dev.boxy.fortyfive.*;
 
-public class ColourPaletteFactory implements FortyFiveFactory {
+public class ColourPaletteFactory implements FortyFiveLoader {
 	
 	protected static int COLOUR_PALETTE_FACTORY_ID = 0;
 	
-	public static ColourPaletteFactory DEFAULT = new ColourPaletteFactory(ColourFactory.DEFAULT);
-	
-	protected static final String DEFAULT_ORDER = "linear";
+	public static final ColourPaletteFactory DEFAULT = new ColourPaletteFactory(ColourFactory.DEFAULT);
+	public static final String DEFAULT_ORDER = "linear";
 
 	protected String name;
 	protected String order;
@@ -21,12 +20,12 @@ public class ColourPaletteFactory implements FortyFiveFactory {
 	}
 	
 	public ColourPaletteFactory(ColourFactory... colourFactories) {
+		this.name = getDefaultName();
+		this.order = DEFAULT_ORDER;
+		
 		for (ColourFactory cf : colourFactories) {
 			this.colourFactories.add(cf);
 		}
-		
-		name = getDefaultName();
-		order = DEFAULT_ORDER;
 	}
 	
 	public void loadSettings(Map<String, Object> map) {

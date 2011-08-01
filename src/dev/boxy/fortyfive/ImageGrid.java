@@ -10,10 +10,10 @@ public class ImageGrid {
 
 	FortyFive	ff;
 	
-	String		name;
+	protected String		name;
 	
-	String		colourImage 		= null;
-	PImage		colourPic;
+	protected String		colourImage 		= null;
+	protected PImage		colourPic;
 	
 	/**
 	 * Store the threshold versions of this image per scale
@@ -218,6 +218,18 @@ public class ImageGrid {
 				}
 			}
 		}
+	}
+	
+	public int getWidth() {
+		return colourPic.width;
+	}
+	
+	public int getHeight() {
+		return colourPic.height;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	class Record {
