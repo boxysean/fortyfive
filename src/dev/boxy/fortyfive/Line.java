@@ -26,28 +26,24 @@ public class Line {
 	
 	public boolean[][] blocked;
 	
-	public Line(int br, int bc, int bd, FortyFive ff, LineFactory template) {
+	public Line(int br, int bc, int bd, FortyFive ff, LineFactory lineFactory) {
 		cr = br;
 		cc = bc;
 		cd = bd;
 		
 		this.ff = ff;
-		this.template = template;
+		this.template = lineFactory;
 		
-		this.stepSpeed = template.stepSpeed;
-		this.drawSpeed = template.drawSpeed;
-		
-		this.straightProb = template.straightProb;
-		
-		this.movement = template.lineMovement.clone(this);
-		
-		this.direction = template.direction;
-		
-		this.draw = template.draw.get();
+		this.stepSpeed = lineFactory.stepSpeed;
+		this.drawSpeed = lineFactory.drawSpeed;
+		this.straightProb = lineFactory.straightProb;
+		this.movement = lineFactory.lineMovement.clone(this);
+		this.direction = lineFactory.direction;
+		this.draw = lineFactory.lineDrawFactory.get();
 		
 		// Apply threshold image
 		
-		for (ImageThreshold threshold : template.thresholds) {
+		for (ImageThreshold threshold : lineFactory.thresholds) {
 			if (blocked == null) {
 				blocked = new boolean[ff.rows()][ff.columns()];
 			}
