@@ -39,7 +39,8 @@ public class FortyFive extends PApplet {
 		
 		public ConfigParser(File yamlFile, FortyFive ff) throws Exception {
 			Yaml yaml = new Yaml();
-			
+			Logger logger = Logger.getInstance();
+
 			TimingUtils.reset();
 			
 //			TimingUtils.mark("config start");
@@ -184,8 +185,6 @@ public class FortyFive extends PApplet {
 				Map<String, Object> drawDef = (Map<String, Object>) lineTemplateDef.get("draw");
 				
 				LineDraw draw = null;
-				
-				Logger logger = Logger.getInstance();
 				
 				if (drawDef != null) {
 					String drawName = getString(drawDef, "name", "SolidDraw");

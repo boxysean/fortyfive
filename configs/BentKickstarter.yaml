@@ -1,9 +1,0 @@
-baseDir:         .
-completeFrame:   350
-
-snapshots:
-    - 300
-
-templates:
-    - DCP_3135_45.yaml
-
