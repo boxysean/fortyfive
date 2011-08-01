@@ -8,10 +8,10 @@ public class SolidDraw extends LineDraw {
 	ColourPalette colourPalette;
 	int strokeWidth;
 	
-	public SolidDraw(ColourPalette colourPalette, int strokeWidth, String strokeJoinStr, String strokeCapStr) {
+	public SolidDraw(ColourPaletteFactory colourPaletteFactory, int strokeWidth, String strokeJoinStr, String strokeCapStr) {
 		super(strokeJoinStr, strokeCapStr);
 		
-		this.colourPalette = colourPalette;
+		this.colourPalette = colourPaletteFactory.get();
 		this.strokeWidth = strokeWidth;
 	}
 	
@@ -19,7 +19,10 @@ public class SolidDraw extends LineDraw {
 		ff.strokeWeight(strokeWidth);
 		ff.strokeCap(strokeCap);
 		ff.strokeJoin(strokeJoin);
-		ff.stroke(colourPalette.getRed(), colourPalette.getGreen(), colourPalette.getBlue());
+		
+		Colour colour = colourPalette.current();
+		
+		ff.stroke(colour.red, colour.green, colour.blue);
 		ff.line(px, py, pxx, pyy);
 	}
 	

@@ -70,6 +70,26 @@ public class ConfigParser {
 		return (String) map.get(key);
 	}
 	
+	public static String getString(Map<String, Object> map, String[] keys, String def) {
+		for (String key : keys) {
+			if (map.containsKey(key)) {
+				return (String) map.get(key);
+			}
+		}
+		
+		return def;
+	}
+	
+	public static String getString(Map<String, Object> map, String[] keys) {
+		for (String key : keys) {
+			if (map.containsKey(key)) {
+				return (String) map.get(key);
+			}
+		}
+		
+		return null;
+	}
+	
 	public static int parseInt(List<Object> list, int idx, int n, int def) {
 		try {
 			Object xObj = list.get(idx);

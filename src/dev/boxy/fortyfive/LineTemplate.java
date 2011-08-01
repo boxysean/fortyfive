@@ -2,7 +2,6 @@ package dev.boxy.fortyfive;
 
 import java.util.*;
 
-import dev.boxy.fortyfive.colour.*;
 import dev.boxy.fortyfive.draw.*;
 import dev.boxy.fortyfive.movement.*;
 
@@ -12,14 +11,14 @@ public class LineTemplate {
 	public final static int 			DEF_STEP_SPEED 		= 1;
 	public final static int 			DEF_DRAW_SPEED 		= 1;
 	public final static int[]			DEF_DIRECTION		= new int[] { 2, 2, 2, 2, 2, 2, 2, 2 };
-	public final static LineDraw		DEF_DRAW			= new SolidDraw(ColourPalette.getDefault(), 1, "miter", "round");
+//	public final static LineDraw		DEF_DRAW			= new SolidDraw(BaseColourPalette.getDefault(), 1, "miter", "round");
 	
 	double					straightProb 		= DEF_STRAIGHT_PROB;
 	int						stepSpeed			= DEF_STEP_SPEED;
 	int						drawSpeed			= DEF_DRAW_SPEED;
 	LineMovement			lineMovement		= null;
 	int[]					direction 			= new int[8];
-	LineDraw				draw				= DEF_DRAW;
+	LineDraw				draw				= null;
 	StartArea				startArea			= null;
 	List<ImageThreshold>	thresholds			= null;
 	

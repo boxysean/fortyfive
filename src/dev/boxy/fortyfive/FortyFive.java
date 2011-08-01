@@ -1,41 +1,22 @@
 package dev.boxy.fortyfive;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
 
-import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.*;
 
-import processing.core.PApplet;
-import processing.core.PImage;
-import dev.boxy.fortyfive.colour.Colour;
-import dev.boxy.fortyfive.colour.ColourPalette;
-import dev.boxy.fortyfive.coordinatebag.CentreBag;
-import dev.boxy.fortyfive.coordinatebag.CoordinateBag;
-import dev.boxy.fortyfive.coordinatebag.OrderedBag;
-import dev.boxy.fortyfive.coordinatebag.RandomBag;
-import dev.boxy.fortyfive.draw.ImageDraw;
-import dev.boxy.fortyfive.draw.LineDraw;
-import dev.boxy.fortyfive.draw.SolidDraw;
-import dev.boxy.fortyfive.movement.ClingMovement;
-import dev.boxy.fortyfive.movement.IntelligentMovement;
-import dev.boxy.fortyfive.movement.LineMovement;
-import dev.boxy.fortyfive.presentation.LinearPresentation;
-import dev.boxy.fortyfive.presentation.Presentation;
+import processing.core.*;
+import dev.boxy.fortyfive.colour.*;
+import dev.boxy.fortyfive.coordinatebag.*;
+import dev.boxy.fortyfive.draw.*;
+import dev.boxy.fortyfive.movement.*;
+import dev.boxy.fortyfive.presentation.*;
 
 public class FortyFive extends PApplet {
 	
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
-	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("THRESHOLD");
-	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("STARTAREA");
+	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("SHOW_THRESHOLD");
+	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("SHOW_STARTAREA");
 	
 	public static final int			IMAGE_THRESHOLD_FUDGE_FACTOR = 7; //pixels
 	
@@ -204,35 +185,39 @@ public class FortyFive extends PApplet {
 				
 				LineDraw draw = null;
 				
+				Logger logger = Logger.getInstance();
+				
 				if (drawDef != null) {
 					String drawName = getString(drawDef, "name", "SolidDraw");
 					
 					if (drawName.equals("SolidDraw")) {
-						ColourPalette palette = null;
+						ColourPaletteFactory paletteFactory = null;
 						
 						if (drawDef.containsKey("palette")) {
+							ColourPaletteFactoryMap colourPaletteFactories = ColourPaletteFactoryMap.getInstance();
 							String paletteName = (String) drawDef.get("palette");
-							palette = ColourPalette.get(paletteName);
+							paletteFactory = colourPaletteFactories.get(paletteName);
 							
-							if (palette == null) {
-								System.err.printf("draw init warning: no such palette %s, skipping\n", paletteName);
+							if (paletteFactory == null) {
+								logger.warning("draw init: no such palette %s, skipping", paletteName);
 							}
 						} else if (drawDef.containsKey("red") || drawDef.containsKey("green") || drawDef.containsKey("blue")) {
 							int red = getInt(drawDef, "red", 0);
 							int green = getInt(drawDef, "green", 0);
 							int blue = getInt(drawDef, "blue", 0);
-							String colourName = Colour.getDefaultName();
-							palette = new Colour(colourName, red, green, blue);
+							ColourFactory colourFactory = new ColourFactory(red, green, blue);
+							paletteFactory = new ColourPaletteFactory(colourFactory);
 						}
 						
-						if (palette == null) {
-							palette = ColourPalette.getDefault();
+						if (paletteFactory == null) {
+							logger.warning("draw init: no palette defined");
+							paletteFactory = ColourPaletteFactory.DEFAULT;
 						}
 						
 						int strokeWidth = getInt(drawDef, "strokeWidth", 1);
 						String strokeJoinStr = getString(drawDef, "strokeJoin", "miter").toLowerCase();
 						String strokeCapStr = getString(drawDef, "strokeCap", "round").toLowerCase();
-						draw = new SolidDraw(palette, strokeWidth, strokeJoinStr, strokeCapStr);
+						draw = new SolidDraw(paletteFactory, strokeWidth, strokeJoinStr, strokeCapStr);
 					} else if (drawName.equals("ImageDraw")) {
 						int strokeWidth = getInt(drawDef, "strokeWidth", 0);
 						String strokeJoinStr = getString(drawDef, "strokeJoin", "miter").toLowerCase();
@@ -274,7 +259,8 @@ public class FortyFive extends PApplet {
 				}
 				
 				if (draw == null) {
-					draw = new SolidDraw(ColourPalette.getDefault(), 1, "miter", "round");
+					logger.warning("draw init: no draw defined");
+					draw = new SolidDraw(ColourPaletteFactory.DEFAULT, 1, "miter", "round");
 				}
 				
 				TimingUtils.markAdd("parse draw");
@@ -538,13 +524,29 @@ public class FortyFive extends PApplet {
 			
 			// Parse colours
 			
-			Colour.init(map);
+			ColourFactoryMap colourFactories = ColourFactoryMap.getInstance();
+			ColourPaletteFactoryMap colourPaletteFactories = ColourPaletteFactoryMap.getInstance();
+			
+			List<Map<String, Object>> colourList = (List<Map<String, Object>>) map.get("colours");
+			
+			if (colourList != null) {
+				for (Map<String, Object> colour : colourList) {
+					ColourFactory colourFactory = new ColourFactory(colour);
+					colourFactories.add(colourFactory);
+					colourPaletteFactories.add(new ColourPaletteFactory(colourFactory));
+				}
+			}
 			
 			// Parse colour palettes
 			
-			ColourPalette.init(map);
+			List<Map<String, Object>> colourPaletteList = (List<Map<String, Object>>) map.get("colourPalettes");
 			
-			ColourPalette.map.putAll(Colour.map);
+			if (colourPaletteList != null) {
+				for (Map<String, Object> colourPalette : colourPaletteList) {
+					ColourPaletteFactory colourPaletteFactory = new ColourPaletteFactory(colourPalette);
+					colourPaletteFactories.add(colourPaletteFactory);
+				}
+			}
 		}
 		
 		public int getInt(Map<String, Object> map, String key) {
@@ -681,6 +683,8 @@ public class FortyFive extends PApplet {
 	
 	boolean	pause	= false;
 	
+	int[] speedRem	= new int[nLines];
+	
 	public void loadSettings(String configFile) throws Exception {
 		ConfigParser cp = new ConfigParser(new File("../configs/" + configFile), this);
 	}
@@ -784,24 +788,63 @@ public class FortyFive extends PApplet {
 			
 			boolean finished = true;
 			
+			/*
+			 * DrawSpeed mode is (a) for each line and (b) for each draw speed
+			 */
+			
+//			for (int i = 0; i < nLines; i++) {
+//				Line line = lines[i];
+//				
+//				int multiplier = userDrawSpeedMultiplier;
+//				
+//				if (line != null) {
+//					for (int j = 0; j < line.drawSpeed * multiplier; j++) {
+//						if (!line.forwardDraw()) {
+//							line = newLine(lineTemplates[i]);
+//							lines[i] = line;
+//						}
+//						
+//						TimingUtils.markAdd("draw");
+//						
+//						if (line == null) {
+//							break;
+//						}
+//						
+//						finished = false;
+//					}
+//				}
+//			}
+			
+			/*
+			 * DrawSpeed mode is (a) for each draw speed and (b) for each line
+			 */
+			
+			if (speedRem == null || speedRem.length != nLines) {
+				speedRem = new int[nLines];
+			}
+			
 			for (int i = 0; i < nLines; i++) {
-				Line line = lines[i];
+				if (lines[i] != null) {
+					speedRem[i] = lines[i].drawSpeed * userDrawSpeedMultiplier;
+				}
+			}
+			
+			boolean complete = false;
+			
+			while (!complete) {
+				complete = true;
 				
-				int multiplier = userDrawSpeedMultiplier;
-				
-				if (line != null) {
-					for (int j = 0; j < line.drawSpeed * multiplier; j++) {
+				for (int i = 0; i < nLines; i++) {
+					Line line = lines[i];
+					
+					if (line != null && speedRem[i] > 0) {
 						if (!line.forwardDraw()) {
 							line = newLine(lineTemplates[i]);
 							lines[i] = line;
 						}
 						
-						TimingUtils.markAdd("draw");
-						
-						if (line == null) {
-							break;
-						}
-						
+						speedRem[i]--;
+						complete = false;
 						finished = false;
 					}
 				}

@@ -11,6 +11,8 @@ public class TimingUtils {
 	
 	public static Set<String> markAddTags = new HashSet<String>();
 	
+	protected static Logger logger = Logger.getInstance();
+	
 	public static void mark(String tag) {
 		if (!isEnabled()) {
 			return;
@@ -72,7 +74,7 @@ public class TimingUtils {
 			prepend = "  ";
 		}
 		
-		System.out.printf("%s- %s: %.3f\n", prepend, tag, millis / 1000.0);
+		logger.timing("%s- %s: %.3f", prepend, tag, millis / 1000.0);
 	}
 	
 	public static void reset() {
