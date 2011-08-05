@@ -16,7 +16,6 @@ import dev.boxy.fortyfive.utils.*;
 
 public class SceneFactory extends SceneGeometry {
 	
-	protected int completePause;
 	protected List<String> lineNames;
 	protected String bgColour;
 	protected int frameRate;
@@ -41,21 +40,23 @@ public class SceneFactory extends SceneGeometry {
 	public Scene get() {
 		return new Scene(this, new ArrayList<ColourFactory>(colourFactories.values()), new ArrayList<ColourPaletteFactory>(colourPaletteFactories.values()),
 				new ArrayList<LineDrawFactory>(lineDrawFactories.values()), new ArrayList<StartAreaFactory>(startAreaFactories.values()),
-				lineNames, completePause, bgColour, widthSpacing, heightSpacing, frameRate, drawSpeedMultiplier);
+				lineNames, bgColour, widthSpacing, heightSpacing, frameRate, drawSpeedMultiplier);
 	}
 	
 	public void loadSettings(Map<String, Object> map) {
-		Logger logger = Logger.getInstance();
-		
 		// Parse background colour TODO make better, use colour palettes!
 		
-		completePause = ConfigParser.getInt(map, "completePause", 0);
 		bgColour = ConfigParser.getString(map, "bgcolour", "white");
 		widthSpacing = ConfigParser.getInt(map, "widthSpacing");
 		heightSpacing = ConfigParser.getInt(map, "heightSpacing");
 		frameRate = ConfigParser.getInt(map, "frameRate", 30);
 		drawSpeedMultiplier = ConfigParser.getInt(map, "drawSpeedMultiplier", 1);
-		
+		lineNames = (List<String>) map.get("deploy");
+
+		loadSettings2(map);
+	}
+	
+	public void loadSettings2(Map<String, Object> map) {
 		loadIncludes(map);
 		
 		// Parse colours
@@ -141,12 +142,12 @@ public class SceneFactory extends SceneGeometry {
 				String type = ConfigParser.getString(drawDef, new String[] { "type", "mode" }, "SolidDraw");
 				LineDrawFactory lineDrawFactory = null;
 				
-				if (type.equals("SolidDraw")) {
+				if (type.toLowerCase().startsWith(("solid"))) {
 					lineDrawFactory = new SolidDrawFactory(this, drawDef);
-				} else if (type.equals("ImageDraw")) {
+				} else if (type.toLowerCase().equals("image")) {
 					lineDrawFactory = new ImageDrawFactory(this, drawDef);
 				} else {
-					logger.warning("unknown draw type %s", type);
+					Logger.getInstance().warning("unknown draw type %s", type);
 				}
 				
 				lineDrawFactories.put(lineDrawFactory.getName(), lineDrawFactory);
@@ -168,14 +169,12 @@ public class SceneFactory extends SceneGeometry {
 		
 		List<Map<String, Object>> lineFactoryList = (List<Map<String, Object>>) map.get("lines");
 		
-		for (Map<String, Object> lineFactoryDef : lineFactoryList) {
-			LineFactory lineFactory = new LineFactory(this, lineFactoryDef);
-			lineFactories.put(lineFactory.getName(), lineFactory);
+		if (lineFactoryList != null) {
+			for (Map<String, Object> lineFactoryDef : lineFactoryList) {
+				LineFactory lineFactory = new LineFactory(this, lineFactoryDef);
+				lineFactories.put(lineFactory.getName(), lineFactory);
+			}
 		}
-		
-		// Parse line names
-		
-		lineNames = (List<String>) map.get("deploy");
 	}
 	
 	public void loadIncludes(Map<String, Object> map) {
@@ -186,15 +185,14 @@ public class SceneFactory extends SceneGeometry {
 		if (includes != null) {
 			for (String include : includes) {
 				if (!loadedFiles.contains(include)) {
+					Logger.getInstance().log("loading %s", include);
 					try {
 						Yaml yaml = new Yaml();
 						Map<String, Object> includeMap = (Map<String, Object>) yaml.load(new FileReader(include));
 						loadedFiles.add(include);
-						loadIncludes(includeMap);
+						loadSettings2(includeMap);
 					} catch (FileNotFoundException e) {
-						System.err.printf("innocentLoad warning: could not load %s because not found, full path %s", include, new File(include).getAbsolutePath());
-					} catch (Exception e) {
-						System.err.printf("innocentLoad warning: could not load %s due to %s", include, e.getMessage());
+						Logger.getInstance().warning("loadIncludes: could not load %s because not found, full path %s", include, new File(include).getAbsolutePath());
 					}
 				}
 			}

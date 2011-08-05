@@ -18,7 +18,6 @@ public class Scene extends SceneGeometry {
 
 	protected SceneFactory sceneFactory;
 	
-	protected int completePause;
 	protected int drawSpeedMultiplier;
 	protected List<String> lineNames = new ArrayList<String>();
 
@@ -43,7 +42,7 @@ public class Scene extends SceneGeometry {
 	
 	public Scene(SceneFactory sceneFactory, List<ColourFactory> colourFactories, List<ColourPaletteFactory> colourPaletteFactories,
 			List<LineDrawFactory> lineDrawFactories, List<StartAreaFactory> startAreaFactories, List<String> lineNames, 
-			int completePause, String bgColour, int widthSpacing, int heightSpacing, int frameRate, int drawSpeedMultiplier) {
+			String bgColour, int widthSpacing, int heightSpacing, int frameRate, int drawSpeedMultiplier) {
 		super(widthSpacing, heightSpacing);
 		
 		this.sceneFactory = sceneFactory;
@@ -73,8 +72,6 @@ public class Scene extends SceneGeometry {
 		this.nLines = lineNames.size();
 		this.lines = new Line[nLines];
 		this.speedRem = new int[nLines];
-		
-		this.completePause = completePause;
 		
 		this.grid = new boolean[ff.getHeight()][ff.getWidth()];
 		this.drawSpeedMultiplier = 1;
@@ -387,10 +384,6 @@ public class Scene extends SceneGeometry {
 	
 	public void markGrid(int r, int c) {
 		grid[r][c] = true;
-	}
-	
-	public int getCompletePause() {
-		return completePause;
 	}
 	
 }

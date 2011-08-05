@@ -33,16 +33,17 @@ public class FortyFive extends PApplet {
 	
 	protected int userDrawSpeedMultiplier = 1;
 	
-	protected SceneFactory sceneFactory;
+	protected Map<String, SceneFactory> sceneFactories = new HashMap<String, SceneFactory>();
+	
 	protected Scene scene;
 	
 	protected boolean pause = false;
 	
-	public SceneFactory getSceneFactory() {
-		return sceneFactory;
-	}
-	
 	public SceneFactory loadSettings(String configFile) throws Exception {
+		if (sceneFactories.containsKey(configFile)) {
+			return sceneFactories.get(configFile);
+		}
+		
 		Yaml yaml = new Yaml();
 		Logger logger = Logger.getInstance();
 
@@ -56,11 +57,17 @@ public class FortyFive extends PApplet {
 			throw e;
 		}
 		
+		// TODO these should almost be in the master template
+		
 		int width = ConfigParser.getInt(map, "width", screen.width);
 		int height = ConfigParser.getInt(map, "height", screen.height);
 		size(width, height);
 		
-		return new SceneFactory(map);
+		SceneFactory sceneFactory = new SceneFactory(map);
+		
+		sceneFactories.put(configFile, sceneFactory);
+		
+		return sceneFactory;
 	}
 	
 	@Override
@@ -80,14 +87,7 @@ public class FortyFive extends PApplet {
 	
 	public void queueConfig(String configFile) {
 		queuedConfig = configFile;
-		
-		TimingUtils.print("forwardDraw()");
-		TimingUtils.print("forwardDraw() draw line");
-		TimingUtils.print("forward()");
-		TimingUtils.print("cling forwardOnce()");
-		TimingUtils.print("intelligent forwardOnce()");
 		TimingUtils.reset();
-
 	}
 	
 	private void setup(String configFile) {
@@ -125,12 +125,6 @@ public class FortyFive extends PApplet {
 		
 		if (!pause) {
 			if (scene.draw()) {
-				try {
-					Thread.sleep(scene.getCompletePause());
-				} catch (Exception e) {
-					
-				}
-				
 				presentation.onFinished();
 				ITERATIONS++;
 			} else {
@@ -149,10 +143,6 @@ public class FortyFive extends PApplet {
 		switch (key) {
 		case ' ':
 			pause = !pause;
-			break;
-			
-		case 'c':
-			reset();
 			break;
 		}
 	}
@@ -174,11 +164,6 @@ public class FortyFive extends PApplet {
 			
 			break;
 		}
-	}
-	
-	public void reset() {
-		ITERATIONS++;
-		scene = sceneFactory.get();
 	}
 	
 	public int getUserDrawSpeedMultiplier() {

@@ -8,28 +8,29 @@ import dev.boxy.fortyfive.utils.*;
 
 public class ImageThresholdFactory implements ConfigLoader {
 	
-//	protected SceneFactory sceneFactory;
+	protected SceneFactory sceneFactory;
 	
 	protected String name;
-	protected ImageGrid imageGridName;
+	protected String image;
 	protected boolean invert;
 	protected int xOffset;
 	protected int yOffset;
 	protected double scale;
 	
 	public ImageThresholdFactory(SceneFactory sceneFactory, Map<String, Object> map) {
-//		this.sceneFactory = sceneFactory;
+		this.sceneFactory = sceneFactory;
 		loadSettings(sceneFactory, map);
 	}
 	
 	public ImageThreshold get() {
-		return new ImageThreshold(name, imageGridName, invert, xOffset, yOffset, scale);
+		return new ImageThreshold(sceneFactory, name, image, invert, xOffset, yOffset, scale);
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
 		FortyFive ff = FortyFive.getInstance();
 		
 		name = (String) map.get("name");
+		image = (String) map.get("image");
 		invert = ConfigParser.getBoolean(map, "invert", false);
 		xOffset = ConfigParser.getInt(map, "xOffset", 0);
 		yOffset = ConfigParser.getInt(map, "yOffset", 0);

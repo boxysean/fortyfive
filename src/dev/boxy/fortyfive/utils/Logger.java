@@ -3,11 +3,11 @@ package dev.boxy.fortyfive.utils;
 public class Logger {
 	
 	protected static String PRE_PRINTF = "%12s ";
-	protected static String TIMING_PRE = String.format(PRE_PRINTF, "timing ++");
-	protected static String WARNING_PRE = String.format(PRE_PRINTF, "warning +++");
-	protected static String ERROR_PRE = String.format(PRE_PRINTF, "error ++++");
+	protected static String TIMING_PRE = String.format(PRE_PRINTF, "timing +++");
+	protected static String WARNING_PRE = String.format(PRE_PRINTF, "warning ++++");
+	protected static String ERROR_PRE = String.format(PRE_PRINTF, "error +++++");
 	protected static String DEBUG_PRE = String.format(PRE_PRINTF, "debug +");
-	protected static String LOG_PRE = String.format(PRE_PRINTF, "log ");
+	protected static String LOG_PRE = String.format(PRE_PRINTF, "log ++");
 	
 	private Logger() {
 		

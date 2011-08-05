@@ -226,6 +226,11 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 		case 's':
 			snapshot();
 			break;
+			
+		case 'c':
+			apply();
+			break;
+
 		}
 	}
 	
