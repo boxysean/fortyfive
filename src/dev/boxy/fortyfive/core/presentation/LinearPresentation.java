@@ -1,24 +1,16 @@
 package dev.boxy.fortyfive.core.presentation;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
 
-import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.*;
 
-import oscP5.OscMessage;
-import oscP5.OscP5;
-import dev.boxy.fortyfive.FortyFive;
+import oscP5.*;
+import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.utils.*;
 
-public class LinearPresentation extends PresentationMode implements KeyListener {
+public class LinearPresentation implements Presentation {
 	
 	public static final int MODE_REPEAT = 0;
 	public static final int MODE_LINEAR = 1;
@@ -113,12 +105,22 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 	}
 	
 	public void next() {
-		idx++;
+		next(1);
+	}
+	
+	public void next(int x) {
+		idx += x;
 		
 		int nFiles = templates.length;
 		
 		if (idx >= nFiles) {
 			idx -= nFiles;
+		} else if (idx < 0) {
+			idx += nFiles;
+		}
+		
+		if (idx >= nFiles || idx < 0) {
+			idx %= nFiles;
 		}
 		
 		apply();
@@ -138,14 +140,6 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 	
 	public String getCurrentFile() {
 		return baseDir + File.separatorChar + templates[idx];
-	}
-	
-	public void onKey(char key) {
-		if (key == 'n') {
-			next();
-		} else if (key == 'p') {
-			previous();
-		}
 	}
 	
 	public void apply() {
@@ -190,52 +184,8 @@ public class LinearPresentation extends PresentationMode implements KeyListener 
 		next();
 	}
 	
-	public void keyPressed(KeyEvent e) {
-	    int keyCode = e.getKeyCode();
-	    
-		switch (keyCode) {
-		case KeyEvent.VK_RIGHT:
-			next();
-			
-			break;
-			
-		case KeyEvent.VK_LEFT:
-			previous();
-			
-			break;
-		}
-	}
-	
-	public void keyReleased(KeyEvent e) {
-	}
-
-	public void keyTyped(KeyEvent e) {
-		switch (e.getKeyChar()) {
-		case 'q':
-			mode = MODE_REPEAT;
-			break;
-			
-		case 'w':
-			mode = MODE_LINEAR;
-			break;
-			
-		case 'e':
-			mode = MODE_RANDOM;
-			break;
-			
-		case 's':
-			snapshot();
-			break;
-			
-		case 'c':
-			apply();
-			break;
-
-		}
-	}
-	
 	public void snapshot() {
-		System.out.println("Snapshot!");
+		Logger.getInstance().log("Snapshot!");
 		ff.save(String.format("%05d.png", snapshotId++));
 	}
 	

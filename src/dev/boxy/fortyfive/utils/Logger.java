@@ -63,4 +63,23 @@ public class Logger {
 		System.err.printf(ERROR_PRE + s + '\n', o);
 	}
 	
+	public void map(boolean[][] map) {
+		if (map == null) {
+			log("map: null");
+			return;
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for (boolean[] ma : map) {
+			sb.setLength(0);
+			
+			for (boolean m : ma) {
+				sb.append(m ? 'X' : ' ');
+			}
+			
+			log(sb.toString());
+		}
+	}
+	
 }

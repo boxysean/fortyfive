@@ -1,6 +1,6 @@
 package dev.boxy.fortyfive.core.draw;
 
-import dev.boxy.fortyfive.*;
+import processing.core.*;
 import dev.boxy.fortyfive.core.colour.*;
 
 public class SolidDraw extends LineDraw {
@@ -15,15 +15,19 @@ public class SolidDraw extends LineDraw {
 		this.strokeWidth = strokeWidth;
 	}
 	
-	public void drawLine(FortyFive ff, int gr, int gc, int grr, int gcc, float px, float py, float pxx, float pyy) {
-		ff.strokeWeight(strokeWidth);
-		ff.strokeCap(strokeCap);
-		ff.strokeJoin(strokeJoin);
+	public void drawLine(PGraphics pg, int gr, int gc, int grr, int gcc, float px, float py, float pxx, float pyy) {
+		pg.beginDraw();
+		
+		pg.strokeWeight(strokeWidth);
+		pg.strokeCap(strokeCap);
+		pg.strokeJoin(strokeJoin);
 		
 		Colour colour = colourPalette.current();
 		
-		ff.stroke(colour.red, colour.green, colour.blue);
-		ff.line(px, py, pxx, pyy);
+		pg.stroke(colour.red, colour.green, colour.blue);
+		pg.line(px, py, pxx, pyy);
+		
+		pg.endDraw();
 	}
 	
 }

@@ -1,5 +1,6 @@
 package dev.boxy.fortyfive.core.draw;
 
+import processing.core.*;
 import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.scene.*;
@@ -54,10 +55,12 @@ public class ImageDraw extends LineDraw {
 		}
 	}
 	
-	public void drawLine(FortyFive ff, int gr, int gc, int grr, int gcc, float px, float py, float pxx, float pyy) {
-		ff.strokeWeight(strokeWidth);
-		ff.strokeCap(strokeCap);
-		ff.strokeJoin(strokeJoin);
+	public void drawLine(PGraphics g, int gr, int gc, int grr, int gcc, float px, float py, float pxx, float pyy) {
+		g.beginDraw();
+		
+		g.strokeWeight(strokeWidth);
+		g.strokeCap(strokeCap);
+		g.strokeJoin(strokeJoin);
 		
 		float pxm = (px + pxx) / 2.0f;
 		float pym = (py + pyy) / 2.0f;
@@ -68,10 +71,12 @@ public class ImageDraw extends LineDraw {
 		int cgrr = scene.yToRow(scene.rowToY(gr) - yOffset);
 		int cgcc = scene.xToColumn(scene.columnToX(gc) - xOffset);
 		
-		ff.stroke(grid.colourAt(cgr, cgc, scale));
-		ff.line(px, py, pxm, pym);
-		ff.stroke(grid.colourAt(cgrr, cgcc, scale));
-		ff.line(pxm, pym, pxx, pyy);
+		g.stroke(grid.colourAt(cgr, cgc, scale));
+		g.line(px, py, pxm, pym);
+		g.stroke(grid.colourAt(cgrr, cgcc, scale));
+		g.line(pxm, pym, pxx, pyy);
+		
+		g.endDraw();
 	}
 	
 }

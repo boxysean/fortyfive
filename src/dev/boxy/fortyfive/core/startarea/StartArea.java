@@ -2,6 +2,7 @@ package dev.boxy.fortyfive.core.startarea;
 
 import java.util.*;
 
+import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.scene.*;
 
@@ -14,13 +15,15 @@ public class StartArea {
 	protected int gr;
 	protected int gc;
 	protected int idx;
+	protected GridLayer gridLayer;
 	
 	protected List<Coordinate> coords = new ArrayList<Coordinate>(); // remaining available coordinates
 
-	public StartArea(Scene scene, String name, List<Coordinate> coords) {
+	public StartArea(Scene scene, String name, List<Coordinate> coords, GridLayer gridLayer) {
 		this.scene = scene;
 		this.name = name;
 		this.coords = coords;
+		this.gridLayer = gridLayer;
 	}
 	
 	/**
@@ -64,6 +67,10 @@ public class StartArea {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public GridLayer getGridLayer() {
+		return gridLayer;
 	}
 	
 }

@@ -8,6 +8,12 @@ import processing.core.*;
 
 public class ImageGrid {
 	
+	public static final int MODE_AND = 0;
+	public static final int MODE_OR = 1;
+	public static final int MODE_XOR = 2;
+	public static final int MODE_NOR = 3;
+	public static final int MODE_NAND = 4;
+	
 	public static final int			MIN_THRESHOLD_VALUE		= 50;
 
 	protected FortyFive ff;
@@ -173,7 +179,7 @@ public class ImageGrid {
 		return colourGrid;
 	}
 	
-	public void applyThreshold(boolean[][] blocked, boolean invert, int xOffset, int yOffset, double scale) {
+	public void applyThreshold(boolean[][] blocked, boolean invert, int xOffset, int yOffset, double scale, int mode) {
 		boolean[][] threshold = getThreshold(scale);
 		
 		int trows = threshold.length;
@@ -200,12 +206,26 @@ public class ImageGrid {
 					break;
 				}
 				
-				blocked[tr][tc] |= (threshold[r][c] ^ invert);
-				
-				if (FortyFive.SHOW_THRESHOLD && blocked[tr][tc]) {
-					ff.fill(255, 0, 0, 128);
-					ff.noStroke();
-					ff.rect(tc * sceneFactory.getWidthSpacing(), tr * sceneFactory.getHeightSpacing(), sceneFactory.getWidthSpacing(), sceneFactory.getHeightSpacing());
+				switch (mode) {
+				case MODE_OR:
+					blocked[tr][tc] |= (threshold[r][c] ^ invert);
+					break;
+					
+				case MODE_AND:
+					blocked[tr][tc] &= (threshold[r][c] ^ invert);
+					break;
+					
+				case MODE_XOR:
+					blocked[tr][tc] ^= (threshold[r][c] ^ invert);
+					break;
+					
+				case MODE_NOR:
+					blocked[tr][tc] = !blocked[tr][tc] || !(threshold[r][c] ^ invert);
+					break;
+					
+				case MODE_NAND:
+					blocked[tr][tc] = !blocked[tr][tc] && !(threshold[r][c] ^ invert);
+					break;
 				}
 			}
 		}
@@ -217,6 +237,14 @@ public class ImageGrid {
 	
 	public int getHeight() {
 		return image.height;
+	}
+	
+	public int getRows() {
+		return sceneFactory.rows(image.width);
+	}
+	
+	public int getColumns() {
+		return sceneFactory.columns(image.height);
 	}
 	
 	public String getName() {

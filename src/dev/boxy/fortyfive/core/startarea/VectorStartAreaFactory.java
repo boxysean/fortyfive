@@ -3,8 +3,6 @@ package dev.boxy.fortyfive.core.startarea;
 import java.util.*;
 
 import dev.boxy.fortyfive.*;
-import dev.boxy.fortyfive.core.coordinatebag.*;
-import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
 
@@ -18,6 +16,7 @@ public class VectorStartAreaFactory implements ConfigLoader {
 	protected String name = getDefaultName();
 	protected boolean blocked = false;
 	protected List<StartAreaShape> shapes = new ArrayList<StartAreaShape>();
+	protected List<String> imageThresholdNames;
 	protected String coordBagName;
 	
 	public VectorStartAreaFactory(SceneFactory sceneFactory, Map<String, Object> map) {
@@ -26,7 +25,7 @@ public class VectorStartAreaFactory implements ConfigLoader {
 	}
 	
 	public StartAreaFactoryJob get() {
-		return new StartAreaFactoryJob(sceneFactory, name, blocked, shapes, coordBagName);
+		return new StartAreaFactoryJob(sceneFactory, name, blocked, shapes, imageThresholdNames, coordBagName);
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
@@ -47,26 +46,14 @@ public class VectorStartAreaFactory implements ConfigLoader {
 			shapes.add(new Rectangle(sceneFactory, x, y, width, height, false));
 		}
 		
-		if (map.containsKey("addImage")) {
-			List<Object> image = (List<Object>) map.get("addImage");
+		if (map.containsKey("image")) {
+			Object o = map.get("image");
 			
-			// Allow some fudge factor in the config for extra flexibility. Positive offsets shrink the side.
-			
-			String imageName = (String) image.get(0);
-			int topOffset = ConfigParser.getInt(image, 1, 0);
-			int rightOffset = ConfigParser.getInt(image, 2, 0);
-			int bottomOffset = ConfigParser.getInt(image, 3, 0);
-			int leftOffset = ConfigParser.getInt(image, 4, 0);
-			
-			ImageThreshold imageThreshold = sceneFactory.getImageThreshold(imageName);
-			
-			if (imageThreshold != null) {
-				int x = imageThreshold.getXOffset() + leftOffset;
-				int y = imageThreshold.getYOffset() + topOffset;
-				int width = (int) imageThreshold.getWidth() - leftOffset - rightOffset;
-				int height = (int) imageThreshold.getHeight() - topOffset - bottomOffset;
-				
-				shapes.add(new Rectangle(sceneFactory, x + IMAGE_THRESHOLD_FUDGE_FACTOR, y + IMAGE_THRESHOLD_FUDGE_FACTOR, width - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, height - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, false));
+			if (o instanceof List<?>) {
+				imageThresholdNames = (List<String>) o;
+			} else if (o instanceof String) {
+				imageThresholdNames = new ArrayList<String>();
+				imageThresholdNames.add((String) o);
 			}
 		}
 		
@@ -81,26 +68,26 @@ public class VectorStartAreaFactory implements ConfigLoader {
 			shapes.add(new Rectangle(sceneFactory, x, y, width, height, true));
 		}
 		
-		if (map.containsKey("removeImage")) {
-			List<Object> image = (List<Object>) map.get("removeImage");
-			
-			String imageName = (String) image.get(0);
-			int topOffset = ConfigParser.getInt(image, 1, 0);
-			int rightOffset = ConfigParser.getInt(image, 2, 0);
-			int bottomOffset = ConfigParser.getInt(image, 3, 0);
-			int leftOffset = ConfigParser.getInt(image, 4, 0);
-			
-			ImageThreshold imageThreshold = sceneFactory.getImageThreshold(imageName);
-			
-			if (imageThreshold != null) {
-				int x = imageThreshold.getXOffset() + leftOffset;
-				int y = imageThreshold.getYOffset() + topOffset;
-				int width = (int) imageThreshold.getWidth() - leftOffset - rightOffset;
-				int height = (int) imageThreshold.getHeight() - topOffset - bottomOffset;
-				
-				shapes.add(new Rectangle(sceneFactory, x + IMAGE_THRESHOLD_FUDGE_FACTOR, y + IMAGE_THRESHOLD_FUDGE_FACTOR, width - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, height - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, true));
-			}
-		}
+//		if (map.containsKey("removeImage")) {
+//			List<Object> image = (List<Object>) map.get("removeImage");
+//			
+//			String imageName = (String) image.get(0);
+//			int topOffset = ConfigParser.getInt(image, 1, 0);
+//			int rightOffset = ConfigParser.getInt(image, 2, 0);
+//			int bottomOffset = ConfigParser.getInt(image, 3, 0);
+//			int leftOffset = ConfigParser.getInt(image, 4, 0);
+//			
+//			ImageThreshold imageThreshold = sceneFactory.getImageThreshold(imageName);
+//			
+//			if (imageThreshold != null) {
+//				int x = imageThreshold.getXOffset() + leftOffset;
+//				int y = imageThreshold.getYOffset() + topOffset;
+//				int width = (int) imageThreshold.getWidth() - leftOffset - rightOffset;
+//				int height = (int) imageThreshold.getHeight() - topOffset - bottomOffset;
+//				
+//				shapes.add(new Rectangle(sceneFactory, x + IMAGE_THRESHOLD_FUDGE_FACTOR, y + IMAGE_THRESHOLD_FUDGE_FACTOR, width - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, height - IMAGE_THRESHOLD_FUDGE_FACTOR - IMAGE_THRESHOLD_FUDGE_FACTOR, true));
+//			}
+//		}
 	}
 	
 	protected static String getDefaultName() {

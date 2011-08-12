@@ -2,15 +2,18 @@ package dev.boxy.fortyfive.core.scene;
 
 import java.util.*;
 
+import processing.core.*;
+import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.colour.*;
 import dev.boxy.fortyfive.core.draw.*;
 import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.line.*;
 import dev.boxy.fortyfive.core.movement.*;
+import dev.boxy.fortyfive.core.presentation.*;
 import dev.boxy.fortyfive.core.startarea.*;
 import dev.boxy.fortyfive.utils.*;
 
-public class Scene extends SceneGeometry {
+public class Scene extends SceneGeometry implements FortyFiveLayer {
 	
 	// 0 = top, 1 = top right, ..., 7 = top left
 	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
@@ -28,8 +31,6 @@ public class Scene extends SceneGeometry {
 	
 	// TODO none of these lists get populated at all!~~~~~~~~~~~~
 	
-	protected boolean pause = false;
-	
 	protected int nLines;
 	
 	protected Line[] lines;
@@ -39,6 +40,8 @@ public class Scene extends SceneGeometry {
 	protected boolean[][] grid;
 	
 	protected List<Integer> dlist = new LinkedList<Integer>();
+	
+	protected PGraphics pg;
 	
 	public Scene(SceneFactory sceneFactory, List<ColourFactory> colourFactories, List<ColourPaletteFactory> colourPaletteFactories,
 			List<LineDrawFactory> lineDrawFactories, List<StartAreaFactory> startAreaFactories, List<String> lineNames, 
@@ -79,19 +82,27 @@ public class Scene extends SceneGeometry {
 		this.widthSpacing = widthSpacing;
 		this.heightSpacing = heightSpacing;
 		
+		this.pg = ff.createGraphics(ff.width, ff.height, PApplet.P2D);
+		
 		if (bgColour.equalsIgnoreCase("black")) {
-			ff.background(0);
-			ff.color(0);
-			ff.fill(0);
-			ff.noStroke();
-			ff.rect(0, 0, ff.width, ff.height);
+			pg.beginDraw();
+			pg.background(0);
+			pg.color(0);
+			pg.fill(0);
+			pg.noStroke();
+			pg.rect(0, 0, ff.width, ff.height);
+			pg.endDraw();
 		} else if (bgColour.equalsIgnoreCase("white")) {
-			ff.background(255);
-			ff.color(255);
-			ff.fill(255);
-			ff.noStroke();
-			ff.rect(0, 0, ff.width, ff.height);
+			pg.beginDraw();
+			pg.background(255);
+			pg.color(255);
+			pg.fill(255);
+			pg.noStroke();
+			pg.rect(0, 0, ff.width, ff.height);
+			pg.endDraw();
 		}
+		
+		// TODO move to template???
 		
 		ff.frameRate(frameRate);
 	}
@@ -126,8 +137,10 @@ public class Scene extends SceneGeometry {
 		}
 	}
 	
-	public boolean draw() {
-		ff.stroke(0);
+	public void draw(PGraphics g) {
+		if (FortyFive.getInstance().isPaused()) {
+			return;
+		}
 		
 		boolean finished = true;
 		
@@ -193,7 +206,16 @@ public class Scene extends SceneGeometry {
 			}
 		}
 		
-		return finished;
+		g.image(pg.get(), 0, 0, ff.width, ff.height);
+		
+		Presentation presentation = ff.getPresentation();
+		
+		if (finished) {
+			presentation.onFinished();
+			FortyFive.ITERATIONS++;
+		} else {
+			presentation.nextFrame();
+		}
 	}
 	
 	public void drawLine(int gr, int gc, int grr, int gcc, LineDraw draw) {
@@ -202,7 +224,7 @@ public class Scene extends SceneGeometry {
 		float pxx = gridToPixel(gcc, columns(), ff.getWidth());
 		float pyy = gridToPixel(grr, rows(), ff.getHeight());
 		
-		draw.drawLine(ff, gr, gc, grr, gcc, px, py, pxx, pyy);
+		draw.drawLine(pg, gr, gc, grr, gcc, px, py, pxx, pyy);
 	}
 	
 	public void drawBox(int gr, int gc) {
@@ -326,6 +348,10 @@ public class Scene extends SceneGeometry {
 		return sceneFactory.getImageThresholds();
 	}
 	
+	public ImageThreshold getImageThreshold(String name) {
+		return sceneFactory.getImageThreshold(name);
+	}
+	
 	public ImageGrid getImageGrid(String name) {
 		return sceneFactory.getImageGrid(name);
 	}
@@ -384,6 +410,10 @@ public class Scene extends SceneGeometry {
 	
 	public void markGrid(int r, int c) {
 		grid[r][c] = true;
+	}
+	
+	public int getOrder() {
+		return 1 << 31;
 	}
 	
 }

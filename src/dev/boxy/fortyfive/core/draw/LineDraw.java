@@ -1,5 +1,6 @@
 package dev.boxy.fortyfive.core.draw;
 
+import processing.core.*;
 import dev.boxy.fortyfive.*;
 
 public abstract class LineDraw {
@@ -44,7 +45,7 @@ public abstract class LineDraw {
 	 * @param pxx destination pixel x-coordinate
 	 * @param pyy destination pixel y-coordinate
 	 */
-	public abstract void drawLine(FortyFive ff, int gr, int gc, int grr, int gcc, float px, float py, float pxx, float pyy);
+	public abstract void drawLine(PGraphics pg, int gr, int gc, int grr, int gcc, float px, float py, float pxx, float pyy);
 	
 	public String getName() {
 		return name;

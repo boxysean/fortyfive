@@ -61,7 +61,9 @@ public class ConfigParser {
 	public static boolean getBoolean(Map<String, Object> map, String key, String[] matches) {
 		Object v = map.get(key);
 		
-		if (v instanceof Boolean) {
+		if (v == null) {
+			return false;
+		} else if (v instanceof Boolean) {
 			return ((Boolean) v).booleanValue();
 		}
 		
@@ -106,6 +108,30 @@ public class ConfigParser {
 		}
 		
 		return null;
+	}
+	
+	public static List<String> getStrings(Map<String, Object> map, String key) {
+		ArrayList<String> res = new ArrayList<String>();
+		
+		Object o = map.get(key);
+		
+		if (o == null) {
+			return null;
+		}
+		
+		if (o instanceof List<?>) {
+			List<String> l = (List<String>) o;
+			
+			for (String s : l) {
+				res.add(s);
+			}
+		} else if (o instanceof String) {
+			res.add((String) o);
+		} else {
+			throw new Error("getStrings: unknown type");
+		}
+		
+		return res;
 	}
 	
 	public static int parseInt(List<Object> list, int idx, int n, int def) {

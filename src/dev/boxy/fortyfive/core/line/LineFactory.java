@@ -2,8 +2,8 @@ package dev.boxy.fortyfive.core.line;
 
 import java.util.*;
 
-import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.draw.*;
+import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.movement.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
@@ -22,6 +22,9 @@ public class LineFactory implements ConfigLoader {
 	protected String				lineMovementName;
 	protected String				lineDrawName;
 	protected String				startAreaName;
+	protected List<String>			imageThresholdNames;
+	
+	protected boolean[][]			blocked;
 	
 	public LineFactory(SceneFactory sceneFactory, Map<String, Object> map) {
 		loadSettings(sceneFactory, map);
@@ -31,12 +34,13 @@ public class LineFactory implements ConfigLoader {
 		LineMovementFactory lineMovementFactory = scene.getLineMovementFactory(lineMovementName);
 		LineDraw lineDraw = scene.getLineDraw(lineDrawName);
 		
-		return new Line(scene, br, bc, bd, stepSpeed, drawSpeed, straightProb, direction, lineMovementFactory, lineDraw);
+		Line line = new Line(scene, br, bc, bd, stepSpeed, drawSpeed, straightProb, direction, lineMovementFactory, lineDraw);
+		line.applyBlocked(blocked);
+		
+		return line;
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
-//		Logger logger = Logger.getInstance();
-		
 		name = ConfigParser.getString(map, "name");
 		straightProb = ConfigParser.getDouble(map, "straightProb", DEFAULT_STRAIGHT_PROB);
 		stepSpeed = ConfigParser.getInt(map, "stepSpeed", DEFAULT_STEP_SPEED);
@@ -56,6 +60,25 @@ public class LineFactory implements ConfigLoader {
 		lineMovementName = ConfigParser.getString(map, "movement");
 		lineDrawName = ConfigParser.getString(map, new String[] { "draw", "linedraw" });
 		startAreaName = ConfigParser.getString(map, "startArea");
+		
+		imageThresholdNames = ConfigParser.getStrings(map, "threshold");
+		
+		initThresholds(sceneFactory);
+	}
+	
+	protected void initThresholds(SceneFactory sceneFactory) {
+		if (imageThresholdNames != null) {
+			blocked = new boolean[sceneFactory.rows()][sceneFactory.columns()];
+			
+			for (boolean[] b : blocked) {
+				Arrays.fill(b, true);
+			}
+			
+			for (String imageThresholdName : imageThresholdNames) {
+				ImageThreshold imageThreshold = sceneFactory.getImageThreshold(imageThresholdName);
+				imageThreshold.apply(blocked, ImageGrid.MODE_AND);
+			}
+		}
 	}
 	
 	public int getDirection(int d) {

@@ -1,9 +1,9 @@
 package dev.boxy.fortyfive.core.line;
 
 import dev.boxy.fortyfive.core.draw.*;
-import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.movement.*;
 import dev.boxy.fortyfive.core.scene.*;
+import dev.boxy.fortyfive.utils.*;
 
 public class Line {
 	
@@ -40,16 +40,6 @@ public class Line {
 		this.movement = lineMovementFactory.get(scene, this);
 		this.draw = lineDraw;
 		this.blocked = new boolean[scene.rows()][scene.columns()];
-		
-		// Apply threshold blocking
-		
-		for (ImageThreshold threshold : scene.getImageThresholds()) {
-			if (blocked == null) {
-				blocked = new boolean[scene.rows()][scene.columns()];
-			}
-
-			threshold.apply(blocked);
-		}
 	}
 	
 	public boolean forward() {
@@ -63,7 +53,9 @@ public class Line {
 	}
 	
 	public boolean forwardOnce() {
-		return movement.forwardOnce();
+		boolean res = movement.forwardOnce();
+		
+		return res;
 	}
 	
 	public boolean invalidMove(int nr, int nc) {
@@ -83,6 +75,18 @@ public class Line {
 		return true;
 	}
 	
+	public void applyBlocked(boolean[][] blocked) {
+		if (blocked == null) {
+			return;
+		}
+		
+		for (int r = 0; r < this.blocked.length; r++) {
+			for (int c = 0; c < this.blocked[r].length; c++) {
+				this.blocked[r][c] |= blocked[r][c];
+			}
+		}
+	}
+
 	public int getSpeed() {
 		return drawSpeed;
 	}

@@ -6,6 +6,7 @@ import java.util.*;
 import org.yaml.snakeyaml.*;
 
 import processing.core.*;
+import dev.boxy.fortyfive.core.commandline.*;
 import dev.boxy.fortyfive.core.presentation.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
@@ -19,15 +20,15 @@ public class FortyFive extends PApplet {
 	public static int               ITERATIONS          = 0;
 	public static int				FRAMES				= 0;
 	
+	// 0 = top, 1 = top right, ..., 7 = top left
+	public static final int[]		dr					= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
+	public static final int[]		dc					= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
+	
 	private static FortyFive		INSTANCE			= null;
 	
 	public static FortyFive getInstance() {
 		return INSTANCE;
 	}
-	
-	// 0 = top, 1 = top right, ..., 7 = top left
-	public static final int[]	dr		= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
-	public static final int[]	dc		= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
 	
 	static String[] args;
 	
@@ -38,6 +39,19 @@ public class FortyFive extends PApplet {
 	protected Scene scene;
 	
 	protected boolean pause = false;
+	
+	protected List<FortyFiveLayer> layers = new ArrayList<FortyFiveLayer>();
+	protected List<FortyFiveCommand> commands = new ArrayList<FortyFiveCommand>();
+	
+	protected Presentation presentation;
+	
+	protected String queuedConfig = null;
+	
+	public FortyFive() {
+		super();
+		
+		INSTANCE = this;
+	}
 	
 	public SceneFactory loadSettings(String configFile) throws Exception {
 		if (sceneFactories.containsKey(configFile)) {
@@ -57,7 +71,7 @@ public class FortyFive extends PApplet {
 			throw e;
 		}
 		
-		// TODO these should almost be in the master template
+		// TODO these should almost certainly be in the master template
 		
 		int width = ConfigParser.getInt(map, "width", screen.width);
 		int height = ConfigParser.getInt(map, "height", screen.height);
@@ -72,30 +86,31 @@ public class FortyFive extends PApplet {
 	
 	@Override
 	public void setup() {
-		INSTANCE = this;
-		
 		noCursor();
+		colorMode(ARGB);
 		
-		Presentation.setMode(new LinearPresentation(this, args[0]));
-		Presentation presentation = Presentation.getInstance();
-		addKeyListener(presentation);
-		
+		presentation = new LinearPresentation(this, args[0]);
 		setup(presentation.getCurrentFile());
+		
+		CommandLine commandLine = new CommandLine();
 	}
 	
-	String queuedConfig = null;
+	public void clear() {
+		queueConfig(presentation.getCurrentFile());
+	}
 	
 	public void queueConfig(String configFile) {
 		queuedConfig = configFile;
-		TimingUtils.reset();
 	}
 	
-	private void setup(String configFile) {
+	protected void setup(String configFile) {
 		Logger logger = Logger.getInstance();
 		
 		logger.log("--- " + configFile + " ---");
 		
-		Presentation presentation = Presentation.getInstance();
+		if (scene != null) {
+			removeLayer(scene);
+		}
 		
 		try {
 			SceneFactory sceneFactory = loadSettings(configFile);
@@ -107,9 +122,14 @@ public class FortyFive extends PApplet {
 			return;
 		}
 		
+		addLayer(scene);
+		
 		presentation.resetLoadFails();
 		
 		scene.setup();
+		
+		queuedConfig = null;
+		FRAMES = 0;
 	}
 	
 	@Override
@@ -117,18 +137,23 @@ public class FortyFive extends PApplet {
 		if (queuedConfig != null) {
 			// New config has been requested
 			setup(queuedConfig);
-			queuedConfig = null;
-			FRAMES = 0;
 		}
 		
-		Presentation presentation = Presentation.getInstance();
+		noStroke();
+		fill(0);
+		rect(0, 0, width, height);
 		
-		if (!pause) {
-			if (scene.draw()) {
-				presentation.onFinished();
-				ITERATIONS++;
-			} else {
-				presentation.nextFrame();
+		synchronized (commands) {
+			for (FortyFiveCommand command : commands) {
+				command.execute();
+			}
+		
+			commands.clear();
+		}
+		
+		synchronized (layers) {
+			for (FortyFiveLayer layer : layers) {
+				layer.draw(g);
 			}
 		}
 	}
@@ -138,12 +163,6 @@ public class FortyFive extends PApplet {
 		
 		if ('0' <= key && key <= '9') {
 			userDrawSpeedMultiplier = key - '0';
-		}
-		
-		switch (key) {
-		case ' ':
-			pause = !pause;
-			break;
 		}
 	}
 	
@@ -169,7 +188,54 @@ public class FortyFive extends PApplet {
 	public int getUserDrawSpeedMultiplier() {
 		return userDrawSpeedMultiplier;
 	}
-
+	
+	public List<FortyFiveLayer> getLayers() {
+		return layers;
+	}
+	
+	public void removeLayer(FortyFiveLayer layer) {
+		synchronized (layers) {
+			layers.remove(layer);
+		}
+	}
+	
+	public void addLayer(FortyFiveLayer layer) {
+		synchronized (layers) {
+			layers.add(layer);
+			Collections.sort(layers, new FortyFiveLayerComparator());
+		}
+	}
+	
+	public void toggleLayer(FortyFiveLayer layer) {
+		if (layers.contains(layer)) {
+			removeLayer(layer);
+		} else {
+			addLayer(layer);
+		}
+	}
+	
+	public void togglePause() {
+		pause = !pause;
+	}
+	
+	public boolean isPaused() {
+		return pause;
+	}
+	
+	public void addCommand(FortyFiveCommand command) {
+		synchronized (commands) {
+			commands.add(command);
+		}
+	}
+	
+	public Presentation getPresentation() {
+		return presentation;
+	}
+	
+	public Scene getScene() {
+		return scene;
+	}
+	
 	public static void main(String args[]) {
 		FortyFive.args = args;
 		

@@ -3,6 +3,7 @@ package dev.boxy.fortyfive.core.startarea;
 import java.util.*;
 
 import dev.boxy.fortyfive.core.coordinatebag.*;
+import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.scene.*;
 
 public class StartAreaFactoryJob {
@@ -17,13 +18,19 @@ public class StartAreaFactoryJob {
 	protected String name;
 	protected boolean startBlocked = false;
 	protected List<StartAreaShape> shapeList = new ArrayList<StartAreaShape>();
+	protected List<String> imageThresholdNames = new ArrayList<String>();
 	protected String coordBagName;
 
-	public StartAreaFactoryJob(SceneFactory sceneFactory, String name, boolean startBlocked, List<StartAreaShape> shapeList, String coordBagName) {
+	public StartAreaFactoryJob(SceneFactory sceneFactory, String name, boolean startBlocked, List<StartAreaShape> shapeList, List<String> imageThresholdNames, String coordBagName) {
 		this.sceneFactory = sceneFactory;
 		this.name = name;
 		this.startBlocked = startBlocked;
 		this.shapeList.addAll(shapeList);
+		
+		if (imageThresholdNames != null) {
+			this.imageThresholdNames.addAll(imageThresholdNames);
+		}
+		
 		this.coordBagName = coordBagName;
 	}
 	
@@ -37,18 +44,19 @@ public class StartAreaFactoryJob {
 			blocked = new boolean[rows][columns];
 		}
 		
-		// starting blocked?
-		
 		if (startBlocked) {
 			for (boolean[] b : blocked) {
 				Arrays.fill(b, true);
 			}
 		}
 		
-		// Apply all previously defined rectangles and thresholds
-		
 		for (StartAreaShape shape : shapeList) {
 			shape.apply(blocked);
+		}
+		
+		for (String imageThresholdName : imageThresholdNames) {
+			ImageThreshold imageThreshold = sceneFactory.getImageThreshold(imageThresholdName);
+			imageThreshold.apply(blocked, ImageGrid.MODE_AND);
 		}
 		
 		// Start with anything not blocked
