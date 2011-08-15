@@ -251,6 +251,7 @@ public class FortyFive extends PApplet {
 	
 	// Future additions to presentation files...
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
+	public static final boolean		FULLSCREEN			= Boolean.getBoolean("FULLSCREEN");
 	
 	public static int               ITERATIONS          = 0;
 	public static int				FRAMES				= 0;
