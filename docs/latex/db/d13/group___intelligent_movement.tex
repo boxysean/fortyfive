@@ -1,0 +1,67 @@
+\hypertarget{group___intelligent_movement}{
+\section{IntelligentMovement}
+\label{db/d13/group___intelligent_movement}\index{IntelligentMovement@{IntelligentMovement}}
+}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{group___intelligent_movement_ga139ab6b9d2619f94f2ff08632d21e05e}{
+{\bfseries dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.IntelligentMovementFactory} (SceneFactory sceneFactory, Map$<$ String, Object $>$ map)}
+\label{db/d13/group___intelligent_movement_ga139ab6b9d2619f94f2ff08632d21e05e}
+
+\item 
+\hypertarget{group___intelligent_movement_ga95299f8b15662239d8906eacdb24a660}{
+LineMovement {\bfseries dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.get} (Scene scene, Line line)}
+\label{db/d13/group___intelligent_movement_ga95299f8b15662239d8906eacdb24a660}
+
+\item 
+\hypertarget{group___intelligent_movement_ga289835fb28bb2eb8cd0a2525eab0e25e}{
+void {\bfseries dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.loadSettings} (SceneFactory sceneFactory, Map$<$ String, Object $>$ map)}
+\label{db/d13/group___intelligent_movement_ga289835fb28bb2eb8cd0a2525eab0e25e}
+
+\item 
+\hypertarget{group___intelligent_movement_ga8d7c7e2d9d0afe11ce2690b02bc3edb4}{
+String {\bfseries dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.getName} ()}
+\label{db/d13/group___intelligent_movement_ga8d7c7e2d9d0afe11ce2690b02bc3edb4}
+
+\item 
+\hypertarget{group___intelligent_movement_gac4dd4e21b27029044fcb5bfccb9241cd}{
+int {\bfseries dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.getDirection} (int d)}
+\label{db/d13/group___intelligent_movement_gac4dd4e21b27029044fcb5bfccb9241cd}
+
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+String \hyperlink{group___intelligent_movement_gadc27ef2838bc9382f21b3ffc79d89404}{dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.name}
+\item 
+int \hyperlink{group___intelligent_movement_ga9b0e82846a0b0570d87fd50d9c979968}{dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.intelligence}
+\item 
+double \hyperlink{group___intelligent_movement_ga4cd10d785da44dfc2460c4ea999adcc1}{dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.straightProb}
+\item 
+int\mbox{[}$\,$\mbox{]} \hyperlink{group___intelligent_movement_ga6b8b74cf3c1bd96c164971c71ce7a2ca}{dev::boxy::fortyfive::core::movement::IntelligentMovementFactory.direction}
+\end{DoxyCompactItemize}
+
+
+\subsection{Variable Documentation}
+\hypertarget{group___intelligent_movement_ga6b8b74cf3c1bd96c164971c71ce7a2ca}{
+\index{IntelligentMovement@{IntelligentMovement}!direction@{direction}}
+\index{direction@{direction}!IntelligentMovement@{IntelligentMovement}}
+\subsubsection[{direction}]{\setlength{\rightskip}{0pt plus 5cm}int \mbox{[}$\,$\mbox{]} {\bf dev.boxy.fortyfive.core.movement.IntelligentMovementFactory.direction}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{db/d13/group___intelligent_movement_ga6b8b74cf3c1bd96c164971c71ce7a2ca}
+direction string (e.g., \char`\"{}221000012\char`\"{} for N, NE, ..., W, NW) \mbox{[}default: \char`\"{}22222222\char`\"{}\mbox{]} \hypertarget{group___intelligent_movement_ga9b0e82846a0b0570d87fd50d9c979968}{
+\index{IntelligentMovement@{IntelligentMovement}!intelligence@{intelligence}}
+\index{intelligence@{intelligence}!IntelligentMovement@{IntelligentMovement}}
+\subsubsection[{intelligence}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf dev.boxy.fortyfive.core.movement.IntelligentMovementFactory.intelligence}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{db/d13/group___intelligent_movement_ga9b0e82846a0b0570d87fd50d9c979968}
+intelligence of the line (0-\/3, higher is smarter) \mbox{[}default: 2\mbox{]} \hypertarget{group___intelligent_movement_gadc27ef2838bc9382f21b3ffc79d89404}{
+\index{IntelligentMovement@{IntelligentMovement}!name@{name}}
+\index{name@{name}!IntelligentMovement@{IntelligentMovement}}
+\subsubsection[{name}]{\setlength{\rightskip}{0pt plus 5cm}String {\bf dev.boxy.fortyfive.core.movement.IntelligentMovementFactory.name}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{db/d13/group___intelligent_movement_gadc27ef2838bc9382f21b3ffc79d89404}
+movement name \mbox{[}required\mbox{]} \hypertarget{group___intelligent_movement_ga4cd10d785da44dfc2460c4ea999adcc1}{
+\index{IntelligentMovement@{IntelligentMovement}!straightProb@{straightProb}}
+\index{straightProb@{straightProb}!IntelligentMovement@{IntelligentMovement}}
+\subsubsection[{straightProb}]{\setlength{\rightskip}{0pt plus 5cm}double {\bf dev.boxy.fortyfive.core.movement.IntelligentMovementFactory.straightProb}\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{db/d13/group___intelligent_movement_ga4cd10d785da44dfc2460c4ea999adcc1}
+probability that the line will continue straight \mbox{[}default: 0.8\mbox{]} 

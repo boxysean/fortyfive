@@ -17,10 +17,25 @@ import dev.boxy.fortyfive.utils.*;
 
 public class SceneFactory extends SceneGeometry {
 	
-	protected List<String> lineNames;
+	/**
+	 * @defgroup scene scene
+	 * 
+	 * @{
+	 */
+	
+	/** list of line names to deploy [required] */
+	protected List<String> deploy;
+	
+	/** white or black [required] */
 	protected String bgColour;
+	
+	/** frame rate of scene [default: 30] */
 	protected int frameRate;
+	
+	/** global draw speed multiplier [default: 1] */
 	protected int drawSpeedMultiplier;
+	
+	/** @} */
 	
 	protected Map<String, ColourFactory> colourFactories = new LinkedHashMap<String, ColourFactory>();
 	protected Map<String, ColourPaletteFactory> colourPaletteFactories = new LinkedHashMap<String, ColourPaletteFactory>();
@@ -32,7 +47,6 @@ public class SceneFactory extends SceneGeometry {
 	protected Map<String, LineMovementFactory> lineMovementFactories = new LinkedHashMap<String, LineMovementFactory>();
 	protected Map<String, StartAreaFactory> startAreaFactories = new LinkedHashMap<String, StartAreaFactory>();
 	
-	
 	public SceneFactory(Map<String, Object> map) {
 		super(0, 0);
 		loadSettings(map);
@@ -41,7 +55,7 @@ public class SceneFactory extends SceneGeometry {
 	public Scene get() {
 		Scene res = new Scene(this, new ArrayList<ColourFactory>(colourFactories.values()), new ArrayList<ColourPaletteFactory>(colourPaletteFactories.values()),
 				new ArrayList<LineDrawFactory>(lineDrawFactories.values()), new ArrayList<StartAreaFactory>(startAreaFactories.values()),
-				lineNames, bgColour, widthSpacing, heightSpacing, frameRate, drawSpeedMultiplier);
+				deploy, bgColour, widthSpacing, heightSpacing, frameRate, drawSpeedMultiplier);
 		
 		for (LineFactory lineFactory : lineFactories.values()) {
 			lineFactory.newScene();
@@ -58,7 +72,7 @@ public class SceneFactory extends SceneGeometry {
 		heightSpacing = ConfigParser.getInt(map, "heightSpacing");
 		frameRate = ConfigParser.getInt(map, "frameRate", 30);
 		drawSpeedMultiplier = ConfigParser.getInt(map, "drawSpeedMultiplier", 1);
-		lineNames = (List<String>) map.get("deploy");
+		deploy = ConfigParser.getStrings(map, "deploy");
 
 		loadSettings2(map);
 	}
@@ -74,8 +88,6 @@ public class SceneFactory extends SceneGeometry {
 			for (Map<String, Object> colour : colourList) {
 				ColourFactory colourFactory = new ColourFactory(this, colour);
 				colourFactories.put(colourFactory.getName(), colourFactory);
-				ColourPaletteFactory colourPaletteFactory = new ColourPaletteFactory(colourFactory);
-				colourPaletteFactories.put(colourPaletteFactory.getName(), colourPaletteFactory);
 			}
 		}
 		
@@ -126,7 +138,19 @@ public class SceneFactory extends SceneGeometry {
 
 		if (coordBagDefs != null) {
 			for (Map<String, Object> coordBagDef : coordBagDefs) {
-				CoordinateBagFactory coordBagFactory = new CoordinateBagFactory(this, coordBagDef);
+				String type = ConfigParser.getString(coordBagDef, new String[] { "type", "mode" }, "random").toLowerCase();
+				CoordinateBagFactory coordBagFactory = null;
+				
+				if (type.startsWith("centre")) {
+					coordBagFactory = new CentreBagFactory(this, coordBagDef);
+				} else if (type.startsWith("random")) {
+					coordBagFactory = new RandomBagFactory(this, coordBagDef);
+				} else if (type.startsWith("order")) {
+					coordBagFactory = new OrderedBagFactory(this, coordBagDef);
+				} else {
+					Logger.getInstance().warning("unknown coordinate bag type %s", type);
+				}
+				
 				CoordinateBag coordBag = coordBagFactory.get();
 				coordinateBags.put(coordBagFactory.getName(), coordBag);
 			}
@@ -141,7 +165,7 @@ public class SceneFactory extends SceneGeometry {
 				String type = ConfigParser.getString(drawDef, new String[] { "type", "mode" }, "SolidDraw");
 				LineDrawFactory lineDrawFactory = null;
 				
-				if (type.toLowerCase().startsWith(("solid"))) {
+				if (type.toLowerCase().startsWith("solid")) {
 					lineDrawFactory = new SolidDrawFactory(this, drawDef);
 				} else if (type.toLowerCase().equals("image")) {
 					lineDrawFactory = new ImageDrawFactory(this, drawDef);
@@ -159,7 +183,17 @@ public class SceneFactory extends SceneGeometry {
 		
 		if (movementDefs != null) {
 			for (Map<String, Object> movementDef : movementDefs) {
-				LineMovementFactory lineMovementFactory = new LineMovementFactory(this, movementDef);
+				String type = ConfigParser.getString(map, new String[] { "type", "movement" }, "intelligent").toLowerCase();
+				LineMovementFactory lineMovementFactory = null;
+				
+				if (type.startsWith("intellig")) {
+					lineMovementFactory = new IntelligentMovementFactory(this, movementDef);
+				} else if (type.startsWith("cling")) {
+					lineMovementFactory = new ClingMovementFactory(this, movementDef);
+				} else {
+					Logger.getInstance().warning("unknown movement type %s", type);
+				}
+				
 				lineMovementFactories.put(lineMovementFactory.getName(), lineMovementFactory);
 			}
 		}

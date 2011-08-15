@@ -12,14 +12,12 @@ public class ImageDraw implements LineDraw {
 	protected String name;
 	protected ImageGrid grid;
 	protected int strokeWidth;
-	protected int strokeCap;
-	protected int strokeJoin;
 	
 	protected int xOffset;
 	protected int yOffset;
 	protected double scale;
 	
-	public ImageDraw(Scene scene, String name, ImageGrid grid, int strokeWidth, int theXOffset, int theYOffset, double theScale, int strokeJoin, int strokeCap) {
+	public ImageDraw(Scene scene, String name, ImageGrid grid, int strokeWidth, int theXOffset, int theYOffset, double theScale) {
 		this.name = name;
 		this.scene = scene;
 		
@@ -61,8 +59,6 @@ public class ImageDraw implements LineDraw {
 		g.beginDraw();
 		
 		g.strokeWeight(strokeWidth);
-		g.strokeCap(strokeCap);
-		g.strokeJoin(strokeJoin);
 		
 		float pxm = (px + pxx) / 2.0f;
 		float pym = (py + pyy) / 2.0f;

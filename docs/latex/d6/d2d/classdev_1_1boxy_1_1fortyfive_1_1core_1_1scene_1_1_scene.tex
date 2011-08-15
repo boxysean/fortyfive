@@ -1,0 +1,274 @@
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene}{
+\section{dev.boxy.fortyfive.core.scene.Scene Class Reference}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene}\index{dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}}
+}
+Inheritance diagram for dev.boxy.fortyfive.core.scene.Scene:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.964912cm]{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a4603ede4e8c9a251e5af2efc78b9ab2f}{
+{\bfseries Scene} (\hyperlink{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_factory}{SceneFactory} sceneFactory, List$<$ ColourFactory $>$ colourFactories, List$<$ ColourPaletteFactory $>$ colourPaletteFactories, List$<$ LineDrawFactory $>$ lineDrawFactories, List$<$ StartAreaFactory $>$ startAreaFactories, List$<$ String $>$ lineNames, String bgColour, int \hyperlink{group__scene_ga8116f4feebb544338d5cb2bb2f069cba}{widthSpacing}, int \hyperlink{group__scene_ga8b7cd33813c77386f79af2e54ba7ed34}{heightSpacing}, int frameRate, int drawSpeedMultiplier)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a4603ede4e8c9a251e5af2efc78b9ab2f}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a43ff077465b125c3b63a542c7b0ab126}{
+void {\bfseries setup} ()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a43ff077465b125c3b63a542c7b0ab126}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a07429e4ce0c5d2d058e3b51f06679bce}{
+void {\bfseries draw} (PGraphics g)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a07429e4ce0c5d2d058e3b51f06679bce}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a74934f8874ddd9c1d9cfd52067968406}{
+void {\bfseries drawLine} (int gr, int gc, int grr, int gcc, LineDraw draw)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a74934f8874ddd9c1d9cfd52067968406}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a823856e252c7b7a529bfa5b26c4d6a8c}{
+void {\bfseries drawBox} (int gr, int gc)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a823856e252c7b7a529bfa5b26c4d6a8c}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_aac966e3aa0299d73d20190335a1631c6}{
+void {\bfseries drawBox} (int gr, int gc, int color)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_aac966e3aa0299d73d20190335a1631c6}
+
+\item 
+void \hyperlink{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ada15c4172e056788126d5bbc9816e603}{drawBox} (int px, int py, int width, int height)
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ab648939e09da84d9cadd6561ae275e44}{
+Line {\bfseries newLine} (LineFactory lineFactory)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ab648939e09da84d9cadd6561ae275e44}
+
+\item 
+boolean \hyperlink{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a332e6643c967fbffde150d0bdb6333a2}{invalidMove} (int cr, int cc, int nr, int nc)
+\item 
+boolean \hyperlink{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a0417319d8ee634ce7e9fb1da25bfc127}{invalidMove} (int cr, int cc, int nr, int nc, boolean\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} blocked)
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ab4ebe80455abb07dd407c83ea6469222}{
+List$<$ Area $>$ {\bfseries getAreas} ()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ab4ebe80455abb07dd407c83ea6469222}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a7a585b1dfe4fab8cbb797131fbcc3901}{
+Area {\bfseries getArea} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a7a585b1dfe4fab8cbb797131fbcc3901}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a904e77dd67f6d2637481cf29ff03c736}{
+ImageGrid {\bfseries getImageGrid} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a904e77dd67f6d2637481cf29ff03c736}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a1ff408d37e9acd50fa89701febc84a75}{
+LineMovementFactory {\bfseries getLineMovementFactory} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a1ff408d37e9acd50fa89701febc84a75}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a1adb365ed20c63c26fa782f378c34397}{
+LineDraw {\bfseries getLineDraw} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a1adb365ed20c63c26fa782f378c34397}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a804014f14be67b81812efaaec6f65c46}{
+ColourPalette {\bfseries getColourPalette} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a804014f14be67b81812efaaec6f65c46}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ad55b12624294bafa721636ee96c1a9ea}{
+Colour {\bfseries getColour} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ad55b12624294bafa721636ee96c1a9ea}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a9776f256757933650a8337400d2a650b}{
+LineFactory {\bfseries getLineFactory} (String name)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a9776f256757933650a8337400d2a650b}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a84c3c8197d649d283967225bf78c0f1f}{
+boolean {\bfseries checkGrid} (int r, int c)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a84c3c8197d649d283967225bf78c0f1f}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ae821d490772910644a1a2d7352487be5}{
+void {\bfseries markGrid} (int r, int c)}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ae821d490772910644a1a2d7352487be5}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_aab7bb1b3a9bafc063440a37223d52dad}{
+int {\bfseries getOrder} ()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_aab7bb1b3a9bafc063440a37223d52dad}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ada8282869c8df6bd3ebc909dcd8fd20e}{
+static final int\mbox{[}$\,$\mbox{]} {\bfseries dr} = new int\mbox{[}$\,$\mbox{]} \{ 1, 1, 0, -\/1, -\/1, -\/1, 0, 1 \}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ada8282869c8df6bd3ebc909dcd8fd20e}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_afe0d9588a4beecd77649143d867ed15f}{
+static final int\mbox{[}$\,$\mbox{]} {\bfseries dc} = new int\mbox{[}$\,$\mbox{]} \{ 0, 1, 1, 1, 0, -\/1, -\/1, -\/1 \}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_afe0d9588a4beecd77649143d867ed15f}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a89674e45ddb3dd36b9caf82c758e9e80}{
+\hyperlink{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_factory}{SceneFactory} {\bfseries sceneFactory}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a89674e45ddb3dd36b9caf82c758e9e80}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_aaccd2ef319d3554da4393d1f0fd67e6c}{
+int {\bfseries drawSpeedMultiplier}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_aaccd2ef319d3554da4393d1f0fd67e6c}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_adee2d7dff0be55771c5286256f57730e}{
+List$<$ String $>$ {\bfseries lineNames} = new ArrayList$<$String$>$()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_adee2d7dff0be55771c5286256f57730e}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a26bc4779886ea69c256e3b94b67f84ce}{
+Map$<$ String, Colour $>$ {\bfseries colours} = new LinkedHashMap$<$String, Colour$>$()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a26bc4779886ea69c256e3b94b67f84ce}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a57af0310b5b30bd26a25e3b68a943c9f}{
+Map$<$ String, ColourPalette $>$ {\bfseries colourPalettes} = new LinkedHashMap$<$String, ColourPalette$>$()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a57af0310b5b30bd26a25e3b68a943c9f}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a7634ed2beac08b6920749c940d50d0b6}{
+Map$<$ String, LineDraw $>$ {\bfseries lineDraws} = new LinkedHashMap$<$String, LineDraw$>$()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a7634ed2beac08b6920749c940d50d0b6}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ae41796e307be5b18a08e99ae431a8363}{
+int {\bfseries nLines}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ae41796e307be5b18a08e99ae431a8363}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ab4171a7ac264c9001f6b5dccab5f7e8e}{
+Line\mbox{[}$\,$\mbox{]} {\bfseries lines}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ab4171a7ac264c9001f6b5dccab5f7e8e}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a0fc1e4b3b92c0fbd4014f2662492a401}{
+int\mbox{[}$\,$\mbox{]} {\bfseries speedRem}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a0fc1e4b3b92c0fbd4014f2662492a401}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a664a765c0e595af689ec3d82c2f7947c}{
+boolean\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]} {\bfseries grid}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a664a765c0e595af689ec3d82c2f7947c}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a477aa56775bb9ffef853fe568971c8d2}{
+List$<$ Integer $>$ {\bfseries dlist} = new LinkedList$<$Integer$>$()}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a477aa56775bb9ffef853fe568971c8d2}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a6a12bf979c5b386a7767a0f0b51b14a2}{
+PGraphics {\bfseries pg}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a6a12bf979c5b386a7767a0f0b51b14a2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ada15c4172e056788126d5bbc9816e603}{
+\index{dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}!drawBox@{drawBox}}
+\index{drawBox@{drawBox}!dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}}
+\subsubsection[{drawBox}]{\setlength{\rightskip}{0pt plus 5cm}void dev.boxy.fortyfive.core.scene.Scene.drawBox (
+\begin{DoxyParamCaption}
+\item[{int}]{px, }
+\item[{int}]{py, }
+\item[{int}]{width, }
+\item[{int}]{height}
+\end{DoxyParamCaption}
+)}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_ada15c4172e056788126d5bbc9816e603}
+Draw a box from (gr, gc) to (gr + rows, gc + columns) 
+\begin{DoxyParams}{Parameters}
+{\em px} & leftmost row \\
+\hline
+{\em py} & leftmost row \\
+\hline
+{\em width} & rows in box \\
+\hline
+{\em height} & columns in box \\
+\hline
+\end{DoxyParams}
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a0417319d8ee634ce7e9fb1da25bfc127}{
+\index{dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}!invalidMove@{invalidMove}}
+\index{invalidMove@{invalidMove}!dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}}
+\subsubsection[{invalidMove}]{\setlength{\rightskip}{0pt plus 5cm}boolean dev.boxy.fortyfive.core.scene.Scene.invalidMove (
+\begin{DoxyParamCaption}
+\item[{int}]{cr, }
+\item[{int}]{cc, }
+\item[{int}]{nr, }
+\item[{int}]{nc, }
+\item[{boolean}]{blocked\mbox{[}$\,$\mbox{]}\mbox{[}$\,$\mbox{]}}
+\end{DoxyParamCaption}
+)}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a0417319d8ee634ce7e9fb1da25bfc127}
+Check if the proposed move runs into or crosses existing lines \begin{DoxySeeAlso}{See also}
+\hyperlink{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a332e6643c967fbffde150d0bdb6333a2}{invalidMove(int, int, int, int)} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{Parameters}
+{\em cr} & current row \\
+\hline
+{\em cc} & current column \\
+\hline
+{\em nr} & new row \\
+\hline
+{\em nc} & new column \\
+\hline
+{\em blocked} & secondary per-\/line blocking, for example threshold images applied \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move is invalid 
+\end{DoxyReturn}
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a332e6643c967fbffde150d0bdb6333a2}{
+\index{dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}!invalidMove@{invalidMove}}
+\index{invalidMove@{invalidMove}!dev::boxy::fortyfive::core::scene::Scene@{dev::boxy::fortyfive::core::scene::Scene}}
+\subsubsection[{invalidMove}]{\setlength{\rightskip}{0pt plus 5cm}boolean dev.boxy.fortyfive.core.scene.Scene.invalidMove (
+\begin{DoxyParamCaption}
+\item[{int}]{cr, }
+\item[{int}]{cc, }
+\item[{int}]{nr, }
+\item[{int}]{nc}
+\end{DoxyParamCaption}
+)}}
+\label{d6/d2d/classdev_1_1boxy_1_1fortyfive_1_1core_1_1scene_1_1_scene_a332e6643c967fbffde150d0bdb6333a2}
+Check if the proposed move runs into or crosses existing lines 
+\begin{DoxyParams}{Parameters}
+{\em cr} & current row \\
+\hline
+{\em cc} & current column \\
+\hline
+{\em nr} & new row \\
+\hline
+{\em nc} & new column \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the move is invalid 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+src/dev/boxy/fortyfive/core/scene/Scene.java\end{DoxyCompactItemize}

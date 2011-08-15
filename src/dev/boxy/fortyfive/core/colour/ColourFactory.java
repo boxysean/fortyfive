@@ -2,20 +2,30 @@ package dev.boxy.fortyfive.core.colour;
 
 import java.util.*;
 
-import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
 
 public class ColourFactory implements ConfigLoader {
 	
-	protected static int COLOUR_FACTORY_ID = 0;
-	
-	public static ColourFactory DEFAULT = new ColourFactory(0, 0, 0);
-	
+	/**
+	 * @defgroup colours colours
+	 * The colours that may be used in the template
+	 * @{
+	 */
+
+	/** colour name [required] */
 	protected String name;
+	
+	/** red component [default: 0] */
 	protected int red;
+	
+	/** green component [default: 0] */
 	protected int green;
+	
+	/** blue component [default: 0] */
 	protected int blue;
+	
+	/** @} */
 	
 	public ColourFactory(SceneFactory sceneFactory, Map<String, Object> masterMap) {
 		loadSettings(sceneFactory, masterMap);
@@ -36,14 +46,10 @@ public class ColourFactory implements ConfigLoader {
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
-		name = ConfigParser.getString(map, "name", getDefaultName());
+		name = ConfigParser.getString(map, "name");
 		red = ConfigParser.getInt(map, "red", 0);
 		green = ConfigParser.getInt(map, "green", 0);
 		blue = ConfigParser.getInt(map, "blue", 0);
 	}
 	
-	protected static String getDefaultName() {
-		return String.format("default_%05d", COLOUR_FACTORY_ID++);
-	}
-
 }

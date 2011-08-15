@@ -29,8 +29,6 @@ public class Scene extends SceneGeometry implements FortyFiveLayer {
 	protected Map<String, ColourPalette> colourPalettes = new LinkedHashMap<String, ColourPalette>();
 	protected Map<String, LineDraw> lineDraws = new LinkedHashMap<String, LineDraw>();
 	
-	// TODO none of these lists get populated at all!~~~~~~~~~~~~
-	
 	protected int nLines;
 	
 	protected Line[] lines;

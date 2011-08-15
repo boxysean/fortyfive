@@ -110,6 +110,17 @@ public class ConfigParser {
 		return null;
 	}
 	
+	public static List<String> getStrings(Map<String, Object> map, String[] keys) {
+		for (String key : keys) {
+			List<String> res = getStrings(map, key);
+			if (res != null) {
+				return res;
+			}
+		}
+		
+		return null;
+	}
+
 	public static List<String> getStrings(Map<String, Object> map, String key) {
 		ArrayList<String> res = new ArrayList<String>();
 		

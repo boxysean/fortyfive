@@ -13,21 +13,42 @@ import dev.boxy.fortyfive.utils.*;
 
 public class LineFactory implements ConfigLoader {
 	
-	public final static double 		DEFAULT_STRAIGHT_PROB 	= 0.80;
 	public final static int 		DEFAULT_STEP_SPEED 		= 1;
 	public final static int 		DEFAULT_DRAW_SPEED 		= 1;
 	
 	protected SceneFactory			sceneFactory;
 	
+	/**
+	 * @defgroup lines lines
+	 * 
+	 * @{
+	 */
+	
+	/** line name [required] */
 	protected String				name;
-	protected double				straightProb;
+	
+	/** step speed of line [default: 1] */
 	protected int					stepSpeed;
+	
+	/** draw speed of line [default: 1] */
 	protected int					drawSpeed;
+	
+	/** movement of this line [default: this name] */
 	protected String				lineMovementName;
+	
+	/** line draw of this line [default: this name] */
 	protected String				lineDrawName;
+	
+	/** start areas of this line, prefix with "+-.!" (add, subtract, set, unset) */
 	protected List<String>			startAreaNames;
+	
+	/** threshold (non-accessible) areas of this line, prefix with "+-.!" (add, subtract, set, unset) */
 	protected List<String>			thresholdNames;
+	
+	/** coordinate bag of this line [required] */
 	protected String				coordBagName;
+	
+	/** @} */
 	
 	protected List<StartAreaFactory>	startAreaFactories = new ArrayList<StartAreaFactory>();
 	protected StartArea				startArea;
@@ -53,13 +74,12 @@ public class LineFactory implements ConfigLoader {
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
 		name = ConfigParser.getString(map, "name");
-		straightProb = ConfigParser.getDouble(map, "straightProb", DEFAULT_STRAIGHT_PROB);
 		stepSpeed = ConfigParser.getInt(map, "stepSpeed", DEFAULT_STEP_SPEED);
 		drawSpeed = ConfigParser.getInt(map, "drawSpeed", DEFAULT_DRAW_SPEED);
 		
-		lineMovementName = ConfigParser.getString(map, "movement");
-		lineDrawName = ConfigParser.getString(map, new String[] { "draw", "linedraw" });
-		coordBagName = ConfigParser.getString(map, "coordBag");
+		lineMovementName = ConfigParser.getString(map, "movement", name);
+		lineDrawName = ConfigParser.getString(map, new String[] { "draw", "linedraw" }, name);
+		coordBagName = ConfigParser.getString(map, "coordBag", name);
 		
 		thresholdNames = ConfigParser.getStrings(map, "threshold");
 		startAreaNames = ConfigParser.getStrings(map, "startArea");
@@ -73,22 +93,16 @@ public class LineFactory implements ConfigLoader {
 		if (thresholdNames != null) {
 			blocked = new boolean[sceneFactory.rows()][sceneFactory.columns()];
 			
-			for (String name : thresholdNames) {
-				char mod = name.charAt(0);
+			for (String thresholdName : thresholdNames) {
+				char mod = thresholdName.charAt(0);
 				
 				if (mod != '-' && mod != '+' && mod != '.' && mod != '!') {
 					mod = '+';
 				} else {
-					name = name.substring(1);
+					thresholdName = thresholdName.substring(1);
 				}
 				
-				Area thresh = null;
-				
-				if (name.equalsIgnoreCase("all")) {
-					thresh = new AllArea();
-				} else {
-					thresh = sceneFactory.getArea(name);
-				}
+				Area thresh = sceneFactory.getArea(thresholdName);
 				
 				if (mod == '-') {
 					thresh.subtract(blocked);
@@ -117,13 +131,7 @@ public class LineFactory implements ConfigLoader {
 					startAreaName = startAreaName.substring(1);
 				}
 				
-				Area area = null;
-				
-				if (startAreaName.equalsIgnoreCase("all")) {
-					area = new AllArea();
-				} else {
-					area = sceneFactory.getArea(startAreaName);
-				}
+				Area area = sceneFactory.getArea(startAreaName);
 				
 				if (mod == '-') {
 					area.subtract(startAreaValid);

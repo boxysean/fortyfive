@@ -6,8 +6,19 @@ public class SceneGeometry {
 	
 	protected FortyFive ff = FortyFive.getInstance();
 	
+	/**
+	 * @ingroup scene
+	 * 
+	 * @{
+	 */
+	
+	/** vertical pixels between lines [required] */
 	protected int heightSpacing;
+	
+	/** horizontal pixels between lines [required] */
 	protected int widthSpacing;
+	
+	/** @} */
 	
 	protected SceneGeometry(int widthSpacing, int heightSpacing) {
 		this.widthSpacing = widthSpacing;

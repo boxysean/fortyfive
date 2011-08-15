@@ -1,5 +1,9 @@
 package dev.boxy.fortyfive.core.areas;
 
+/**
+ * @defgroup areas areas
+ */
+
 public interface Area {
 	
 	public void add(boolean[][] blocked);

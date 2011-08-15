@@ -10,11 +10,30 @@ public class RectangleAreaFactory implements ConfigLoader {
 	
 	protected SceneFactory sceneFactory;
 	
+	/**
+	 * @defgroup RectangleArea RectangleArea
+	 * @ingroup areas
+	 * Use "type: rectangle"
+	 * 
+	 * @{
+	 */
+
+	/** rectangle area name [required] */
 	protected String name;
+	
+	/** rectangle x [default: 0] */
 	protected int x;
+	
+	/** rectangle y [default: 0] */
 	protected int y;
+	
+	/** rectangle width [default: screen width] */
 	protected int width;
+	
+	/** rectangle height [default: screen height] */
 	protected int height;
+	
+	/** @} */
 	
 	public RectangleAreaFactory(SceneFactory sceneFactory, Map<String, Object> map) {
 		this.sceneFactory = sceneFactory;

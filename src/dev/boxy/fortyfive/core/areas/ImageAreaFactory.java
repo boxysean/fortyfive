@@ -11,11 +11,30 @@ public class ImageAreaFactory implements ConfigLoader {
 	
 	protected SceneFactory sceneFactory;
 	
+	/**
+	 * @defgroup ImageArea ImageArea
+	 * @ingroup areas
+	 * Use "type: image"
+	 * 
+	 * @{
+	 */
+
+	/** image area name [required] */
 	protected String name;
-	protected String image;
+	
+	/** image name to be used in this area [required] */
+	protected String imageName;
+	
+	/** xOffset of image [default: 0] */
 	protected int xOffset;
+	
+	/** yOffset of image [default: 0] */
 	protected int yOffset;
+	
+	/** scale of image [default: 1.0] */
 	protected double scale;
+	
+	/** @} */
 	
 	public ImageAreaFactory(SceneFactory sceneFactory, Map<String, Object> map) {
 		this.sceneFactory = sceneFactory;
@@ -23,19 +42,19 @@ public class ImageAreaFactory implements ConfigLoader {
 	}
 	
 	public ImageArea get() {
-		return new ImageArea(sceneFactory, name, image, xOffset, yOffset, scale);
+		return new ImageArea(sceneFactory, name, imageName, xOffset, yOffset, scale);
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
 		FortyFive ff = FortyFive.getInstance();
 		
-		name = (String) map.get("name");
-		image = (String) map.get("image");
+		name = ConfigParser.getString(map, "name");
+		imageName = ConfigParser.getString(map, new String[] { "image", "imageName" });
 		xOffset = ConfigParser.getInt(map, "xOffset", 0);
 		yOffset = ConfigParser.getInt(map, "yOffset", 0);
 		scale = ConfigParser.getDouble(map, "scale", 1.0);
 		
-		ImageGrid thresholdImage = sceneFactory.getImageGrid(image);
+		ImageGrid thresholdImage = sceneFactory.getImageGrid(imageName);
 		
 		if (scale < 0) {
 			// Auto scale to size of screen

@@ -5,11 +5,6 @@ import java.util.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.core.startarea.*;
 
-/**
- * Orders the coordinates in linear fashion
- * @author boxysean
- *
- */
 public class CentreBag implements CoordinateBag {
 	
 	protected SceneFactory sceneFactory;

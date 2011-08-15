@@ -1,0 +1,89 @@
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement}{
+\section{dev.boxy.fortyfive.core.movement.LineMovement Class Reference}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement}\index{dev::boxy::fortyfive::core::movement::LineMovement@{dev::boxy::fortyfive::core::movement::LineMovement}}
+}
+Inheritance diagram for dev.boxy.fortyfive.core.movement.LineMovement:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.707317cm]{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a9ecb57ea50c7b99efe6201409e6795e4}{
+{\bfseries LineMovement} (Scene scene, Line line, String name)}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a9ecb57ea50c7b99efe6201409e6795e4}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_ae5b788d5d15789c1f0a9e9398fdf666e}{
+abstract boolean {\bfseries forwardOnce} ()}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_ae5b788d5d15789c1f0a9e9398fdf666e}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a8a284d95d38e1fe0d2d2620f58b68784}{
+boolean {\bfseries hasMove} (int cr, int cc, int cd)}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a8a284d95d38e1fe0d2d2620f58b68784}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a9735e410af9681de6ace5d6c482feafa}{
+String {\bfseries getName} ()}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a9735e410af9681de6ace5d6c482feafa}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a0b0e76d40268776f4fe4e27fc35add57}{
+abstract int {\bfseries getDirection} (int d)}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a0b0e76d40268776f4fe4e27fc35add57}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a4aebd78f3521facb287f7f1ed66b495a}{
+static final int {\bfseries DIR\_\-PREFERRED} = 2}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a4aebd78f3521facb287f7f1ed66b495a}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a1a9576b12c2906073fec869687ef51c3}{
+static final int {\bfseries DIR\_\-AVOID} = 1}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a1a9576b12c2906073fec869687ef51c3}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a0e53163b9b363d8c7f2018e8670f0de6}{
+static final int {\bfseries DIR\_\-DISALLOWED} = 0}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a0e53163b9b363d8c7f2018e8670f0de6}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a061aa28fa62b78f20e4900c3f3bec99e}{
+static final int\mbox{[}$\,$\mbox{]} {\bfseries dr} = new int\mbox{[}$\,$\mbox{]} \{ 1, 1, 0, -\/1, -\/1, -\/1, 0, 1 \}}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a061aa28fa62b78f20e4900c3f3bec99e}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_af99add49f4f9415a4c2ca74d5d23f006}{
+static final int\mbox{[}$\,$\mbox{]} {\bfseries dc} = new int\mbox{[}$\,$\mbox{]} \{ 0, 1, 1, 1, 0, -\/1, -\/1, -\/1 \}}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_af99add49f4f9415a4c2ca74d5d23f006}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a73d9954dbc47dd5cb9ed1db917a900cc}{
+Scene {\bfseries scene}}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a73d9954dbc47dd5cb9ed1db917a900cc}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a894d1874d05e994fc2f33b8aae6240e0}{
+Line {\bfseries line}}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a894d1874d05e994fc2f33b8aae6240e0}
+
+\item 
+\hypertarget{classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a1ed785f45f2bb42a38f02645f1f9cbdd}{
+String {\bfseries name}}
+\label{d8/d51/classdev_1_1boxy_1_1fortyfive_1_1core_1_1movement_1_1_line_movement_a1ed785f45f2bb42a38f02645f1f9cbdd}
+
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+src/dev/boxy/fortyfive/core/movement/LineMovement.java\end{DoxyCompactItemize}

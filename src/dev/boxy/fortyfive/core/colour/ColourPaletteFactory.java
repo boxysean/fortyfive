@@ -2,26 +2,30 @@ package dev.boxy.fortyfive.core.colour;
 
 import java.util.*;
 
-import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
 
 public class ColourPaletteFactory implements ConfigLoader {
 	
-	public static final String DEFAULT_ORDER = "linear";
+	/**
+	 * @defgroup colourPalettes colourPalettes
+	 * Arrays of colours that are picked in a particular ordering
+	 * @{
+	 */
 
+	/** colour palette name [required] */
 	protected String name;
+	
+	/** the order in which the colours are produced (random, linear) [default: random] */
 	protected String order;
+	
+	/** names of the colours in this palette [required] */
 	protected List<String> colourNames = new ArrayList<String>();
+	
+	/** @} */
 	
 	public ColourPaletteFactory(SceneFactory sceneFactory, Map<String, Object> map) {
 		loadSettings(sceneFactory, map);
-	}
-	
-	public ColourPaletteFactory(ColourFactory colourFactory) {
-		this.name = colourFactory.getName();
-		this.order = DEFAULT_ORDER;
-		colourNames.add(colourFactory.getName());
 	}
 	
 	public ColourPalette get(Scene scene) {
@@ -43,9 +47,9 @@ public class ColourPaletteFactory implements ConfigLoader {
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
-		name = ConfigParser.getString(map, "name"/*, getDefaultName()*/);
-		order = ConfigParser.getString(map, new String[] { "order", "mode" }, "random").toLowerCase();
-		colourNames = (List<String>) map.get("colours");
+		name = ConfigParser.getString(map, "name");
+		order = ConfigParser.getString(map, new String[] { "order", "mode", "type" }, "random").toLowerCase();
+		colourNames = ConfigParser.getStrings(map, new String[] { "colours", "colourNames" });
 		
 		if (colourNames.size() == 0) {
 			Logger.getInstance().warning("ColourPalette init: colour palette %s is empty", name); 

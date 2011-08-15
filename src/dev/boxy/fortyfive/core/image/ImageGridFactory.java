@@ -12,8 +12,20 @@ public class ImageGridFactory implements ConfigLoader {
 	
 	protected SceneFactory sceneFactory;
 	
+	/**
+	 * @defgroup images images
+	 * The images that may be used in the template
+	 * @{
+	 */
+
+	/** image name [required] */
 	protected String name;
-	protected String imageFile;
+	
+	/** image file [required] */
+	protected String file;
+	
+	/** @} */
+	
 	protected PImage image;
 	
 	public ImageGridFactory(SceneFactory sceneFactory, Map<String, Object> map) {
@@ -22,20 +34,20 @@ public class ImageGridFactory implements ConfigLoader {
 	}
 	
 	public ImageGrid get() {
-		return new ImageGrid(sceneFactory, name, imageFile, image);
+		return new ImageGrid(sceneFactory, name, file, image);
 	}
 	
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
-		FortyFive ff = FortyFive.getInstance();
+		name = ConfigParser.getString(map, "name");
+		file = ConfigParser.getString(map, new String[] { "file", "image" });
 		
-		name = (String) map.get("name");
-		imageFile = (String) map.get("file");
-		
-		if (!new File(imageFile).exists()) {
+		if (!new File(file).exists()) {
 			Logger.getInstance().warning("image load: could not file for image %s", name);
 		}
 
-		image = ff.loadImage(imageFile);
+		FortyFive ff = FortyFive.getInstance();
+
+		image = ff.loadImage(file);
 		
 		if (image == null) {
 			Logger.getInstance().warning("image load: image %s failed to load", name);
