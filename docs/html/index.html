@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-<title>fortyfive: Main Page</title>
+<title>fortyfive: fortyfive</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/search.js"></script>
@@ -19,8 +19,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
  <tbody>
  <tr style="height: 56px;">
   <td style="padding-left: 0.5em;">
-   <div id="projectname">fortyfive&#160;<span id="projectnumber">0.2</span></div>
-   <div id="projectbrief">Generates images with lines and fortyfive degree angles</div>
+   <div id="projectname">fortyfive</div>
   </td>
  </tr>
  </tbody>
@@ -52,10 +51,204 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div>
 <div class="header">
   <div class="headertitle">
-<div class="title">fortyfive Documentation</div>  </div>
+<div class="title">fortyfive </div>  </div>
 </div>
 <div class="contents">
-</div>
+<div class="textblock"><p><a href="http://www.boxysean.com/projects/renegade-projections.html">Example output</a> of this project.</p>
+<h2><a class="anchor" id="howto"></a>
+How to use this documentation</h2>
+<p>The program runs on settings in <a href="http://en.wikipedia.org/wiki/YAML">YAML</a> files fed into it. The parameters of the YAML files are detailed in the Modules tab.</p>
+<h2><a class="anchor" id="example"></a>
+Example</h2>
+<p>To run the example:</p>
+<div class="fragment"><pre class="fragment"> java FortyFive <span class="keyword">template</span>.yaml
+</pre></div><p>Contents of <em>template.yaml</em></p>
+<div class="fragment"><pre class="fragment"> baseDir: ../configs
+ 
+ templates:
+  - Simple.yaml
+  - RedGreen.yaml
+</pre></div><p>Contents of <em>Simple.yaml</em></p>
+<div class="fragment"><pre class="fragment"> ---
+bgcolour:          black
+
+widthSpacing:      10
+heightSpacing:     10
+
+areas:
+    - name:        all
+      x:           0
+      y:           0
+      width:       0
+      height:      0
+
+colours:
+    - name:        red
+      red:         255
+
+    - name:        green
+      green:       255
+
+movements:
+  - name:          A
+    type:          IntelligentMovement
+    intelligence:  2
+
+coordBags:
+  - name:          random
+    type:          random
+
+lineDraws:
+  - &amp;id001
+    name:          A
+    palette:       red
+    strokeWidth:   5
+
+  - &lt;&lt;: *id001
+    name:          B
+    palette:       green
+
+lines:
+  - name:          A
+    draw:          A
+    movement:      A
+    startArea:     +all
+    coordBag:      random
+
+  - name:          B
+    draw:          B
+    movement:      A
+    startArea:     +all
+    coordBag:      random
+
+deploy:            [A, B]
+
+...
+</pre></div><p>Contents of <em>RedGreen.yaml</em></p>
+<div class="fragment"><pre class="fragment"> ---
+bgcolour:        black
+
+widthSpacing:    10
+heightSpacing:   10
+
+colours:
+  - name:        red
+    red:         255
+
+  - name:        blue
+    blue:        255
+
+  - name:        green
+    green:       255
+
+colourPalettes:
+  - name:        rgb
+    mode:        linear
+    colours:     [red, green, blue]
+
+  - name:        gbr
+    mode:        linear
+    colours:     [green, blue, red]
+
+coordBags:
+  - name:        random
+    type:        random
+
+areas:
+  - name:        right
+    x:           0
+    y:           0
+    width:       15
+    height:      height
+
+  - name:        top
+    x:           0
+    y:           0
+    width:       width
+    height:      15
+
+  - name:        left
+    x:           -10
+    y:           0
+    width:       10
+    height:      height
+
+  - name:        bottom
+    x:           0
+    y:           -10
+    width:       width
+    height:      10
+
+movements:
+  - &amp;id004
+    name:          left
+    type:          IntelligentMovement
+    intelligence:  1
+    straightProb:  1.0
+    direction:     <span class="stringliteral">&quot;00000121&quot;</span>
+
+  - &lt;&lt;: *id004
+    name:          top
+    direction:     <span class="stringliteral">&quot;21000001&quot;</span>
+
+  - &lt;&lt;: *id004
+    name:          bottom
+    direction:     <span class="stringliteral">&quot;00012100&quot;</span>
+
+  - &lt;&lt;: *id004
+    name:          right
+    direction:     <span class="stringliteral">&quot;01210000&quot;</span>
+
+lineDraws:
+  - &amp;id001
+    name:          top
+    palette:       rgb
+    strokeWidth:   10
+
+  - &lt;&lt;:            *id001
+    name:          bottom
+
+  - &lt;&lt;:            *id001
+    name:          right
+    palette:       gbr
+
+  - &lt;&lt;:            *id001
+    name:          left
+    palette:       gbr
+
+lines:
+  - &amp;id002
+    drawSpeed:     2
+    name:          top
+    draw:          top
+    movement:      top
+    coordBag:      random
+    startArea:     +top
+
+  - &lt;&lt;: *id002
+    name:          bottom
+    draw:          bottom
+    movement:      bottom
+    startArea:     +bottom
+
+  - &amp;id003 
+    drawSpeed:     5
+    name:          left
+    draw:          left
+    movement:      left
+    coordBag:      random
+    startArea:     +left
+
+  - &lt;&lt;: *id003
+    name:          right
+    draw:          right
+    movement:      right
+    startArea:     +right
+
+deploy: [top, bottom, right, left]
+
+...
+</pre></div> </div></div>
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -70,7 +263,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Mon Aug 15 2011 10:58:11 for fortyfive by&#160;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Aug 15 2011 11:30:41 for fortyfive by&#160;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.4 </small></address>
 </body>

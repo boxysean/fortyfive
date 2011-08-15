@@ -12,11 +12,244 @@ import dev.boxy.fortyfive.core.presentation.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
 
+/**
+ * \mainpage fortyfive
+ * 
+ * <a href="http://www.boxysean.com/projects/renegade-projections.html">Example output</a> of this project.
+ * 
+ * \section howto How to use this documentation
+ * 
+ * The program runs on settings in <a href="http://en.wikipedia.org/wiki/YAML">YAML</a> files fed into it. The parameters of the YAML files are detailed in the Modules tab.
+ * 
+ * \section example Example
+ * 
+ * To run the example:
+ * 
+ * \code
+ * 
+ * java FortyFive template.yaml
+ * 
+ * \endcode
+ * 
+ * Contents of <i>template.yaml</i>
+ * 
+ * \code
+ * 
+ * baseDir: ../configs
+ * 
+ * templates:
+ *  - Simple.yaml
+ *  - RedGreen.yaml
+ * 
+ * \endcode
+ *
+ * Contents of <i>Simple.yaml</i>
+ * 
+ * \code
+ * 
+ *
+---
+bgcolour:          black
+
+widthSpacing:      10
+heightSpacing:     10
+
+areas:
+  - name:          all
+    x:             0
+    y:             0
+    width:         width
+    height:        height
+
+colours:
+  - name:          red
+    red:           255
+
+  - name:          green
+    green:         255
+
+colourPalettes:
+  - name:          red
+    colours:       red
+
+  - name:          green
+    colours:       green
+
+movements:
+  - name:          A
+    type:          IntelligentMovement
+    intelligence:  2
+
+coordBags:
+  - name:          random
+    type:          random
+
+lineDraws:
+  - &id001
+    name:          A
+    palette:       red
+    strokeWidth:   5
+
+  - <<: *id001
+    name:          B
+    palette:       green
+
+lines:
+  - name:          A
+    draw:          A
+    movement:      A
+    startArea:     +all
+    coordBag:      random
+
+  - name:          B
+    draw:          B
+    movement:      A
+    startArea:     +all
+    coordBag:      random
+
+deploy:            [A, B]
+
+...
+
+ *
+ * \endcode
+ *
+ * Contents of <i>RedGreen.yaml</i>
+ * 
+ * \code
+ * 
+ * ---
+bgcolour:        black
+
+widthSpacing:    10
+heightSpacing:   10
+
+colours:
+  - name:        red
+    red:         255
+
+  - name:        blue
+    blue:        255
+
+  - name:        green
+    green:       255
+
+colourPalettes:
+  - name:        rgb
+    mode:        linear
+    colours:     [red, green, blue]
+
+  - name:        gbr
+    mode:        linear
+    colours:     [green, blue, red]
+
+coordBags:
+  - name:        random
+    type:        random
+
+areas:
+  - name:        right
+    x:           0
+    y:           0
+    width:       15
+    height:      height
+
+  - name:        top
+    x:           0
+    y:           0
+    width:       width
+    height:      15
+
+  - name:        left
+    x:           -10
+    y:           0
+    width:       10
+    height:      height
+
+  - name:        bottom
+    x:           0
+    y:           -10
+    width:       width
+    height:      10
+
+movements:
+  - &id004
+    name:          left
+    type:          IntelligentMovement
+    intelligence:  1
+    straightProb:  1.0
+    direction:     "00000121"
+
+  - <<: *id004
+    name:          top
+    direction:     "21000001"
+
+  - <<: *id004
+    name:          bottom
+    direction:     "00012100"
+
+  - <<: *id004
+    name:          right
+    direction:     "01210000"
+
+lineDraws:
+  - &id001
+    name:          top
+    palette:       rgb
+    strokeWidth:   10
+
+  - <<:            *id001
+    name:          bottom
+
+  - <<:            *id001
+    name:          right
+    palette:       gbr
+
+  - <<:            *id001
+    name:          left
+    palette:       gbr
+
+lines:
+  - &id002
+    drawSpeed:     2
+    name:          top
+    draw:          top
+    movement:      top
+    coordBag:      random
+    startArea:     +top
+
+  - <<: *id002
+    name:          bottom
+    draw:          bottom
+    movement:      bottom
+    startArea:     +bottom
+
+  - &id003 
+    drawSpeed:     5
+    name:          left
+    draw:          left
+    movement:      left
+    coordBag:      random
+    startArea:     +left
+
+  - <<: *id003
+    name:          right
+    draw:          right
+    movement:      right
+    startArea:     +right
+
+deploy: [top, bottom, right, left]
+
+...
+
+ * 
+ * \endcode
+ *
+ */
+
 public class FortyFive extends PApplet {
 	
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
-	public static final boolean		SHOW_THRESHOLD		= Boolean.getBoolean("SHOW_THRESHOLD");
-	public static final boolean		SHOW_STARTAREA		= Boolean.getBoolean("SHOW_STARTAREA");
 	
 	public static int               ITERATIONS          = 0;
 	public static int				FRAMES				= 0;
