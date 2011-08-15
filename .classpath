@@ -5,5 +5,13 @@
 	<classpathentry kind="lib" path="lib/oscP5.jar"/>
 	<classpathentry kind="lib" path="lib/core.jar"/>
 	<classpathentry kind="lib" path="lib/snakeyaml-1.8.jar"/>
+	<classpathentry kind="lib" path="lib/batik-awt-util.jar"/>
+	<classpathentry kind="lib" path="lib/batik-dom.jar"/>
+	<classpathentry kind="lib" path="lib/batik-ext.jar"/>
+	<classpathentry kind="lib" path="lib/batik-svggen.jar"/>
+	<classpathentry kind="lib" path="lib/batik-util.jar"/>
+	<classpathentry kind="lib" path="lib/batik-xml.jar"/>
+	<classpathentry kind="lib" path="lib/old_prosvg.jar"/>
+	<classpathentry kind="lib" path="lib/prosvg.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
