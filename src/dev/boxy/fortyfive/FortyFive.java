@@ -249,6 +249,7 @@ deploy: [top, bottom, right, left]
 
 public class FortyFive extends PApplet {
 	
+	// Future additions to presentation files...
 	public static final boolean		DEBUG				= Boolean.getBoolean("DEBUG");
 	
 	public static int               ITERATIONS          = 0;
@@ -481,6 +482,10 @@ public class FortyFive extends PApplet {
 	public static void main(String args[]) {
 		FortyFive.args = args;
 		
-		PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
+		if (FULLSCREEN) {
+			PApplet.main(new String[] { "--present", "dev.boxy.fortyfive.FortyFive" });
+		} else {
+			PApplet.main(new String[] { "dev.boxy.fortyfive.FortyFive" });
+		}
 	}
 }
