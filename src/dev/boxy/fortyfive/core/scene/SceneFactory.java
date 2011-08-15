@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.yaml.snakeyaml.*;
 
+import dev.boxy.fortyfive.core.areas.*;
 import dev.boxy.fortyfive.core.colour.*;
 import dev.boxy.fortyfive.core.coordinatebag.*;
 import dev.boxy.fortyfive.core.draw.*;
@@ -26,7 +27,7 @@ public class SceneFactory extends SceneGeometry {
 	protected Map<String, CoordinateBag> coordinateBags = new LinkedHashMap<String, CoordinateBag>();
 	protected Map<String, LineDrawFactory> lineDrawFactories = new LinkedHashMap<String, LineDrawFactory>();
 	protected Map<String, ImageGrid> imageGrids = new LinkedHashMap<String, ImageGrid>();
-	protected Map<String, ImageThreshold> imageThresholds = new LinkedHashMap<String, ImageThreshold>();
+	protected Map<String, Area> areas = new LinkedHashMap<String, Area>();
 	protected Map<String, LineFactory> lineFactories = new LinkedHashMap<String, LineFactory>();
 	protected Map<String, LineMovementFactory> lineMovementFactories = new LinkedHashMap<String, LineMovementFactory>();
 	protected Map<String, StartAreaFactory> startAreaFactories = new LinkedHashMap<String, StartAreaFactory>();
@@ -38,9 +39,15 @@ public class SceneFactory extends SceneGeometry {
 	}
 	
 	public Scene get() {
-		return new Scene(this, new ArrayList<ColourFactory>(colourFactories.values()), new ArrayList<ColourPaletteFactory>(colourPaletteFactories.values()),
+		Scene res = new Scene(this, new ArrayList<ColourFactory>(colourFactories.values()), new ArrayList<ColourPaletteFactory>(colourPaletteFactories.values()),
 				new ArrayList<LineDrawFactory>(lineDrawFactories.values()), new ArrayList<StartAreaFactory>(startAreaFactories.values()),
 				lineNames, bgColour, widthSpacing, heightSpacing, frameRate, drawSpeedMultiplier);
+		
+		for (LineFactory lineFactory : lineFactories.values()) {
+			lineFactory.newScene();
+		}
+		
+		return res;
 	}
 	
 	public void loadSettings(Map<String, Object> map) {
@@ -97,13 +104,19 @@ public class SceneFactory extends SceneGeometry {
 		
 		// Parse threshold images
 		
-		List<Map<String, Object>> thresholdDefs = (List<Map<String, Object>>) map.get("threshold");
+		List<Map<String, Object>> areaDefs = (List<Map<String, Object>>) map.get("areas");
 		
-		if (thresholdDefs != null) {
-			for (Map<String, Object> thresholdDef : thresholdDefs) {
-				ImageThresholdFactory imageThresholdFactory = new ImageThresholdFactory(this, thresholdDef);
-				ImageThreshold imageThreshold = imageThresholdFactory.get();
-				imageThresholds.put(imageThreshold.getName(), imageThreshold);
+		if (areaDefs != null) {
+			for (Map<String, Object> areaDef : areaDefs) {
+				if (areaDef.containsKey("image")) {
+					ImageAreaFactory imageAreaFactory = new ImageAreaFactory(this, areaDef);
+					ImageArea imageArea = imageAreaFactory.get();
+					areas.put(imageArea.getName(), imageArea);
+				} else {
+					RectangleAreaFactory rectangleAreaFactory = new RectangleAreaFactory(this, areaDef);
+					RectangleArea rectangleArea = rectangleAreaFactory.get();
+					areas.put(rectangleArea.getName(), rectangleArea);
+				}
 			}
 		}
 		
@@ -119,26 +132,12 @@ public class SceneFactory extends SceneGeometry {
 			}
 		}
 		
-		// Parse start areas
-		
-		List<Map<String, Object>> startAreaDefs = (List<Map<String, Object>>) map.get("startAreas");
-		
-		if (startAreaDefs != null) {
-			for (Map<String, Object> startAreaDef : startAreaDefs) {
-				VectorStartAreaFactory vectorStartAreaFactory = new VectorStartAreaFactory(this, startAreaDef);
-				StartAreaFactoryJob job = vectorStartAreaFactory.get();
-				StartAreaFactory startAreaFactory = job.run();
-				startAreaFactories.put(startAreaFactory.getName(), startAreaFactory);
-			}
-		}
-		
 		// Parse draw methods
 		
 		List<Map<String, Object>> drawDefs = (List<Map<String, Object>>) map.get("lineDraws");
 		
 		if (drawDefs != null) {
 			for (Map<String, Object> drawDef : drawDefs) {
-				String name = ConfigParser.getString(drawDef, "name");
 				String type = ConfigParser.getString(drawDef, new String[] { "type", "mode" }, "SolidDraw");
 				LineDrawFactory lineDrawFactory = null;
 				
@@ -209,18 +208,18 @@ public class SceneFactory extends SceneGeometry {
 		return res;
 	}
 	
-	public ImageThreshold getImageThreshold(String name) {
-		ImageThreshold res = imageThresholds.get(name);
+	public Area getArea(String name) {
+		Area res = areas.get(name);
 		
 		if (res == null) {
-			Logger.getInstance().warning("no such image threshold %s", name);
+			Logger.getInstance().warning("no such area %s", name);
 		}
 		
 		return res;
 	}
 	
-	public List<ImageThreshold> getImageThresholds() {
-		return new ArrayList<ImageThreshold>(imageThresholds.values());
+	public List<Area> getAreas() {
+		return new ArrayList<Area>(areas.values());
 	}
 	
 	public CoordinateBag getCoordinateBag(String name) {

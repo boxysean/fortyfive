@@ -50,4 +50,6 @@ public abstract class LineMovement {
 		return name;
 	}
 	
+	public abstract int getDirection(int d);
+	
 }

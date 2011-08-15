@@ -3,36 +3,28 @@ package dev.boxy.fortyfive.core.startarea;
 import java.util.*;
 
 import dev.boxy.fortyfive.*;
-import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.scene.*;
 
 
 public class StartArea {
 	
-	protected Scene scene;
+	protected StartAreaFactory startAreaFactory;
+	protected List<Coordinate> coords = new ArrayList<Coordinate>(); // remaining available coordinates
 	
-	protected String name;
 	protected int gr;
 	protected int gc;
 	protected int idx;
-	protected GridLayer gridLayer;
-	
-	protected List<Coordinate> coords = new ArrayList<Coordinate>(); // remaining available coordinates
 
-	public StartArea(Scene scene, String name, List<Coordinate> coords, GridLayer gridLayer) {
-		this.scene = scene;
-		this.name = name;
+	public StartArea(StartAreaFactory startAreaFactory, List<Coordinate> coords) {
+		this.startAreaFactory = startAreaFactory;
 		this.coords = coords;
-		this.gridLayer = gridLayer;
 	}
 	
 	/**
 	 * Finds the next start point
 	 * @return true if there is a point at which lines can start, false otherwise 
 	 */
-	public boolean getNextStartPoint(List<ImageThreshold> thresholds) {
-		// TODO doesn't do anything with the thresholds...
-		
+	public boolean getNextStartPoint(Scene scene) {
 		do {
 			if (idx >= coords.size()) {
 				gr = -1;
@@ -65,12 +57,8 @@ public class StartArea {
 		return gc;
 	}
 	
-	public String getName() {
-		return name;
-	}
-	
 	public GridLayer getGridLayer() {
-		return gridLayer;
+		return startAreaFactory.getGridLayer();
 	}
 	
 }

@@ -11,11 +11,15 @@ public class IntelligentMovement extends LineMovement {
 	public static final int		INTELLIGENCE_AVOID		= 2;
 	public static final int		INTELLIGENCE_AVOID_ADV	= 3;
 	
+	public double straightProb;
+	public int[] direction;
 	protected int lineIntelligence;
 	
-	public IntelligentMovement(Scene scene, Line line, String name, int lineIntelligence) {
+	public IntelligentMovement(Scene scene, Line line, String name, double straightProb, int[] direction, int lineIntelligence) {
 		super(scene, line, name);
 		
+		this.straightProb = straightProb;
+		this.direction = direction;
 		this.lineIntelligence = lineIntelligence;
 	}
 
@@ -44,7 +48,7 @@ public class IntelligentMovement extends LineMovement {
 			if (attempts == 0) {
 				double rand = RandomSingleton.nextDouble();
 				
-				if (rand >= line.straightProb || line.direction[nd] == DIR_AVOID) {
+				if (rand >= straightProb || direction[nd] == DIR_AVOID) {
 					// The random choice says we must turn
 					attempts++;
 					
@@ -73,7 +77,7 @@ public class IntelligentMovement extends LineMovement {
 				nd -= dr.length;
 			}
 			
-			if (line.direction[nd] == DIR_DISALLOWED) {
+			if (direction[nd] == DIR_DISALLOWED) {
 				continue;
 			}
 			
@@ -112,4 +116,9 @@ public class IntelligentMovement extends LineMovement {
 		
 		return false;
 	}
+	
+	public int getDirection(int d) {
+		return direction[d];
+	}
+
 }

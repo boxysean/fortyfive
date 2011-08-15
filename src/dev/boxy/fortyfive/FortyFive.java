@@ -2,6 +2,7 @@ package dev.boxy.fortyfive;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 import org.yaml.snakeyaml.*;
 
@@ -24,6 +25,8 @@ public class FortyFive extends PApplet {
 	public static final int[]		dr					= new int[] { 1, 1, 0, -1, -1, -1, 0, 1 };
 	public static final int[]		dc					= new int[] { 0, 1, 1, 1, 0, -1, -1, -1 };
 	
+	public static int				THREAD_POOL_SIZE	= 5;
+	
 	private static FortyFive		INSTANCE			= null;
 	
 	public static FortyFive getInstance() {
@@ -42,6 +45,8 @@ public class FortyFive extends PApplet {
 	
 	protected List<FortyFiveLayer> layers = new ArrayList<FortyFiveLayer>();
 	protected List<FortyFiveCommand> commands = new ArrayList<FortyFiveCommand>();
+	
+	protected ExecutorService threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 	
 	protected Presentation presentation;
 	
@@ -234,6 +239,10 @@ public class FortyFive extends PApplet {
 	
 	public Scene getScene() {
 		return scene;
+	}
+	
+	public void addJob(Runnable r) {
+		threadPool.submit(r);
 	}
 	
 	public static void main(String args[]) {

@@ -4,6 +4,7 @@ import java.util.*;
 
 import processing.core.*;
 import dev.boxy.fortyfive.*;
+import dev.boxy.fortyfive.core.areas.*;
 import dev.boxy.fortyfive.core.colour.*;
 import dev.boxy.fortyfive.core.draw.*;
 import dev.boxy.fortyfive.core.image.*;
@@ -27,7 +28,6 @@ public class Scene extends SceneGeometry implements FortyFiveLayer {
 	protected Map<String, Colour> colours = new LinkedHashMap<String, Colour>();
 	protected Map<String, ColourPalette> colourPalettes = new LinkedHashMap<String, ColourPalette>();
 	protected Map<String, LineDraw> lineDraws = new LinkedHashMap<String, LineDraw>();
-	protected Map<String, StartArea> startAreas = new LinkedHashMap<String, StartArea>();
 	
 	// TODO none of these lists get populated at all!~~~~~~~~~~~~
 	
@@ -63,11 +63,6 @@ public class Scene extends SceneGeometry implements FortyFiveLayer {
 		for (LineDrawFactory lineDrawFactory : lineDrawFactories) {
 			LineDraw lineDraw = lineDrawFactory.get(this);
 			this.lineDraws.put(lineDraw.getName(), lineDraw);
-		}
-		
-		for (StartAreaFactory startAreaFactory : startAreaFactories) {
-			StartArea startArea = startAreaFactory.get(this);
-			this.startAreas.put(startArea.getName(), startArea);
 		}
 		
 		this.lineNames.addAll(lineNames);
@@ -264,17 +259,11 @@ public class Scene extends SceneGeometry implements FortyFiveLayer {
 		// This loops will break when there are no more places to try and place lines.
 		
 		while (gd == -1) {
-			String startAreaName = lineFactory.getStartAreaName();
-			StartArea startArea = getStartArea(startAreaName);
-			
-			if (startArea == null) {
-				Logger logger = Logger.getInstance();
-				logger.warning("newLine(): no such start area %s", startAreaName);
-			}
+			StartArea startArea = lineFactory.getStartArea();
 			
 			// If there is no start point, we cannot create this line.
 			
-			if (!startArea.getNextStartPoint(getImageThresholds())) {
+			if (!startArea.getNextStartPoint(this)) {
 				return null;
 			}
 			
@@ -344,12 +333,12 @@ public class Scene extends SceneGeometry implements FortyFiveLayer {
 		return invalid;
 	}
 
-	public List<ImageThreshold> getImageThresholds() {
-		return sceneFactory.getImageThresholds();
+	public List<Area> getAreas() {
+		return sceneFactory.getAreas();
 	}
 	
-	public ImageThreshold getImageThreshold(String name) {
-		return sceneFactory.getImageThreshold(name);
+	public Area getArea(String name) {
+		return sceneFactory.getArea(name);
 	}
 	
 	public ImageGrid getImageGrid(String name) {
@@ -365,16 +354,6 @@ public class Scene extends SceneGeometry implements FortyFiveLayer {
 		
 		if (res == null) {
 			Logger.getInstance().warning("no such line draw %s", name);
-		}
-		
-		return res;
-	}
-	
-	public StartArea getStartArea(String name) {
-		StartArea res = startAreas.get(name);
-		
-		if (res == null) {
-			Logger.getInstance().warning("no such start area %s", name);
 		}
 		
 		return res;

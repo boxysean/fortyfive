@@ -2,7 +2,6 @@ package dev.boxy.fortyfive.core.coordinatebag;
 
 import java.util.*;
 
-import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
 
@@ -43,7 +42,7 @@ public class CoordinateBagFactory implements ConfigLoader {
 		try {
 			// Maybe the coord bag is a list of integers
 			
-			List<Integer> coordBagValues = (List<Integer>) map.get("coordBag");
+			List<Integer> coordBagValues = (List<Integer>) map.get("type");
 			
 			leftFirst = coordBagValues.get(0);
 			topFirst = coordBagValues.get(1);

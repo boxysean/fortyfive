@@ -5,20 +5,22 @@ import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.image.*;
 import dev.boxy.fortyfive.core.scene.*;
 
-public class ImageDraw extends LineDraw {
+public class ImageDraw implements LineDraw {
 	
 	protected Scene scene;
 	
+	protected String name;
 	protected ImageGrid grid;
 	protected int strokeWidth;
+	protected int strokeCap;
+	protected int strokeJoin;
 	
 	protected int xOffset;
 	protected int yOffset;
 	protected double scale;
 	
-	public ImageDraw(Scene scene, String name, ImageGrid grid, int strokeWidth, int theXOffset, int theYOffset, double theScale, String strokeJoinStr, String strokeCapStr) {
-		super(name, strokeJoinStr, strokeCapStr);
-		
+	public ImageDraw(Scene scene, String name, ImageGrid grid, int strokeWidth, int theXOffset, int theYOffset, double theScale, int strokeJoin, int strokeCap) {
+		this.name = name;
 		this.scene = scene;
 		
 		this.grid = grid;
@@ -77,6 +79,10 @@ public class ImageDraw extends LineDraw {
 		g.line(pxm, pym, pxx, pyy);
 		
 		g.endDraw();
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 }

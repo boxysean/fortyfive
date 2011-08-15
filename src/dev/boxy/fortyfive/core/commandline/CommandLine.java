@@ -124,7 +124,7 @@ public class CommandLine implements FortyFiveLayer, KeyListener {
 	}
 
 	public int getOrder() {
-		return 1;
+		return 1 << 31 - 1;
 	}
 	
 	protected void addCommand(FortyFiveCommand command) {

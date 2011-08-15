@@ -2,7 +2,7 @@ package dev.boxy.fortyfive.core.draw;
 
 import java.util.*;
 
-import dev.boxy.fortyfive.*;
+import processing.core.*;
 import dev.boxy.fortyfive.core.colour.*;
 import dev.boxy.fortyfive.core.scene.*;
 import dev.boxy.fortyfive.utils.*;
@@ -14,24 +14,17 @@ public class SolidDrawFactory implements ConfigLoader, LineDrawFactory {
 	protected String name;
 	protected String paletteName;
 	protected int strokeWidth;
-	protected String strokeJoinStr;
-	protected String strokeCapStr;
+	protected int strokeJoin;
+	protected int strokeCap;
 	
 	public SolidDrawFactory(SceneFactory sceneFactory, Map<String, Object> map) {
 		loadSettings(sceneFactory, map);
 	}
 	
-	public SolidDrawFactory(String paletteName, int strokeWidth, String strokeJoinStr, String strokeCapStr) {
-		this.paletteName = paletteName;
-		this.strokeWidth = strokeWidth;
-		this.strokeJoinStr = strokeJoinStr;
-		this.strokeCapStr = strokeCapStr;
-	}
-	
 	public SolidDraw get(Scene scene) {
 		ColourPalette colourPalette = scene.getColourPalette(paletteName);
 		
-		return new SolidDraw(name, colourPalette, strokeWidth, strokeJoinStr, strokeCapStr);
+		return new SolidDraw(name, colourPalette, strokeWidth, strokeJoin, strokeCap);
 	}
 
 	public void loadSettings(SceneFactory sceneFactory, Map<String, Object> map) {
@@ -42,8 +35,29 @@ public class SolidDrawFactory implements ConfigLoader, LineDrawFactory {
 		}
 		
 		strokeWidth = ConfigParser.getInt(map, "strokeWidth", 1);
-		strokeJoinStr = ConfigParser.getString(map, "strokeJoin", "miter").toLowerCase();
-		strokeCapStr = ConfigParser.getString(map, "strokeCap", "round").toLowerCase();
+		
+		String strokeJoinStr = ConfigParser.getString(map, "strokeJoin", "miter").toLowerCase();
+		String strokeCapStr = ConfigParser.getString(map, "strokeCap", "round").toLowerCase();
+		
+		if (strokeJoinStr.equals("miter")) {
+			strokeJoin = PGraphics.MITER; // 8
+		} else if (strokeJoinStr.equals("bevel")) {
+			strokeJoin = PGraphics.BEVEL; // 32
+		} else if (strokeJoinStr.equals("round")) {
+			strokeJoin = PGraphics.ROUND; // 2
+		} else {
+			Logger.getInstance().warning("line draw init: no such stroke join as %s, defaulting to miter\n", strokeJoin);
+		}
+		
+		if (strokeCapStr.equals("round")) {
+			strokeCap = PGraphics.ROUND; // 2
+		} else if (strokeCapStr.equals("square")) {
+			strokeCap = PGraphics.SQUARE; // 1
+		} else if (strokeCapStr.equals("project")) {
+			strokeCap = PGraphics.PROJECT; // 4
+		} else {
+			Logger.getInstance().warning("line draw init: no such stroke cap as %s, defaulting to round\n", strokeCap);
+		}
 	}
 	
 	public String getName() {

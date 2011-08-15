@@ -1,7 +1,7 @@
 package dev.boxy.fortyfive.core.commandline;
 
 import dev.boxy.fortyfive.*;
-import dev.boxy.fortyfive.core.image.*;
+import dev.boxy.fortyfive.core.line.*;
 import dev.boxy.fortyfive.core.scene.*;
 
 public class ThresholdCommand implements FortyFiveCommand {
@@ -15,8 +15,8 @@ public class ThresholdCommand implements FortyFiveCommand {
 	public void execute() {
 		FortyFive ff = FortyFive.getInstance();
 		Scene scene = ff.getScene();
-		ImageThreshold imageThreshold = scene.getImageThreshold(name);
-		ff.toggleLayer(imageThreshold.getGridLayer());
+		LineFactory lineFactory = scene.getLineFactory(name);
+		ff.toggleLayer(lineFactory.getThresholdLayer());
 	}
 
 }

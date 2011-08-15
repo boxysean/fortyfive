@@ -135,9 +135,15 @@ public class ConfigParser {
 	}
 	
 	public static int parseInt(List<Object> list, int idx, int n, int def) {
+		return parseInt(list.get(idx), n, def);
+	}
+		
+	public static int parseInt(Map<String, Object> map, String key, int n, int def) {
+		return parseInt(map.get(key), n, def);
+	}
+		
+	public static int parseInt(Object xObj, int n, int def) {
 		try {
-			Object xObj = list.get(idx);
-			
 			int x = 0;
 			
 			if (xObj instanceof Integer) {

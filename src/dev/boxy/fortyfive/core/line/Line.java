@@ -3,7 +3,6 @@ package dev.boxy.fortyfive.core.line;
 import dev.boxy.fortyfive.core.draw.*;
 import dev.boxy.fortyfive.core.movement.*;
 import dev.boxy.fortyfive.core.scene.*;
-import dev.boxy.fortyfive.utils.*;
 
 public class Line {
 	
@@ -16,17 +15,13 @@ public class Line {
 	protected int stepSpeed;
 	protected int drawSpeed;
 	
-	public double straightProb;
-	
 	protected LineDraw draw;
 	
 	protected LineMovement movement;
 	
-	public int[] direction;
-	
 	public boolean[][] blocked;
 	
-	public Line(Scene scene, int br, int bc, int bd, int stepSpeed, int drawSpeed, double straightProb, int[] direction, LineMovementFactory lineMovementFactory, LineDraw lineDraw) {
+	public Line(Scene scene, int br, int bc, int bd, int stepSpeed, int drawSpeed, LineMovementFactory lineMovementFactory, LineDraw lineDraw) {
 		this.scene = scene;
 		
 		cr = br;
@@ -35,8 +30,6 @@ public class Line {
 		
 		this.stepSpeed = stepSpeed;
 		this.drawSpeed = drawSpeed;
-		this.straightProb = straightProb;
-		this.direction = direction;
 		this.movement = lineMovementFactory.get(scene, this);
 		this.draw = lineDraw;
 		this.blocked = new boolean[scene.rows()][scene.columns()];
@@ -53,9 +46,7 @@ public class Line {
 	}
 	
 	public boolean forwardOnce() {
-		boolean res = movement.forwardOnce();
-		
-		return res;
+		return movement.forwardOnce();
 	}
 	
 	public boolean invalidMove(int nr, int nc) {

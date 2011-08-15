@@ -1,18 +1,16 @@
 package dev.boxy.fortyfive.core.image;
 import java.util.*;
 
+import processing.core.*;
 import dev.boxy.fortyfive.*;
 import dev.boxy.fortyfive.core.scene.*;
 
-import processing.core.*;
-
 public class ImageGrid {
 	
-	public static final int MODE_AND = 0;
-	public static final int MODE_OR = 1;
-	public static final int MODE_XOR = 2;
-	public static final int MODE_NOR = 3;
-	public static final int MODE_NAND = 4;
+	protected static final int MODE_ADD = 0;
+	protected static final int MODE_SUBTRACT = 1;
+	protected static final int MODE_SET = 2;
+	protected static final int MODE_UNSET = 3;
 	
 	public static final int			MIN_THRESHOLD_VALUE		= 50;
 
@@ -179,7 +177,23 @@ public class ImageGrid {
 		return colourGrid;
 	}
 	
-	public void applyThreshold(boolean[][] blocked, boolean invert, int xOffset, int yOffset, double scale, int mode) {
+	public void addThreshold(boolean[][] blocked, int xOffset, int yOffset, double scale) {
+		applyThreshold(blocked, xOffset, yOffset, scale, MODE_ADD);
+	}
+	
+	public void subtractThreshold(boolean[][] blocked, int xOffset, int yOffset, double scale) {
+		applyThreshold(blocked, xOffset, yOffset, scale, MODE_SUBTRACT);
+	}
+	
+	public void setThreshold(boolean[][] blocked, int xOffset, int yOffset, double scale) {
+		applyThreshold(blocked, xOffset, yOffset, scale, MODE_SET);
+	}
+	
+	public void unsetThreshold(boolean[][] blocked, int xOffset, int yOffset, double scale) {
+		applyThreshold(blocked, xOffset, yOffset, scale, MODE_UNSET);
+	}
+	
+	protected void applyThreshold(boolean[][] blocked, int xOffset, int yOffset, double scale, int mode) {
 		boolean[][] threshold = getThreshold(scale);
 		
 		int trows = threshold.length;
@@ -207,24 +221,20 @@ public class ImageGrid {
 				}
 				
 				switch (mode) {
-				case MODE_OR:
-					blocked[tr][tc] |= (threshold[r][c] ^ invert);
+				case MODE_ADD:
+					blocked[tr][tc] |= threshold[r][c];
 					break;
 					
-				case MODE_AND:
-					blocked[tr][tc] &= (threshold[r][c] ^ invert);
+				case MODE_SUBTRACT:
+					blocked[tr][tc] &= !threshold[r][c];
 					break;
 					
-				case MODE_XOR:
-					blocked[tr][tc] ^= (threshold[r][c] ^ invert);
+				case MODE_SET:
+					blocked[tr][tc] = threshold[r][c];
 					break;
 					
-				case MODE_NOR:
-					blocked[tr][tc] = !blocked[tr][tc] || !(threshold[r][c] ^ invert);
-					break;
-					
-				case MODE_NAND:
-					blocked[tr][tc] = !blocked[tr][tc] && !(threshold[r][c] ^ invert);
+				case MODE_UNSET:
+					blocked[tr][tc] = !threshold[r][c];
 					break;
 				}
 			}

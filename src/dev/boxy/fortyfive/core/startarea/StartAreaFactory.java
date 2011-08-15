@@ -7,37 +7,41 @@ import dev.boxy.fortyfive.core.scene.*;
 
 public class StartAreaFactory {
 	
-	protected String name;
 	protected SceneFactory sceneFactory;
 	protected List<Coordinate> coords;
 	
 	protected GridLayer gridLayer;
 	
-	public StartAreaFactory(String name, SceneFactory sceneFactory, List<Coordinate> coords) {
-		this.name = name;
+	public StartAreaFactory(SceneFactory sceneFactory, List<Coordinate> coords) {
 		this.sceneFactory = sceneFactory;
 		this.coords = coords;
-		
-		makeGridLayer();
 	}
 	
-	public StartArea get(Scene scene) {
-		return new StartArea(scene, name, new ArrayList<Coordinate>(coords), gridLayer);
+	public StartArea get() {
+		return new StartArea(this, new ArrayList<Coordinate>(coords));
 	}
 	
 	protected void makeGridLayer() {
 		boolean[][] grid = new boolean[sceneFactory.rows()][sceneFactory.columns()];
 		
+		for (boolean[] g : grid) {
+			Arrays.fill(g, true);
+		}
+		
 		for (Coordinate coord : coords) {
-			grid[coord.r][coord.c] = true;
+			grid[coord.r][coord.c] = false;
 		}
 		
 		gridLayer = new GridLayer(sceneFactory, grid, 0, 0);
-		gridLayer.setName("start area " + name);
+		gridLayer.setName("start area");
 	}
 	
-	public String getName() {
-		return name;
+	public GridLayer getGridLayer() {
+		if (gridLayer == null) {
+			makeGridLayer();
+		}
+		
+		return gridLayer;
 	}
-
+	
 }

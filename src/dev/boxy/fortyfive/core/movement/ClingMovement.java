@@ -8,10 +8,14 @@ import dev.boxy.fortyfive.utils.*;
 
 public class ClingMovement extends LineMovement {
 	
+	protected int[] direction;
+	
 	public List<Integer> dlist = new ArrayList<Integer>();
 	
-	public ClingMovement(Scene scene, Line line, String name) {
+	public ClingMovement(Scene scene, Line line, String name, int[] direction) {
 		super(scene, line, name);
+		
+		this.direction = direction;
 		
 		dlist.add(-1);
 		dlist.add(0);
@@ -62,7 +66,7 @@ public class ClingMovement extends LineMovement {
 			
 			boolean newHigh = false;
 			
-			switch (line.direction[nd]) {
+			switch (direction[nd]) {
 			case LineMovement.DIR_AVOID:
 				newHigh = highScoreDir < 0;
 				break;
@@ -95,4 +99,9 @@ public class ClingMovement extends LineMovement {
 
 		return true;
 	}
+	
+	public int getDirection(int d) {
+		return direction[d];
+	}
+	
 }
