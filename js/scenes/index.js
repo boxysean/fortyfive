@@ -4,5 +4,6 @@ import { simple } from './simple.js';
 import { wanderer } from './wanderer.js';
 import { neon } from './neon.js';
 import { labyrinth } from './labyrinth.js';
+import { banner } from './banner.js';
 
-export const scenes = [simple, wanderer, neon, labyrinth];
+export const scenes = [simple, wanderer, neon, labyrinth, banner];
