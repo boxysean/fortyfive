@@ -8,6 +8,7 @@ const btnPause = document.getElementById('btn-pause');
 const sliderSpeed = document.getElementById('slider-speed');
 const speedLabel = document.getElementById('speed-label');
 const selectScene = document.getElementById('select-scene');
+const btnExport = document.getElementById('btn-export');
 
 const engine = new Engine(canvas);
 
@@ -48,6 +49,13 @@ sliderSpeed.addEventListener('input', () => {
   const val = parseFloat(sliderSpeed.value);
   engine.setSpeed(val);
   speedLabel.textContent = `${val}\u00D7`;
+});
+
+btnExport.addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.download = `${scenes[currentSceneIdx].name.toLowerCase()}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 });
 
 selectScene.addEventListener('change', () => {
