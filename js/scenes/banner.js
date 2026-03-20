@@ -4,7 +4,7 @@ export const banner = {
   name: 'Banner',
   bgcolour: 'white',
   canvasWidth: 1600,
-  canvasHeight: 50,
+  canvasHeight: 30,
   widthSpacing: 6,
   heightSpacing: 6,
 
