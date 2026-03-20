@@ -15,8 +15,15 @@ export class Engine {
 
   loadScene(config) {
     this.stop();
-    this.canvas.width = this.canvas.clientWidth * devicePixelRatio;
-    this.canvas.height = this.canvas.clientHeight * devicePixelRatio;
+    if (config.canvasWidth && config.canvasHeight) {
+      this.canvas.classList.add('fixed-size');
+      this.canvas.width = config.canvasWidth;
+      this.canvas.height = config.canvasHeight;
+    } else {
+      this.canvas.classList.remove('fixed-size');
+      this.canvas.width = this.canvas.clientWidth * devicePixelRatio;
+      this.canvas.height = this.canvas.clientHeight * devicePixelRatio;
+    }
     this.scene = new Scene(config, this.canvas.width, this.canvas.height);
     this.start();
   }
