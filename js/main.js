@@ -13,7 +13,6 @@ const btnExport = document.getElementById('btn-export');
 const engine = new Engine(canvas);
 
 let currentSceneIdx = 0;
-let autoAdvance = true;
 
 // Populate scene selector
 scenes.forEach((s, i) => {
@@ -29,15 +28,7 @@ function loadScene(idx) {
   engine.loadScene(scenes[idx]);
 }
 
-// Auto-advance to next scene when finished
-engine.onFinished = () => {
-  if (!autoAdvance) return;
-  autoAdvance = false; // prevent re-trigger
-  setTimeout(() => {
-    autoAdvance = true;
-    loadScene((currentSceneIdx + 1) % scenes.length);
-  }, 2000);
-};
+// Do not auto-advance when a scene finishes; stay on the completed canvas.
 
 // Controls
 btnPause.addEventListener('click', () => {
@@ -59,7 +50,6 @@ btnExport.addEventListener('click', () => {
 });
 
 selectScene.addEventListener('change', () => {
-  autoAdvance = true;
   loadScene(parseInt(selectScene.value));
 });
 
@@ -69,10 +59,8 @@ document.addEventListener('keydown', (e) => {
     e.preventDefault();
     btnPause.click();
   } else if (e.code === 'ArrowRight') {
-    autoAdvance = true;
     loadScene((currentSceneIdx + 1) % scenes.length);
   } else if (e.code === 'ArrowLeft') {
-    autoAdvance = true;
     loadScene((currentSceneIdx - 1 + scenes.length) % scenes.length);
   }
 });
