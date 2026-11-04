@@ -65,10 +65,10 @@
   "description": "One heavy six-strand ribbon crossing the strip left to right, stepping dbt orange to Fivetran blue along the run, with the marks knocked out of the lines at the bottom right.",
   "generator": {
     "repo": "boxysean/fortyfive",
-    "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+    "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
     "tool": "tools/render-banner.mjs"
   },
-  "generatedAt": "2026-11-04T15:13:08.637Z",
+  "generatedAt": "2026-11-04T15:23:28.409Z",
   "png": {
     "sha256": "af24890eb4e780a676d8c4fb1eb57d4fbe26745487e532175a8522472e8416bf",
     "bytes": 106414,

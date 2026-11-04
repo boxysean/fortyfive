@@ -66,10 +66,10 @@
     "description": "One heavy six-strand ribbon crossing the strip left to right, stepping dbt orange to Fivetran blue along the run, with the marks knocked out of the lines at the bottom right.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:13:08.637Z",
+    "generatedAt": "2026-11-04T15:23:28.409Z",
     "png": {
       "sha256": "af24890eb4e780a676d8c4fb1eb57d4fbe26745487e532175a8522472e8416bf",
       "bytes": 106414,
@@ -141,10 +141,10 @@
     "description": "Thirty-one fine lines entering from the left edge and fanning right, grading orange at the top of the fan to blue at the bottom, with the marks on a white chip at the top right.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:13:11.720Z",
+    "generatedAt": "2026-11-04T15:23:31.450Z",
     "png": {
       "sha256": "e1fee92c2d02d150259c7d64b4833e88db679e987062af77f43637d99f9ae012",
       "bytes": 99996,
@@ -218,10 +218,10 @@
     "description": "Circuit-board texture on black: orange and blue traces routing around four hatched component blocks, with the marks on a white chip centred at the right edge.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:13:23.027Z",
+    "generatedAt": "2026-11-04T15:23:39.601Z",
     "png": {
       "sha256": "84389236d93c4817d98c08147fcf9ccafac6ff71fea4cd99727f1ab8968e164b",
       "bytes": 755273,
@@ -294,10 +294,10 @@
     "description": "The arcade one: eight thin fast lines in hot brand tints on black, with the marks knocked out in mono white at the bottom left.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:13:30.588Z",
+    "generatedAt": "2026-11-04T15:23:47.287Z",
     "png": {
       "sha256": "fbf0a924965202e6c81511185b92bcad2063caf1f82592ccebdf95324e2ce40a",
       "bytes": 933252,
@@ -359,10 +359,10 @@
     "description": "The quiet one: a single fine orange line wandering the whole strip on black, most of the ground left empty, with small white marks at the right edge.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:19:56.880Z",
+    "generatedAt": "2026-11-04T15:23:53.310Z",
     "png": {
       "sha256": "c4f4664bfca379e497934810b26cbe9a0446d248602ab2e624c929e47bbce2eb",
       "bytes": 81012,
