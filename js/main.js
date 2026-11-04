@@ -2,6 +2,7 @@
 
 import { Engine } from './engine.js';
 import { scenes } from './scenes/index.js';
+import { drawLogos } from './logos.js';
 
 const canvas = document.getElementById('canvas');
 const btnPause = document.getElementById('btn-pause');
@@ -29,6 +30,20 @@ function loadScene(idx) {
 }
 
 // Do not auto-advance when a scene finishes; stay on the completed canvas.
+
+// Banner scenes carry a `logos` array: composite it once when the scene finishes. The engine
+// re-blits the scene's offscreen canvas every frame, so the logos go onto that, not the
+// visible canvas. A scene replaced mid-load just gets logos on a canvas nobody shows.
+let logosDoneFor = null;
+engine.onFinished = () => {
+  const { scene } = engine;
+  if (scene === logosDoneFor) return;
+  logosDoneFor = scene;
+  const { logos, canvasWidth } = scene.config;
+  if (!logos || logos.length === 0) return;
+  const scale = canvasWidth ? scene.width / canvasWidth : 1;
+  drawLogos(scene.offCtx, logos, scale).catch((err) => console.error(err));
+};
 
 // Controls
 btnPause.addEventListener('click', () => {

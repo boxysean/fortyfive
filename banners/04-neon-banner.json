@@ -1,0 +1,76 @@
+{
+  "file": "04-neon-banner.png",
+  "scene": "neon-banner",
+  "seed": 1987,
+  "canvas": {
+    "width": 1584,
+    "height": 396,
+    "scale": 2
+  },
+  "grid": {
+    "widthSpacing": 6,
+    "heightSpacing": 6
+  },
+  "palette": [
+    {
+      "name": "dbt-orange",
+      "hex": "#FE6703"
+    },
+    {
+      "name": "fivetran-blue",
+      "hex": "#5C9BFF"
+    },
+    {
+      "name": "cyan",
+      "hex": "#00E5FF"
+    },
+    {
+      "name": "magenta",
+      "hex": "#FF2EC4"
+    }
+  ],
+  "movement": [
+    {
+      "name": "fast",
+      "type": "intelligent",
+      "intelligence": 2,
+      "straightProb": 0.85
+    }
+  ],
+  "strokeWidth": 2,
+  "logos": [
+    {
+      "name": "dbt-labs",
+      "file": "assets/dbt-labs.svg",
+      "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+      "x": 40,
+      "y": 331,
+      "height": 25,
+      "monochrome": true,
+      "opacity": 0.85
+    },
+    {
+      "name": "fivetran",
+      "file": "assets/fivetran-white.svg",
+      "sha256": "e6f97b315feb6b2c8dd9ce9d1b834009ecf57ba9fb26879461615200925aa231",
+      "x": 167,
+      "y": 331,
+      "height": 25,
+      "monochrome": true,
+      "opacity": 0.85
+    }
+  ],
+  "description": "The arcade one: eight thin fast lines in hot brand tints on black, with the marks knocked out in mono white at the bottom left.",
+  "generator": {
+    "repo": "boxysean/fortyfive",
+    "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+    "tool": "tools/render-banner.mjs"
+  },
+  "generatedAt": "2026-11-04T15:13:30.588Z",
+  "png": {
+    "sha256": "fbf0a924965202e6c81511185b92bcad2063caf1f82592ccebdf95324e2ce40a",
+    "bytes": 933252,
+    "width": 3168,
+    "height": 792
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "file": "02-mesh.png",
+  "scene": "mesh",
+  "seed": 21,
+  "canvas": {
+    "width": 1584,
+    "height": 396,
+    "scale": 2
+  },
+  "grid": {
+    "widthSpacing": 4,
+    "heightSpacing": 4
+  },
+  "palette": [
+    {
+      "name": "dbt-orange",
+      "hex": "#FE6703"
+    },
+    {
+      "name": "fivetran-blue",
+      "hex": "#306BEA"
+    },
+    {
+      "name": "ramp",
+      "hex": "31 tones sampled linearly from #FE6703 to #306BEA, one per line"
+    }
+  ],
+  "movement": [
+    {
+      "name": "fan",
+      "type": "intelligent",
+      "intelligence": 2,
+      "straightProb": "0.88 to 1.0, per line",
+      "direction": "00210000 / 00200000 / 01200000"
+    }
+  ],
+  "strokeWidth": 1,
+  "logos": [
+    {
+      "name": "dbt-labs",
+      "file": "assets/dbt-labs.svg",
+      "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+      "x": 1334,
+      "y": 40,
+      "height": 24,
+      "chip": "#fff",
+      "monochrome": false,
+      "opacity": 1
+    },
+    {
+      "name": "fivetran",
+      "file": "assets/fivetran-dark.svg",
+      "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
+      "x": 1457,
+      "y": 40,
+      "height": 24,
+      "chip": "#fff",
+      "monochrome": false,
+      "opacity": 1
+    }
+  ],
+  "description": "Thirty-one fine lines entering from the left edge and fanning right, grading orange at the top of the fan to blue at the bottom, with the marks on a white chip at the top right.",
+  "generator": {
+    "repo": "boxysean/fortyfive",
+    "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+    "tool": "tools/render-banner.mjs"
+  },
+  "generatedAt": "2026-11-04T15:13:11.720Z",
+  "png": {
+    "sha256": "e1fee92c2d02d150259c7d64b4833e88db679e987062af77f43637d99f9ae012",
+    "bytes": 99996,
+    "width": 3168,
+    "height": 792
+  }
+}

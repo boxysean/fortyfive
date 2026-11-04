@@ -1,0 +1,65 @@
+{
+  "file": "05-wanderer-banner.png",
+  "scene": "wanderer-banner",
+  "seed": 11,
+  "canvas": {
+    "width": 1584,
+    "height": 396,
+    "scale": 2
+  },
+  "grid": {
+    "widthSpacing": 8,
+    "heightSpacing": 8
+  },
+  "palette": [
+    {
+      "name": "dbt-orange",
+      "hex": "#FE6703"
+    }
+  ],
+  "movement": [
+    {
+      "name": "drift",
+      "type": "intelligent",
+      "intelligence": 3,
+      "straightProb": 0.75,
+      "direction": "02220000"
+    }
+  ],
+  "strokeWidth": 2,
+  "logos": [
+    {
+      "name": "dbt-labs",
+      "file": "assets/dbt-labs.svg",
+      "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+      "x": 1367,
+      "y": 188,
+      "height": 20,
+      "monochrome": true,
+      "opacity": 0.9
+    },
+    {
+      "name": "fivetran",
+      "file": "assets/fivetran-white.svg",
+      "sha256": "e6f97b315feb6b2c8dd9ce9d1b834009ecf57ba9fb26879461615200925aa231",
+      "x": 1472,
+      "y": 188,
+      "height": 20,
+      "monochrome": true,
+      "opacity": 0.9
+    }
+  ],
+  "description": "The quiet one: a single fine orange line wandering the whole strip on black, most of the ground left empty, with small white marks at the right edge.",
+  "generator": {
+    "repo": "boxysean/fortyfive",
+    "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+    "tool": "tools/render-banner.mjs"
+  },
+  "generatedAt": "2026-11-04T15:19:56.880Z",
+  "png": {
+    "sha256": "c4f4664bfca379e497934810b26cbe9a0446d248602ab2e624c929e47bbce2eb",
+    "bytes": 81012,
+    "width": 3168,
+    "height": 792
+  }
+}

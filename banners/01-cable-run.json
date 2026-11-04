@@ -1,0 +1,78 @@
+{
+  "file": "01-cable-run.png",
+  "scene": "cable-run",
+  "seed": 7,
+  "canvas": {
+    "width": 1584,
+    "height": 396,
+    "scale": 2
+  },
+  "grid": {
+    "widthSpacing": 12,
+    "heightSpacing": 12
+  },
+  "palette": [
+    {
+      "name": "dbt-orange",
+      "hex": "#FE6703"
+    },
+    {
+      "name": "fivetran-blue",
+      "hex": "#306BEA"
+    },
+    {
+      "name": "ramp",
+      "hex": "8 linear steps from #FE6703 to #306BEA, one per column"
+    }
+  ],
+  "movement": [
+    {
+      "name": "lead",
+      "type": "intelligent",
+      "intelligence": 3,
+      "straightProb": 0.92,
+      "direction": "01200000"
+    },
+    {
+      "name": "follow",
+      "type": "cling",
+      "direction": "02210000"
+    }
+  ],
+  "strokeWidth": 10,
+  "logos": [
+    {
+      "name": "dbt-labs",
+      "file": "assets/dbt-labs.svg",
+      "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+      "x": 1327,
+      "y": 331,
+      "height": 25,
+      "monochrome": false,
+      "opacity": 1
+    },
+    {
+      "name": "fivetran",
+      "file": "assets/fivetran-dark.svg",
+      "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
+      "x": 1454,
+      "y": 331,
+      "height": 25,
+      "monochrome": false,
+      "opacity": 1
+    }
+  ],
+  "description": "One heavy six-strand ribbon crossing the strip left to right, stepping dbt orange to Fivetran blue along the run, with the marks knocked out of the lines at the bottom right.",
+  "generator": {
+    "repo": "boxysean/fortyfive",
+    "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+    "tool": "tools/render-banner.mjs"
+  },
+  "generatedAt": "2026-11-04T15:13:08.637Z",
+  "png": {
+    "sha256": "af24890eb4e780a676d8c4fb1eb57d4fbe26745487e532175a8522472e8416bf",
+    "bytes": 106414,
+    "width": 3168,
+    "height": 792
+  }
+}

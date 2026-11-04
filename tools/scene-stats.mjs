@@ -1,5 +1,6 @@
 // Headless stats for the 4:1 banner scenes: grid size, frames to finish, grid fill.
-// Fails if any scene throws, does not finish within the frame cap, or fills under 5%.
+// Fails if any scene throws, does not finish within the frame cap, or fills under its
+// minimum (5%, except the single-line wanderer-banner, which is meant to be sparse).
 // Run with: node tools/scene-stats.mjs [--seed N]
 
 function makeContext() {
@@ -33,7 +34,15 @@ const SLUGS = ['cable-run', 'mesh', 'labyrinth-banner', 'neon-banner', 'wanderer
 const WIDTH = 1584;
 const HEIGHT = 396;
 const MAX_FRAMES = 4000;
-const MIN_FILL = 5;
+// Minimum grid fill, percent. wanderer-banner is one line on a 198 × 49 grid: crossing to
+// the wall fills ~1.7%, so 0.4% only catches a line that died early.
+const MIN_FILL = {
+  'cable-run': 5,
+  mesh: 5,
+  'labyrinth-banner': 5,
+  'neon-banner': 5,
+  'wanderer-banner': 0.4,
+};
 
 const seedArg = process.argv.indexOf('--seed');
 const seed = seedArg === -1 ? 45 : Number(process.argv[seedArg + 1]);
@@ -71,7 +80,7 @@ for (const slug of SLUGS) {
     const r = run(config);
     const problems = [];
     if (!r.finished) problems.push(`did not finish within ${MAX_FRAMES} frames`);
-    if (r.fill < MIN_FILL) problems.push(`fill under ${MIN_FILL}%`);
+    if (r.fill < MIN_FILL[slug]) problems.push(`fill under ${MIN_FILL[slug]}%`);
     if (problems.length) failed++;
     line = `${`${r.cols} × ${r.rows}`.padEnd(11)}${String(r.frames).padStart(7)}${`${r.fill.toFixed(1)}%`.padStart(8)}  ${problems.length ? `FAIL: ${problems.join('; ')}` : 'ok'}`;
   } catch (err) {

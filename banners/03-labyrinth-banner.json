@@ -1,0 +1,77 @@
+{
+  "file": "03-labyrinth-banner.png",
+  "scene": "labyrinth-banner",
+  "seed": 42,
+  "canvas": {
+    "width": 1584,
+    "height": 396,
+    "scale": 2
+  },
+  "grid": {
+    "widthSpacing": 6,
+    "heightSpacing": 6
+  },
+  "palette": [
+    {
+      "name": "dbt-orange",
+      "hex": "#FE6703"
+    },
+    {
+      "name": "fivetran-blue",
+      "hex": "#306BEA"
+    }
+  ],
+  "movement": [
+    {
+      "name": "explore",
+      "type": "intelligent",
+      "intelligence": 2,
+      "straightProb": 0.8
+    },
+    {
+      "name": "hatch",
+      "type": "intelligent",
+      "intelligence": 2,
+      "straightProb": 0.97,
+      "direction": "21212121"
+    }
+  ],
+  "strokeWidth": 2,
+  "logos": [
+    {
+      "name": "dbt-labs",
+      "file": "assets/dbt-labs.svg",
+      "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+      "x": 1334,
+      "y": 186,
+      "height": 24,
+      "chip": "#fff",
+      "monochrome": false,
+      "opacity": 1
+    },
+    {
+      "name": "fivetran",
+      "file": "assets/fivetran-dark.svg",
+      "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
+      "x": 1457,
+      "y": 186,
+      "height": 24,
+      "chip": "#fff",
+      "monochrome": false,
+      "opacity": 1
+    }
+  ],
+  "description": "Circuit-board texture on black: orange and blue traces routing around four hatched component blocks, with the marks on a white chip centred at the right edge.",
+  "generator": {
+    "repo": "boxysean/fortyfive",
+    "commit": "949d5e1e1d5fad6c5aadaabe666fe14c03d91db9",
+    "tool": "tools/render-banner.mjs"
+  },
+  "generatedAt": "2026-11-04T15:13:23.027Z",
+  "png": {
+    "sha256": "84389236d93c4817d98c08147fcf9ccafac6ff71fea4cd99727f1ab8968e164b",
+    "bytes": 755273,
+    "width": 3168,
+    "height": 792
+  }
+}

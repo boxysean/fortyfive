@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>rendering…</title>
+  <style>html, body { margin: 0; background: #000; } canvas { display: block; }</style>
+</head>
+<body>
+  <!--
+    Headless banner render page, driven by tools/render-banner.mjs.
+    ?manifest=/banners/manifest.json&file=01-cable-run.png
+    Renders the manifest entry synchronously (no rAF animation), composites its logos, and
+    POSTs the PNG data URL to /save?file=<file>. Errors go to document.title and /error.
+  -->
+  <script type="module">
+    import { Scene } from './js/scene.js';
+    import { scenes } from './js/scenes/index.js';
+    import { drawLogos } from './js/logos.js';
+    import { scaleSceneConfig } from './js/banner-scale.js';
+
+    const FRAME_CAP = 20000;
+    const params = new URLSearchParams(location.search);
+    const manifestUrl = params.get('manifest') || '/banners/manifest.json';
+    const file = params.get('file');
+    const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+
+    async function run() {
+      if (!file) throw new Error('missing ?file=');
+      const res = await fetch(manifestUrl, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`manifest ${manifestUrl}: HTTP ${res.status}`);
+      const entry = (await res.json()).find((e) => e.file === file);
+      if (!entry) throw new Error(`no manifest entry with file ${file}`);
+
+      const config = scenes.find((s) => s.slug === entry.scene)
+        || scenes.find((s) => s.name === entry.scene);
+      if (!config) throw new Error(`no scene ${entry.scene} in js/scenes/index.js`);
+
+      const scale = entry.canvas.scale ?? 1;
+      const canvas = document.createElement('canvas');
+      canvas.width = entry.canvas.width * scale;
+      canvas.height = entry.canvas.height * scale;
+      document.body.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+
+      const scene = new Scene({ ...scaleSceneConfig(config, scale), seed: entry.seed }, canvas.width, canvas.height);
+      let frames = 0;
+      while (!scene.finished) {
+        if (++frames > FRAME_CAP) throw new Error(`${entry.scene} did not finish within ${FRAME_CAP} frames`);
+        scene.draw(8);
+      }
+      scene.render(ctx);
+
+      // Logos go onto the scene's offscreen buffer so the settle renders keep them
+      await drawLogos(scene.offCtx, entry.logos, scale);
+      scene.render(ctx);
+      for (let i = 0; i < 2; i++) {
+        await nextFrame();
+        scene.render(ctx);
+      }
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const post = await fetch(`/save?file=${encodeURIComponent(entry.file)}`, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: dataUrl,
+      });
+      if (post.status !== 200) throw new Error(`POST /save: HTTP ${post.status} ${await post.text()}`);
+      document.title = `OK ${entry.file} ${(await post.text()).trim()}`;
+    }
+
+    run().catch((err) => {
+      document.title = `ERROR: ${err.message}`;
+      console.error(err);
+      fetch(`/error?file=${encodeURIComponent(file || '')}`, {
+        method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: String(err.stack || err),
+      }).catch(() => {});
+    });
+  </script>
+</body>
+</html>
