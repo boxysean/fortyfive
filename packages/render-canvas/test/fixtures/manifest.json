@@ -1,0 +1,61 @@
+{
+  "renderer": "browser",
+  "tool": "tools/render-reference.mjs",
+  "renders": [
+    {
+      "file": "simple.png",
+      "scene": "Simple",
+      "seed": 42,
+      "width": 1200,
+      "height": 600,
+      "frames": 392,
+      "primitives": 5233,
+      "bytes": 377719,
+      "sha256": "145f0803b76c22d12b6285458bfd82264d00e33ca723f5d467ba1fd1e6fdced5"
+    },
+    {
+      "file": "wanderer.png",
+      "scene": "Wanderer",
+      "seed": 42,
+      "width": 1200,
+      "height": 600,
+      "frames": 471,
+      "primitives": 10820,
+      "bytes": 434013,
+      "sha256": "abb11fc9634169820a2418640651e5753ccc77c9bee475da6ed8ab08d5a4c41c"
+    },
+    {
+      "file": "neon.png",
+      "scene": "Neon",
+      "seed": 42,
+      "width": 1200,
+      "height": 600,
+      "frames": 265,
+      "primitives": 13859,
+      "bytes": 503545,
+      "sha256": "ff0d3e8777bd4fc26de654b2e4376e37d4af2589aeb7d2e09cc8b299f4901cd7"
+    },
+    {
+      "file": "labyrinth.png",
+      "scene": "Labyrinth",
+      "seed": 42,
+      "width": 1200,
+      "height": 600,
+      "frames": 501,
+      "primitives": 8129,
+      "bytes": 509191,
+      "sha256": "0cedcd1ef4c650cf5789fccac298f9cbf62ad991a8dd8fa9de1370ae84ab800a"
+    },
+    {
+      "file": "banner.png",
+      "scene": "Banner",
+      "seed": 42,
+      "width": 1200,
+      "height": 600,
+      "frames": 1842,
+      "primitives": 14854,
+      "bytes": 229812,
+      "sha256": "d7fca218fea5a92a685b2f127074bb864ac573c2d55121a5692a997ae9d29880"
+    }
+  ]
+}

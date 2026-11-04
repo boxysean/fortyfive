@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- Reference renderer: draws every demo scene from a fixed seed and POSTs each canvas to
+     tools/render-reference.mjs as a PNG. Driven by that script; not part of the app. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fortyfive reference render</title>
+</head>
+<body>
+<script type="module">
+  import { Scene } from '/packages/core/src/scene.js';
+  import { drawFrame } from '/packages/render-canvas/src/replay.js';
+  import { scenes } from '/apps/demo/scenes/index.js';
+
+  const params = new URLSearchParams(location.search);
+  const width = Number(params.get('width'));
+  const height = Number(params.get('height'));
+  const seed = Number(params.get('seed'));
+  const SPEED = 8;
+  const MAX_FRAMES = 20000;
+
+  try {
+    const out = [];
+    for (const config of scenes) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const scene = new Scene({ ...config, seed }, width, height);
+      let frames = 0;
+      while (!scene.finished) {
+        if (++frames > MAX_FRAMES) throw new Error(`${config.name}: did not finish in ${MAX_FRAMES} frames`);
+        scene.draw(SPEED);
+      }
+      // Same replay code the demo's engine runs, on the same display list
+      await drawFrame(canvas.getContext('2d'), scene.frame());
+      out.push({
+        name: config.name,
+        seed,
+        width,
+        height,
+        frames,
+        primitives: scene.frame().length,
+        png: canvas.toDataURL('image/png'),
+      });
+    }
+    const res = await fetch('/save', { method: 'POST', body: JSON.stringify(out) });
+    if (!res.ok) throw new Error(`POST /save: HTTP ${res.status}`);
+    document.title = 'done';
+  } catch (err) {
+    await fetch('/error', { method: 'POST', body: `${err.message}` }).catch(() => {});
+    throw err;
+  }
+</script>
+</body>
+</html>
