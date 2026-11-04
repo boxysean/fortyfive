@@ -1,0 +1,13 @@
+{
+  "name": "@fortyfive/core",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./*": "./src/*.js"
+  },
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node test/portability.mjs"
+  }
+}

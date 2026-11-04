@@ -1,5 +1,7 @@
 // Colour system — port of Colour, RandomColourPalette, LinearColourPalette
 
+import { random } from './random.js';
+
 export class Colour {
   constructor(name, r, g, b) {
     this.name = name;
@@ -21,13 +23,13 @@ export class RandomColourPalette {
   constructor(name, colours) {
     this.name = name;
     this.colours = colours;
-    this._current = colours[Math.floor(Math.random() * colours.length)];
+    this._current = colours[Math.floor(random() * colours.length)];
   }
 
   current() { return this._current; }
 
   next() {
-    this._current = this.colours[Math.floor(Math.random() * this.colours.length)];
+    this._current = this.colours[Math.floor(random() * this.colours.length)];
     return this._current;
   }
 }

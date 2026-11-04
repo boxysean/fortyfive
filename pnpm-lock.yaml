@@ -1,0 +1,38 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .: {}
+
+  apps/banners:
+    dependencies:
+      '@fortyfive/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@fortyfive/render-canvas':
+        specifier: workspace:*
+        version: link:../../packages/render-canvas
+
+  apps/demo:
+    dependencies:
+      '@fortyfive/banners':
+        specifier: workspace:*
+        version: link:../banners
+      '@fortyfive/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@fortyfive/render-canvas':
+        specifier: workspace:*
+        version: link:../../packages/render-canvas
+
+  packages/core: {}
+
+  packages/render-canvas:
+    dependencies:
+      '@fortyfive/core':
+        specifier: workspace:*
+        version: link:../core

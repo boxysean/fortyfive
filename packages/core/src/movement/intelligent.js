@@ -2,6 +2,7 @@
 // Goal-directed pathfinding with straight-probability and intelligence levels
 
 import { DR, DC, DIR_DISALLOWED, DIR_AVOID, hasMove } from './common.js';
+import { random } from '../random.js';
 
 const INTELLIGENCE_HIT = 0;
 const INTELLIGENCE_NONE = 1;
@@ -21,9 +22,9 @@ export class IntelligentMovement {
     let nAttempts = this.intelligence <= INTELLIGENCE_NONE ? 1 : 3;
 
     // Random rotation direction: +1 or -1
-    const rotSign = Math.random() < 0.5 ? 1 : -1;
+    const rotSign = random() < 0.5 ? 1 : -1;
     // Random rotation amount: 1 or 2
-    const rotAmount = Math.random() < 0.5 ? 1 : 2;
+    const rotAmount = random() < 0.5 ? 1 : 2;
 
     let skippedStraight = false;
 
@@ -32,7 +33,7 @@ export class IntelligentMovement {
 
       if (attempt === 0) {
         // Attempt straight
-        if (Math.random() >= this.straightProb || this.direction[cd] === DIR_AVOID) {
+        if (random() >= this.straightProb || this.direction[cd] === DIR_AVOID) {
           skippedStraight = true;
           if (this.intelligence >= INTELLIGENCE_AVOID) nAttempts = Math.min(nAttempts + 1, 3);
           continue;

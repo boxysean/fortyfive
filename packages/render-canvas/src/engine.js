@@ -1,6 +1,8 @@
 // Engine — animation loop and scene lifecycle
 
-import { Scene } from './scene.js';
+import { Scene } from '../../core/src/scene.js';
+import { createAssetResolver } from './assets.js';
+import { drawFrame } from './replay.js';
 
 export class Engine {
   constructor(canvas) {
@@ -11,6 +13,10 @@ export class Engine {
     this.speedMultiplier = 1;
     this.frameId = null;
     this.onFinished = null; // callback when scene finishes
+    this.resolve = createAssetResolver();
+    this.painting = null; // the paint in flight, if any
+    this.painted = 0; // primitives of the current scene already on the canvas
+    this.repaintAll = false;
   }
 
   loadScene(config) {
@@ -25,6 +31,7 @@ export class Engine {
       this.canvas.height = this.canvas.clientHeight * devicePixelRatio;
     }
     this.scene = new Scene(config, this.canvas.width, this.canvas.height);
+    this.painted = 0;
     this.start();
   }
 
@@ -57,16 +64,45 @@ export class Engine {
     this.speedMultiplier = multiplier;
   }
 
+  /** Repaint the scene's whole display list, e.g. after appending primitives to it */
+  redraw() {
+    this.repaintAll = true;
+    this._paint();
+  }
+
   _loop() {
     this.frameId = requestAnimationFrame(() => this._loop());
 
     if (this.paused || !this.scene) return;
 
     const finished = this.scene.draw(this.speedMultiplier);
-    this.scene.render(this.ctx);
+    this._paint();
 
     if (finished && this.onFinished) {
       this.onFinished();
     }
+  }
+
+  // The display list only grows, so a paint replays just the primitives added since the last
+  // one. One paint at a time: a tick that finds a paint still in flight drops its own.
+  _paint() {
+    if (this.painting || !this.scene) return;
+    const { scene } = this;
+    if (this.repaintAll) {
+      this.repaintAll = false;
+      this.painted = 0;
+    }
+    const list = scene.frame();
+    const from = this.painted;
+    const to = list.length;
+    if (from === to) return;
+    this.painting = drawFrame(this.ctx, list.slice(from, to), { resolve: this.resolve })
+      .catch((err) => console.error(err))
+      .finally(() => {
+        // A failed batch is not retried every tick; a scene swapped mid-paint keeps its reset
+        if (this.scene === scene) this.painted = to;
+        this.painting = null;
+        if (this.repaintAll) this._paint();
+      });
   }
 }
