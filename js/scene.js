@@ -11,9 +11,13 @@ import { ClingMovement } from './movement/cling.js';
 import { shuffle, applyBag } from './coordinatebag.js';
 import { StartArea, parseAreaRef } from './startarea.js';
 import { DR, DC } from './movement/common.js';
+import { setSeed } from './random.js';
 
 export class Scene {
   constructor(config, width, height) {
+    // Seed before building registries — palettes consume randomness at construction
+    if (config.seed !== undefined && config.seed !== null) setSeed(config.seed);
+
     this.config = config;
     this.width = width;
     this.height = height;
