@@ -1,11 +1,31 @@
 // Replay — paints a core display list (packages/core/src/display.js) onto a canvas 2D context.
+//
+// The paint is host-agnostic: it touches nothing but the 2D context it is given. The one thing a
+// host must supply is a way to allocate the scratch canvases the replay needs (`createCanvas`,
+// see below), which is a <canvas> element in a browser and @napi-rs/canvas's createCanvas in Node.
+// packages/render-canvas/src/node.js is the Node backend; the browser demo uses the default.
+
+/**
+ * Allocate an offscreen canvas in a browser. Throws in Node — a Node caller passes
+ * `createCanvas` from `@napi-rs/canvas` (src/node.js does it for you).
+ */
+export function browserCreateCanvas(width, height) {
+  if (typeof document === 'undefined') {
+    throw new Error('drawFrame: no createCanvas given, and no document to make one from');
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  return canvas;
+}
 
 /**
  * Paint `primitives` onto ctx in list order. `resolve(src)` → { image } supplies decoded images
  * (see assets.js); every image is resolved before anything is painted, so the paint itself is
- * synchronous and a frame is never left half-drawn by a failed fetch.
+ * synchronous and a frame is never left half-drawn by a failed fetch. `createCanvas(w, h)` makes
+ * the scratch canvases; it defaults to a browser canvas.
  */
-export async function drawFrame(ctx, primitives, { resolve } = {}) {
+export async function drawFrame(ctx, primitives, { resolve, createCanvas = browserCreateCanvas } = {}) {
   const images = new Map();
   for (const p of primitives) {
     if (!PAINTERS.has(p.type)) throw new Error(`drawFrame: unknown primitive type ${p.type}`);
@@ -15,7 +35,7 @@ export async function drawFrame(ctx, primitives, { resolve } = {}) {
   }
   for (const [src, pending] of images) images.set(src, (await pending).image);
 
-  for (const p of primitives) PAINTERS.get(p.type)(ctx, p, images.get(p.src));
+  for (const p of primitives) PAINTERS.get(p.type)(ctx, p, images.get(p.src), createCanvas);
 }
 
 /**
@@ -23,12 +43,10 @@ export async function drawFrame(ctx, primitives, { resolve } = {}) {
  * into a scratch canvas the size of ctx.canvas and that finished raster is drawn flipped, so
  * anti-aliasing is pixel-identical to the unflipped paint (a geometric flip of the list is not).
  */
-export async function drawMirroredFrame(ctx, primitives, { resolve } = {}) {
+export async function drawMirroredFrame(ctx, primitives, { resolve, createCanvas = browserCreateCanvas } = {}) {
   const { width, height } = ctx.canvas;
-  const scratch = document.createElement('canvas');
-  scratch.width = width;
-  scratch.height = height;
-  await drawFrame(scratch.getContext('2d'), primitives, { resolve });
+  const scratch = createCanvas(width, height);
+  await drawFrame(scratch.getContext('2d'), primitives, { resolve, createCanvas });
 
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -60,13 +78,11 @@ function drawPath(ctx, { d, stroke, width, cap = 'butt' }) {
   ctx.stroke();
 }
 
-function drawImage(ctx, { x, y, w, h, opacity, monochrome }, image) {
+function drawImage(ctx, { x, y, w, h, opacity, monochrome }, image, createCanvas) {
   let source = image;
   if (monochrome) {
     // Recolour: paint the image into a scratch canvas, then keep its alpha with `source-in`
-    const scratch = document.createElement('canvas');
-    scratch.width = Math.ceil(w);
-    scratch.height = Math.ceil(h);
+    const scratch = createCanvas(Math.ceil(w), Math.ceil(h));
     const sctx = scratch.getContext('2d');
     sctx.drawImage(image, 0, 0, w, h);
     sctx.globalCompositeOperation = 'source-in';

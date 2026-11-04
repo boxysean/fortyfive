@@ -6,6 +6,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "node packages/core/test/portability.mjs && node tools/test-seed.mjs"
+    "test": "node packages/core/test/portability.mjs && node tools/test-seed.mjs && pnpm --filter @fortyfive/render-canvas test",
+    "test:render": "node --test packages/render-canvas/test/node-backend.test.mjs",
+    "fixtures": "node tools/render-reference.mjs"
   }
 }
