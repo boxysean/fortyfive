@@ -1,0 +1,9 @@
+{
+  "name": "@fortyfive/demo",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@fortyfive/core": "workspace:*",
+    "@fortyfive/render-canvas": "workspace:*"
+  }
+}

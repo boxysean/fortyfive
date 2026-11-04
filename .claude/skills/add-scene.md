@@ -12,7 +12,8 @@ The user wants to add a new scene to the FortyFive generative art web app.
 
 FortyFive is a generative art engine that draws colored lines on a grid. Lines start from
 designated areas, move according to movement strategies, and draw with colour palettes.
-The web version lives at the repo root and scenes are JS config objects in `js/scenes/`.
+The web version lives at the repo root and scenes are JS config objects in
+`apps/demo/scenes/`.
 
 ## Scene Config Schema
 
@@ -88,15 +89,16 @@ export const myScene = {
    - `centre` coord bag makes lines start from the middle; `ordered` fills systematically
    - `linear` palette mode cycles colours in order; `random` picks randomly
 
-3. **Create the scene file** at `js/scenes/<name>.js` following the existing pattern.
+3. **Create the scene file** at `apps/demo/scenes/<name>.js` following the existing pattern.
 
-4. **Register it** in `js/scenes/index.js` — add the import and append to the `scenes` array.
+4. **Register it** in `apps/demo/scenes/index.js` — add the import and append to the `scenes` array.
 
-5. **Validate** by running a headless smoke test:
+5. **Validate** with a headless smoke test — no browser, no DOM stub:
    ```js
-   // Create a temp test file and run with node
-   // Mock document/devicePixelRatio, import Scene and new config, run draw() in a loop
-   // Verify cells are filled > 0 and no errors thrown
+   // A temp test file run with node: import Scene and the new config, loop scene.draw(8)
+   // until scene.finished, then read scene.frame() (the display list)
+   // Verify cells are filled > 0, primitives are non-empty, and no error is thrown
+   // packages/core/src/scene.js is the working example
    ```
 
 6. **Commit and push** the new scene.
@@ -104,7 +106,7 @@ export const myScene = {
 ## Existing Scenes for Reference
 
 Read these files for inspiration and to match the code style:
-- `js/scenes/simple.js` — minimal 2-line scene
-- `js/scenes/wanderer.js` — 3 cling-movement lines with warm palette
-- `js/scenes/neon.js` — 5 fast thin lines with neon colours
-- `js/scenes/labyrinth.js` — ordered start + threshold areas
+- `apps/demo/scenes/simple.js` — minimal 2-line scene
+- `apps/demo/scenes/wanderer.js` — 3 cling-movement lines with warm palette
+- `apps/demo/scenes/neon.js` — 5 fast thin lines with neon colours
+- `apps/demo/scenes/labyrinth.js` — ordered start + threshold areas

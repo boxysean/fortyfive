@@ -1,0 +1,11 @@
+{
+  "name": "fortyfive",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node packages/core/test/portability.mjs && node tools/test-seed.mjs"
+  }
+}

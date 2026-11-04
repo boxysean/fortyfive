@@ -11,9 +11,13 @@ import { ClingMovement } from './movement/cling.js';
 import { shuffle, applyBag } from './coordinatebag.js';
 import { StartArea, parseAreaRef } from './startarea.js';
 import { DR, DC } from './movement/common.js';
+import { setSeed } from './random.js';
 
 export class Scene {
   constructor(config, width, height) {
+    // Seed before building registries — palettes consume randomness at construction
+    if (config.seed !== undefined && config.seed !== null) setSeed(config.seed);
+
     this.config = config;
     this.width = width;
     this.height = height;
@@ -26,16 +30,9 @@ export class Scene {
     this.rows = this.geometry.rows;
     this.cols = this.geometry.cols;
 
-    // Off-screen canvas for accumulative drawing
-    this.offscreen = document.createElement('canvas');
-    this.offscreen.width = width;
-    this.offscreen.height = height;
-    this.offCtx = this.offscreen.getContext('2d');
-
-    // Initialize background
+    // Display list (see display.js), accumulated in paint order; the background goes first
     const bg = (config.bgcolour || 'black').toLowerCase();
-    this.offCtx.fillStyle = bg === 'white' ? '#fff' : '#000';
-    this.offCtx.fillRect(0, 0, width, height);
+    this.primitives = [{ type: 'rect', x: 0, y: 0, w: width, h: height, fill: bg === 'white' ? '#fff' : '#000' }];
 
     // Build registries from config
     this.colourMap = new Map();
@@ -305,18 +302,23 @@ export class Scene {
     return finished;
   }
 
-  /** Blit offscreen to main canvas */
-  render(ctx) {
-    ctx.drawImage(this.offscreen, 0, 0, this.width, this.height);
+  /** The display list so far, in paint order (the live array) */
+  frame() {
+    return this.primitives;
   }
 
-  /** Convert grid coords to pixels and draw a line segment */
+  /** Push more primitives on top of the display list */
+  append(primitives) {
+    this.primitives.push(...primitives);
+  }
+
+  /** Convert grid coords to pixels and emit a line segment */
   drawLine(gr, gc, grr, gcc, lineDraw) {
     const px = this.geometry.columnToX(gc);
     const py = this.geometry.rowToY(gr);
     const pxx = this.geometry.columnToX(gcc);
     const pyy = this.geometry.rowToY(grr);
-    lineDraw.drawLine(this.offCtx, px, py, pxx, pyy);
+    this.primitives.push(lineDraw.segment(px, py, pxx, pyy));
   }
 
   /** Check if a move is invalid (out of bounds, occupied, or crosses diagonal) */

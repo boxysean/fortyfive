@@ -1,6 +1,6 @@
 // Main entry point — wire up canvas, controls, and engine
 
-import { Engine } from './engine.js';
+import { Engine } from '../../packages/render-canvas/src/engine.js';
 import { scenes } from './scenes/index.js';
 
 const canvas = document.getElementById('canvas');
@@ -29,6 +29,8 @@ function loadScene(idx) {
 }
 
 // Do not auto-advance when a scene finishes; stay on the completed canvas.
+
+// Nothing is composited onto a finished scene here: the demo paints scenes and stops.
 
 // Controls
 btnPause.addEventListener('click', () => {

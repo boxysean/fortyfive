@@ -1,0 +1,12 @@
+export { RectangleArea, createArea } from './areas.js';
+export { Colour, RandomColourPalette, LinearColourPalette, createColour, createPalette } from './colour.js';
+export { shuffle, randomBag, orderedBag, centreBag, applyBag } from './coordinatebag.js';
+export { Geometry } from './geometry.js';
+export { Line } from './line.js';
+export { setSeed, clearSeed, random } from './random.js';
+export { Scene } from './scene.js';
+export { StartArea, buildStartArea, parseAreaRef } from './startarea.js';
+export { SolidDraw } from './draw/solid.js';
+export { ClingMovement } from './movement/cling.js';
+export { DR, DC, DIR_DISALLOWED, DIR_AVOID, DIR_PREFERRED, hasMove } from './movement/common.js';
+export { IntelligentMovement } from './movement/intelligent.js';

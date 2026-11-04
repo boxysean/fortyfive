@@ -4,3 +4,4 @@ configs/
 output/
 FortyFive.app
 debug.txt
+node_modules/
