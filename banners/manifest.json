@@ -68,10 +68,10 @@
     "description": "One heavy six-strand ribbon crossing the strip left to right, stepping dbt orange to Fivetran blue along the run, with the marks knocked out of the lines at the bottom right.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
+      "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:48:09.308Z",
+    "generatedAt": "2026-11-04T15:53:42.499Z",
     "png": {
       "sha256": "9e01a4350b28d4e48dbcfd9ed70ec5eb8e7ff124d0ae08aa0029fbbda9d7e414",
       "bytes": 121314,
@@ -143,10 +143,10 @@
     "description": "Thirty-one fine lines entering from the left edge and fanning right, grading orange at the top of the fan to blue at the bottom, with the marks on a white chip at the top right.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
+      "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:48:12.265Z",
+    "generatedAt": "2026-11-04T15:53:45.577Z",
     "png": {
       "sha256": "e1fee92c2d02d150259c7d64b4833e88db679e987062af77f43637d99f9ae012",
       "bytes": 99996,
@@ -220,10 +220,10 @@
     "description": "Circuit-board texture on black: orange and blue traces routing around four hatched component blocks, with the marks on a white chip centred at the right edge.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
+      "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:48:23.588Z",
+    "generatedAt": "2026-11-04T15:53:56.665Z",
     "png": {
       "sha256": "84389236d93c4817d98c08147fcf9ccafac6ff71fea4cd99727f1ab8968e164b",
       "bytes": 755273,
@@ -296,10 +296,10 @@
     "description": "The arcade one: eight thin fast lines in hot brand tints on black, with the marks knocked out in mono white at the bottom left.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
+      "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:48:31.257Z",
+    "generatedAt": "2026-11-04T15:54:04.300Z",
     "png": {
       "sha256": "fbf0a924965202e6c81511185b92bcad2063caf1f82592ccebdf95324e2ce40a",
       "bytes": 933252,
@@ -361,13 +361,94 @@
     "description": "The quiet one: a single fine orange line wandering the whole strip on black, most of the ground left empty, with small white marks at the right edge.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
+      "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:48:34.243Z",
+    "generatedAt": "2026-11-04T15:54:10.369Z",
     "png": {
       "sha256": "c4f4664bfca379e497934810b26cbe9a0446d248602ab2e624c929e47bbce2eb",
       "bytes": 81012,
+      "width": 3168,
+      "height": 792
+    }
+  },
+  {
+    "file": "06-cable-rise.png",
+    "scene": "cable-rise",
+    "seed": 7,
+    "canvas": {
+      "width": 1584,
+      "height": 396,
+      "scale": 2
+    },
+    "grid": {
+      "widthSpacing": 12,
+      "heightSpacing": 12
+    },
+    "palette": [
+      {
+        "name": "dbt-orange",
+        "hex": "#FE6703"
+      },
+      {
+        "name": "fivetran-blue",
+        "hex": "#306BEA"
+      },
+      {
+        "name": "ramp",
+        "hex": "8 linear steps from #FE6703 to #306BEA, one per column"
+      }
+    ],
+    "movement": [
+      {
+        "name": "lead",
+        "type": "intelligent",
+        "intelligence": 3,
+        "straightProb": 0.92,
+        "direction": "01200000"
+      },
+      {
+        "name": "follow",
+        "type": "cling",
+        "direction": "02210000"
+      }
+    ],
+    "strokeWidth": 10,
+    "logos": [
+      {
+        "name": "dbt-labs",
+        "file": "assets/dbt-labs.svg",
+        "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+        "x": 930.6,
+        "y": 281,
+        "height": 75,
+        "monochrome": false,
+        "opacity": 1,
+        "chip": "#ffffff"
+      },
+      {
+        "name": "fivetran",
+        "file": "assets/fivetran-dark.svg",
+        "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
+        "x": 1274.5,
+        "y": 281,
+        "height": 75,
+        "monochrome": false,
+        "opacity": 1,
+        "chip": "#ffffff"
+      }
+    ],
+    "description": "Cable Rise: the Cable Run ribbon mirrored vertically. Same seed, same movement, same six strands and ramp - the sag becomes a climb.",
+    "flipY": true,
+    "generator": {
+      "repo": "boxysean/fortyfive",
+      "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
+      "tool": "tools/render-banner.mjs"
+    },
+    "generatedAt": "2026-11-04T15:54:13.358Z",
+    "png": {
+      "sha256": "edbb379173689233e2c34f35fb45159cf9796189ff4f4a6ab5f9c2d38f6e544b",
+      "bytes": 127358,
       "width": 3168,
       "height": 792
     }

@@ -50,6 +50,27 @@
       }
       scene.render(ctx);
 
+      // `flipY` mirrors the art vertically before the marks go on, so one movement can be
+      // published twice - a sag and the same sag read as a climb - with the wordmarks still
+      // upright. Mirroring the finished canvas rather than the config keeps the two banners
+      // pixel-identical apart from the flip.
+      if (entry.flipY) {
+        const oc = scene.offCtx;
+        const w = oc.canvas.width;
+        const h = oc.canvas.height;
+        const mirror = document.createElement('canvas');
+        mirror.width = w;
+        mirror.height = h;
+        mirror.getContext('2d').drawImage(oc.canvas, 0, 0);
+        oc.save();
+        oc.setTransform(1, 0, 0, 1, 0, 0);
+        oc.clearRect(0, 0, w, h);
+        oc.translate(0, h);
+        oc.scale(1, -1);
+        oc.drawImage(mirror, 0, 0);
+        oc.restore();
+      }
+
       // Logos go onto the scene's offscreen buffer so the settle renders keep them
       await drawLogos(scene.offCtx, entry.logos, scale);
       scene.render(ctx);

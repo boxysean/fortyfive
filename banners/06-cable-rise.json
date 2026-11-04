@@ -1,0 +1,81 @@
+{
+  "file": "06-cable-rise.png",
+  "scene": "cable-rise",
+  "seed": 7,
+  "canvas": {
+    "width": 1584,
+    "height": 396,
+    "scale": 2
+  },
+  "grid": {
+    "widthSpacing": 12,
+    "heightSpacing": 12
+  },
+  "palette": [
+    {
+      "name": "dbt-orange",
+      "hex": "#FE6703"
+    },
+    {
+      "name": "fivetran-blue",
+      "hex": "#306BEA"
+    },
+    {
+      "name": "ramp",
+      "hex": "8 linear steps from #FE6703 to #306BEA, one per column"
+    }
+  ],
+  "movement": [
+    {
+      "name": "lead",
+      "type": "intelligent",
+      "intelligence": 3,
+      "straightProb": 0.92,
+      "direction": "01200000"
+    },
+    {
+      "name": "follow",
+      "type": "cling",
+      "direction": "02210000"
+    }
+  ],
+  "strokeWidth": 10,
+  "logos": [
+    {
+      "name": "dbt-labs",
+      "file": "assets/dbt-labs.svg",
+      "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
+      "x": 930.6,
+      "y": 281,
+      "height": 75,
+      "monochrome": false,
+      "opacity": 1,
+      "chip": "#ffffff"
+    },
+    {
+      "name": "fivetran",
+      "file": "assets/fivetran-dark.svg",
+      "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
+      "x": 1274.5,
+      "y": 281,
+      "height": 75,
+      "monochrome": false,
+      "opacity": 1,
+      "chip": "#ffffff"
+    }
+  ],
+  "description": "Cable Rise: the Cable Run ribbon mirrored vertically. Same seed, same movement, same six strands and ramp - the sag becomes a climb.",
+  "flipY": true,
+  "generator": {
+    "repo": "boxysean/fortyfive",
+    "commit": "4fd7b9deb740929176b0687c6dc97e1b98a34038",
+    "tool": "tools/render-banner.mjs"
+  },
+  "generatedAt": "2026-11-04T15:54:13.358Z",
+  "png": {
+    "sha256": "edbb379173689233e2c34f35fb45159cf9796189ff4f4a6ab5f9c2d38f6e544b",
+    "bytes": 127358,
+    "width": 3168,
+    "height": 792
+  }
+}
