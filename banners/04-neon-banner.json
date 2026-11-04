@@ -63,10 +63,10 @@
   "description": "The arcade one: eight thin fast lines in hot brand tints on black, with the marks knocked out in mono white at the bottom left.",
   "generator": {
     "repo": "boxysean/fortyfive",
-    "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+    "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
     "tool": "tools/render-banner.mjs"
   },
-  "generatedAt": "2026-11-04T15:23:47.287Z",
+  "generatedAt": "2026-11-04T15:48:31.257Z",
   "png": {
     "sha256": "fbf0a924965202e6c81511185b92bcad2063caf1f82592ccebdf95324e2ce40a",
     "bytes": 933252,

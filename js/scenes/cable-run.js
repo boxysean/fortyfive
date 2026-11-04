@@ -72,10 +72,13 @@ export const cableRun = {
   deploy: strands,
 
   logos: [
-    // height 25: dbt 25 × 391/90 = 108.61 wide, Fivetran 25 × 115/32 = 89.84 wide.
-    // Right edge at 1584 − 40 = 1544; Fivetran x = 1544 − 89.84 → 1454;
-    // dbt x = 1454 − 18 − 108.61 → 1327. Bottom at 396 − 40 = 356 → y 331.
-    { name: 'dbt-labs', file: 'assets/dbt-labs.svg', x: 1327, y: 331, height: 25 },
-    { name: 'fivetran', file: 'assets/fivetran-dark.svg', x: 1454, y: 331, height: 25 },
+    // height 75 (3× the first pass, at Sean's request): dbt 75 × 391/90 = 325.83 wide,
+    // Fivetran 75 × 115/32 = 269.53 wide. Right edge at 1584 − 40 = 1544;
+    // Fivetran x = 1544 − 269.53 → 1274.5; dbt x = 1274.5 − 18 − 325.83 → 930.6.
+    // Bottom at 396 − 40 = 356 → y 281.
+    // chip: white, so the marks knock the cables out from behind them - at 3x they are wide
+    // enough to sit over the art, and art showing through a wordmark reads as a smudge.
+    { name: 'dbt-labs', file: 'assets/dbt-labs.svg', x: 930.6, y: 281, height: 75, chip: '#ffffff' },
+    { name: 'fivetran', file: 'assets/fivetran-dark.svg', x: 1274.5, y: 281, height: 75, chip: '#ffffff' },
   ],
 };

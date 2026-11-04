@@ -46,33 +46,35 @@
         "name": "dbt-labs",
         "file": "assets/dbt-labs.svg",
         "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
-        "x": 1327,
-        "y": 331,
-        "height": 25,
+        "x": 930.6,
+        "y": 281,
+        "height": 75,
         "monochrome": false,
-        "opacity": 1
+        "opacity": 1,
+        "chip": "#ffffff"
       },
       {
         "name": "fivetran",
         "file": "assets/fivetran-dark.svg",
         "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
-        "x": 1454,
-        "y": 331,
-        "height": 25,
+        "x": 1274.5,
+        "y": 281,
+        "height": 75,
         "monochrome": false,
-        "opacity": 1
+        "opacity": 1,
+        "chip": "#ffffff"
       }
     ],
     "description": "One heavy six-strand ribbon crossing the strip left to right, stepping dbt orange to Fivetran blue along the run, with the marks knocked out of the lines at the bottom right.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:23:28.409Z",
+    "generatedAt": "2026-11-04T15:48:09.308Z",
     "png": {
-      "sha256": "af24890eb4e780a676d8c4fb1eb57d4fbe26745487e532175a8522472e8416bf",
-      "bytes": 106414,
+      "sha256": "9e01a4350b28d4e48dbcfd9ed70ec5eb8e7ff124d0ae08aa0029fbbda9d7e414",
+      "bytes": 121314,
       "width": 3168,
       "height": 792
     }
@@ -141,10 +143,10 @@
     "description": "Thirty-one fine lines entering from the left edge and fanning right, grading orange at the top of the fan to blue at the bottom, with the marks on a white chip at the top right.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:23:31.450Z",
+    "generatedAt": "2026-11-04T15:48:12.265Z",
     "png": {
       "sha256": "e1fee92c2d02d150259c7d64b4833e88db679e987062af77f43637d99f9ae012",
       "bytes": 99996,
@@ -218,10 +220,10 @@
     "description": "Circuit-board texture on black: orange and blue traces routing around four hatched component blocks, with the marks on a white chip centred at the right edge.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:23:39.601Z",
+    "generatedAt": "2026-11-04T15:48:23.588Z",
     "png": {
       "sha256": "84389236d93c4817d98c08147fcf9ccafac6ff71fea4cd99727f1ab8968e164b",
       "bytes": 755273,
@@ -294,10 +296,10 @@
     "description": "The arcade one: eight thin fast lines in hot brand tints on black, with the marks knocked out in mono white at the bottom left.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:23:47.287Z",
+    "generatedAt": "2026-11-04T15:48:31.257Z",
     "png": {
       "sha256": "fbf0a924965202e6c81511185b92bcad2063caf1f82592ccebdf95324e2ce40a",
       "bytes": 933252,
@@ -359,10 +361,10 @@
     "description": "The quiet one: a single fine orange line wandering the whole strip on black, most of the ground left empty, with small white marks at the right edge.",
     "generator": {
       "repo": "boxysean/fortyfive",
-      "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+      "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
       "tool": "tools/render-banner.mjs"
     },
-    "generatedAt": "2026-11-04T15:23:53.310Z",
+    "generatedAt": "2026-11-04T15:48:34.243Z",
     "png": {
       "sha256": "c4f4664bfca379e497934810b26cbe9a0446d248602ab2e624c929e47bbce2eb",
       "bytes": 81012,

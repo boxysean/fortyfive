@@ -45,33 +45,35 @@
       "name": "dbt-labs",
       "file": "assets/dbt-labs.svg",
       "sha256": "503e8011a2b6520430f32ab5ebc16fd061390b1208081e7e2cc1702066ef4c47",
-      "x": 1327,
-      "y": 331,
-      "height": 25,
+      "x": 930.6,
+      "y": 281,
+      "height": 75,
       "monochrome": false,
-      "opacity": 1
+      "opacity": 1,
+      "chip": "#ffffff"
     },
     {
       "name": "fivetran",
       "file": "assets/fivetran-dark.svg",
       "sha256": "abec08cde9830c6b73ef0b424755341dfe8bdb5569304712ce8ecd86bc891a7a",
-      "x": 1454,
-      "y": 331,
-      "height": 25,
+      "x": 1274.5,
+      "y": 281,
+      "height": 75,
       "monochrome": false,
-      "opacity": 1
+      "opacity": 1,
+      "chip": "#ffffff"
     }
   ],
   "description": "One heavy six-strand ribbon crossing the strip left to right, stepping dbt orange to Fivetran blue along the run, with the marks knocked out of the lines at the bottom right.",
   "generator": {
     "repo": "boxysean/fortyfive",
-    "commit": "bfc75d6f77fae575e461ea7a2d8139bf1847794f",
+    "commit": "960d009b65d85aa6f988f741bb78eda3e4475347",
     "tool": "tools/render-banner.mjs"
   },
-  "generatedAt": "2026-11-04T15:23:28.409Z",
+  "generatedAt": "2026-11-04T15:48:09.308Z",
   "png": {
-    "sha256": "af24890eb4e780a676d8c4fb1eb57d4fbe26745487e532175a8522472e8416bf",
-    "bytes": 106414,
+    "sha256": "9e01a4350b28d4e48dbcfd9ed70ec5eb8e7ff124d0ae08aa0029fbbda9d7e414",
+    "bytes": 121314,
     "width": 3168,
     "height": 792
   }
