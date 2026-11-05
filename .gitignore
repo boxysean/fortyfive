@@ -1,4 +1,6 @@
 bin/
+!packages/cli/bin/
+!packages/cli/bin/**
 images/
 configs/
 output/

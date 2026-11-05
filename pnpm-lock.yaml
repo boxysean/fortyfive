@@ -17,6 +17,22 @@ importers:
         specifier: workspace:*
         version: link:../../packages/render-canvas
 
+  packages/cli:
+    dependencies:
+      '@fortyfive/core':
+        specifier: workspace:*
+        version: link:../core
+      '@fortyfive/render-canvas':
+        specifier: workspace:*
+        version: link:../render-canvas
+      '@fortyfive/render-svg':
+        specifier: workspace:*
+        version: link:../render-svg
+    devDependencies:
+      '@resvg/resvg-js':
+        specifier: ^2.6.2
+        version: 2.6.2
+
   packages/core: {}
 
   packages/render-canvas:

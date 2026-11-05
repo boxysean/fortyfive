@@ -6,7 +6,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "test": "node packages/core/test/portability.mjs && node tools/test-seed.mjs && pnpm --filter @fortyfive/render-canvas test && pnpm --filter @fortyfive/render-svg test",
+    "test": "node packages/core/test/portability.mjs && node tools/test-seed.mjs && pnpm --filter @fortyfive/render-canvas test && pnpm --filter @fortyfive/render-svg test && pnpm --filter @fortyfive/cli test",
     "test:render": "node --test packages/render-canvas/test/node-backend.test.mjs",
     "test:svg": "node --test packages/render-svg/test/svg-backend.test.mjs",
     "fixtures": "node tools/render-reference.mjs"
