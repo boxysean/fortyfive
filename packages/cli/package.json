@@ -1,0 +1,16 @@
+{
+  "name": "@fortyfive/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "fortyfive": "./bin/fortyfive.js" },
+  "engines": { "node": ">=22" },
+  "scripts": { "test": "node --test" },
+  "dependencies": {
+    "@fortyfive/core": "workspace:*",
+    "@fortyfive/render-canvas": "workspace:*",
+    "@fortyfive/render-svg": "workspace:*"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}

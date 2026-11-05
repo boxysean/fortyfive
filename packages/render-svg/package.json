@@ -1,0 +1,20 @@
+{
+  "name": "@fortyfive/render-svg",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./assets": "./src/assets.js",
+    "./*": "./src/*.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "@napi-rs/canvas": "^1.1.0",
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}
