@@ -1,0 +1,3 @@
+The twist narrows the band from about 400 px at the top to about 230 px at the bottom as it swings through an S, and because the dense edge stays on the left, the band reads as a sheet whose packed edge makes a hard, bright outer rail.
+The fade dims the whole band slightly toward the bottom without erasing either edge, and the tonal gradient comes from spacing alone; with the constant stroke there is no longer a brightness seam on the dense edge.
+At 360 px the gradient survives (a near-solid white rail fading into separate lines on the right), but the densest third merges into one flat bar, so it reads as a lit edge rather than as many lines.

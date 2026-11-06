@@ -1,0 +1,3 @@
+The half turn wrings the band from about 350 px wide at the top down to a single edge-on line at about y=1100, then lets it start to open again, now leaning the other way, before the bottom edge cuts it off.
+At the edge-on point the fade does the job: the 43 lines converge and dim to a thin dark-grey thread rather than a bright knot, so the twist reads as the band turning away, not as lines bunching up.
+At 360 px this is the clearest twist of the five (bright fan at the top, a thin waist low on the page), but the dense top becomes a solid striped sheet with slight moiré, and the accent is visible only as a faint orange line.

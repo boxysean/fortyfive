@@ -1,0 +1,23 @@
+{
+  "canvas": [
+    1000,
+    1400
+  ],
+  "generator": "design/journey/ribbon/ribbon.py",
+  "palette": {
+    "accent": "#FE6703",
+    "ground": "#0B0F16",
+    "ink": "#E9EEF7"
+  },
+  "python": "3.12.3",
+  "seed": 5102,
+  "sha256": "a747c6d8ed6c7cbab36ea42ed927ab07bf3de4405af4f8cb5018f4af28c81c52",
+  "study": "02-half-turn",
+  "supersample": 2,
+  "trace_count": 43,
+  "twist": {
+    "start_deg": -45,
+    "sweep_deg": 180,
+    "turns": 0.5
+  }
+}

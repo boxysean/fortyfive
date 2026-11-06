@@ -1,0 +1,45 @@
+{
+  "canvas": [
+    1000,
+    1400
+  ],
+  "generator": "design/journey/ribbon/ribbon.py",
+  "palette": {
+    "accent": "#FE6703",
+    "ground": "#0B0F16",
+    "ink": "#E9EEF7"
+  },
+  "python": "3.12.3",
+  "ribbons": [
+    {
+      "depth_offset": 70,
+      "lateral_offset": -70,
+      "trace_count": 21,
+      "twist": {
+        "start_deg": 0,
+        "sweep_deg": 180,
+        "turns": 0.5
+      }
+    },
+    {
+      "depth_offset": -70,
+      "lateral_offset": 70,
+      "trace_count": 21,
+      "twist": {
+        "start_deg": 90,
+        "sweep_deg": -180,
+        "turns": -0.5
+      }
+    }
+  ],
+  "seed": 5103,
+  "sha256": "d84b6773f6758af588a2e3e6f011651ccaea8f8a89ed26e631c4006219bc276f",
+  "study": "03-interleaved",
+  "supersample": 2,
+  "trace_count": 42,
+  "twist": {
+    "start_deg": 0,
+    "sweep_deg": 180,
+    "turns": 0.5
+  }
+}

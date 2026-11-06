@@ -1,0 +1,3 @@
+The twist shows lobe to lobe: the top lobe faces almost square, the middle lobe leans hard to the left and reads as turned, and the bottom lobe is narrower still in projection, so each pinch also marks a step in the turn.
+The fade carries the depth clearly (bright top lobe, mid-grey middle, darker bottom), and at the two pinches, y of about 400 and 970, all 33 traces converge into a single bright point.
+At 360 px this is the most robust of the five and the lobes and pinches read cleanly, but the accent vanishes into the converging lines near each pinch, and because the spine overhangs the page, the band enters at the top already about 400 px wide instead of opening out of a line.
